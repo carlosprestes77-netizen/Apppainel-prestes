@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Painel Financeiro & Fotográfico</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+body{background:#0f172a;padding:16px;color:#111}
+.app{max-width:1100px;margin:auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 20px 40px rgba(0,0,0,.25)}
+h1{font-size:1.8rem;margin-bottom:4px}
+p.sub{color:#6b7280;margin-bottom:14px;font-size:.9rem}
+.tabs{display:flex;gap:6px;border-bottom:1px solid #e5e7eb;margin-bottom:16px}
+.tab{padding:8px 14px;border-radius:10px 10px 0 0;background:#f1f5f9;font-size:.85rem;color:#475569;cursor:pointer}
+.tab.active{background:#fff;font-weight:600;border:1px solid #e2e8f0;border-bottom-color:#fff}
+.hidden{display:none}
+.card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:14px}
+input,button{border-radius:8px;border:1px solid #cbd5e1;padding:8px;font-size:.9rem;width:100%}
+button{background:#1e3a8a;color:#fff;border:none;font-weight:600;cursor:pointer;margin-top:8px}
+button:hover{background:#1d4ed8}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.8rem}
+th,td{text-align:left;border-bottom:1px solid #e2e8f0;padding:6px}
+th{text-transform:uppercase;font-size:.7rem;color:#64748b}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;font-size:.75rem}
+.day{border:1px solid #e2e8f0;border-radius:8px;min-height:70px;padding:4px;cursor:pointer;background:#fff}
+.day:hover{border-color:#94a3b8;box-shadow:0 5px 12px rgba(0,0,0,.1)}
+.day.selected{background:#eef2ff;border-color:#6366f1}
+.event-pill{background:#e0e7ff;border-radius:6px;padding:2px 4px;margin-top:3px;font-size:.65rem;font-weight:600;color:#3730a3}
+.event-pill.paid{background:#dcfce7;color:#166534}
+.event-pill.pending{background:#fef9c3;color:#854d0e}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>Painel Financeiro & Fotográfico</h1>
+<p class="sub">Organize suas dívidas e eventos de fotografia com estilo e clareza.</p>
+
+<div class="tabs">
+<div id="tab1" class="tab active">Dívidas</div>
+<div id="tab2" class="tab">Eventos</div>
+</div>
+
+<!-- Dívidas -->
+<div id="debts">
+<div class="card">
+<label>Mês:
+<input type="month" id="debts-month"></label>
+</div>
+<div class="card" id="debts-summary"></div>
+
+<div class="card">
+<h3>Adicionar dívida</h3>
+<input id="d-name" placeholder="Nome (ex: Cartão Nubank)">
+<input id="d-desc" placeholder="Descrição (ex: Fatura dezembro)">
+<input id="d-value" placeholder="Valor (ex: 450,00)">
+<button id="add-debt">Adicionar</button>
+</div>
+
+<div class="card" id="debts-table"></div>
+</div>
+
+<!-- Eventos -->
+<div id="events" class="hidden">
+<div class="card">
+<label>Mês:
+<input type="month" id="events-month"></label>
+</div>
+
+<div class="card" id="events-summary"></div>
+
+<div class="card">
+<h3>Calendário</h3>
+<div id="calendar"></div>
+</div>
+
+<div class="card" id="events-day"></div>
+</div>
+</div>
+
+<script>
+// STORAGE
+const load = (k,f)=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f));
+const save = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
+
+// STATE
+let debts = load("debts",{});
+let events = load("events",{});
+let selectedDate = null;
+
+// HELPERS
+const uid=()=>Math.random().toString(36).slice(2,9);
+const money=v=>"R$ "+v.toFixed(2).replace(".",",");
+
+// INIT MONTH INPUTS
+const now=new Date();
+const monthKey=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+document.getElementById("debts-month").value=monthKey;
+document.getElementById("events-month").value=monthKey;
+
+// RENDER DEBTS
+function renderDebts(){
+const m=document.getElementById("debts-month").value;
+if(!debts[m])debts[m]=[];
+const list=debts[m];
+
+let total=0,paid=0;
+list.forEach(d=>{total+=d.value;if(d.paid)paid+=d.value});
+const open=total-paid;
+
+document.getElementById("debts-summary").innerHTML=`
+<strong>Total:</strong> ${money(total)}<br>
+<strong>Pago:</strong> <span style="color:#16a34a">${money(paid)}</span><br>
+<strong>Em aberto:</strong> <span style="color:#dc2626">${money(open)}</span>
+`;
+
+if(list.length===0){
+document.getElementById("debts-table").innerHTML="<p>Nenhuma dívida neste mês.</p>";
+return;
+}
+
+let rows=list.map(d=>`
+<tr>
+<td><input data-id="${d.id}" class="toggle" type="checkbox" ${d.paid?"checked":""}></td>
+<td>${d.name}</td>
+<td>${d.description}</td>
+<td>${money(d.value)}</td>
+<td><button data-id="${d.id}" class="remove">X</button></td>
+</tr>`).join("");
+
+document.getElementById("debts-table").innerHTML=`
+<table>
+<tr><th>Pago</th><th>Nome</th><th>Desc</th><th>Valor</th><th></th></tr>
+${rows}
+</table>
+`;
+
+document.querySelectorAll(".toggle").forEach(c=>{
+c.onclick=()=>{
+let id=c.dataset.id;
+let item=list.find(x=>x.id===id);
+item.paid=!item.paid;
+save("debts",debts);
+renderDebts();
+};
+});
+
+document.querySelectorAll(".remove").forEach(c=>{
+c.onclick=()=>{
+let id=c.dataset.id;
+debts[m]=list.filter(x=>x.id!==id);
+save("debts",debts);
+renderDebts();
+};
+});
+}
+
+document.getElementById("debts-month").onchange=renderDebts;
+document.getElementById("add-debt").onclick=()=>{
+const m=document.getElementById("debts-month").value;
+if(!debts[m])debts[m]=[];
+let name=document.getElementById("d-name").value.trim();
+let desc=document.getElementById("d-desc").value.trim();
+let val=parseFloat(document.getElementById("d-value").value.replace(",","."));
+if(!name||isNaN(val)){alert("Preencha corretamente.");return}
+debts[m].push({id:uid(),name,description:desc,value:val,paid:false});
+save("debts",debts);
+renderDebts();
+};
+
+// EVENTS
+function daysInMonth(m){
+let [y,mo]=m.split("-").map(Number);
+let d=new Date(y,mo-1,1),arr=[];
+while(d.getMonth()==mo-1){arr.push(new Date(d));d.setDate(d.getDate()+1);}
+return arr;
+}
+
+function renderCalendar(){
+const m=document.getElementById("events-month").value;
+if(!events[m])events[m]=[];
+const ev=events[m];
+const days=daysInMonth(m);
+
+let html='<div class="calendar">';
+["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].forEach(w=>html+='<div>'+w+'</div>');
+days.forEach(d=>{
+let iso=d.toISOString().slice(0,10);
+let dayEv=ev.filter(e=>e.date===iso);
+html+=`
+<div class="day ${selectedDate===iso?"selected":""}" data-date="${iso}">
+<strong>${d.getDate()}</strong>
+${dayEv.slice(0,2).map(e=>`
+<div class="event-pill ${e.paid?"paid":"pending"}">
+${e.company} - ${money(e.value)}
+</div>`).join("")}
+${dayEv.length>2?`<div>+${dayEv.length-2}</div>`:""}
+</div>`;
+});
+html+="</div>";
+document.getElementById("calendar").innerHTML=html;
+
+document.querySelectorAll(".day").forEach(d=>{
+d.onclick=()=>{selectedDate=d.dataset.date;renderEvents()};
+});
+}
+
+function renderEventSummary(){
+const m=document.getElementById("events-month").value;
+if(!events[m])events[m]=[];
+const ev=events[m];
+let total=ev.reduce((a,b)=>a+b.value,0);
+let paid=ev.filter(x=>x.paid).reduce((a,b)=>a+b.value,0);
+
+document.getElementById("events-summary").innerHTML=`
+<strong>Eventos:</strong> ${ev.length}<br>
+<strong>Total:</strong> ${money(total)}<br>
+<strong>Recebido:</strong> <span style="color:#16a34a">${money(paid)}</span><br>
+<strong>Pendente:</strong> <span style="color:#dc2626">${money(total-paid)}</span>
+`;
+}
+
+function renderDay(){
+if(!selectedDate){
+document.getElementById("events-day").innerHTML="<p>Selecione um dia.</p>";
+return;
+}
+const m=document.getElementById("events-month").value;
+const ev=events[m].filter(e=>e.date===selectedDate);
+
+let html=`<h3>Dia ${selectedDate}</h3>`;
+
+ev.forEach(e=>{
+html+=`
+<div class="card">
+<strong>${e.company}</strong><br>
+${e.description}<br>
+${money(e.value)}<br>
+Status: ${e.paid?"Pago":"Pendente"}<br>
+<button class="toggle-event" data-id="${e.id}">${e.paid?"Marcar pendente":"Marcar pago"}</button>
+<button class="remove-event" data-id="${e.id}" style="background:#dc2626;margin-top:4px;">Remover</button>
+</div>`;
+});
+
+html+=`
+<div class="card">
+<h3>Novo evento</h3>
+<input id="e-company" placeholder="Empresa/cliente">
+<input id="e-desc" placeholder="Descrição">
+<input id="e-value" placeholder="Valor (ex: 400,00)">
+<button id="add-event">Adicionar</button>
+</div>
+`;
+
+document.getElementById("events-day").innerHTML=html;
+
+document.querySelectorAll(".toggle-event").forEach(b=>{
+b.onclick=()=>{
+let m=document.getElementById("events-month").value;
+let item=events[m].find(x=>x.id===b.dataset.id);
+item.paid=!item.paid;
+save("events",events);
+renderEvents();
+};
+});
+
+document.querySelectorAll(".remove-event").forEach(b=>{
+b.onclick=()=>{
+let m=document.getElementById("events-month").value;
+events[m]=events[m].filter(x=>x.id!==b.dataset.id);
+save("events",events);
+renderEvents();
+};
+});
+
+document.getElementById("add-event").onclick=()=>{
+const m=document.getElementById("events-month").value;
+let c=document.getElementById("e-company").value.trim();
+let d=document.getElementById("e-desc").value.trim();
+let v=parseFloat(document.getElementById("e-value").value.replace(",","."));
+if(!c||isNaN(v)){alert("Preencha corretamente.");return}
+events[m].push({id:uid(),date:selectedDate,company:c,description:d,value:v,paid:false});
+save("events",events);
+renderEvents();
+};
+}
+
+function renderEvents(){
+renderEventSummary();
+renderCalendar();
+renderDay();
+}
+
+document.getElementById("events-month").onchange=()=>{selectedDate=null;renderEvents()};
+
+// Tabs
+document.getElementById("tab1").onclick=()=>{
+document.getElementById("debts").classList.remove("hidden");
+document.getElementById("events").classList.add("hidden");
+document.getElementById("tab1").classList.add("active");
+document.getElementById("tab2").classList.remove("active");
+};
+document.getElementById("tab2").onclick=()=>{
+document.getElementById("events").classList.remove("hidden");
+document.getElementById("debts").classList.add("hidden");
+document.getElementById("tab2").classList.add("active");
+document.getElementById("tab1").classList.remove("active");
+};
+
+// Init
+renderDebts();
+renderEvents();
+</script>
+</body>
+</html>
