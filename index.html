@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#0f172a" />
+<link rel="manifest" href="manifest.webmanifest" />
+
 <title>Painel Financeiro & Fotográfico</title>
+
 <style>
 *{
   box-sizing:border-box;
@@ -200,26 +204,24 @@ th{
 </div>
 
 <script>
-// STORAGE
+// storage
 const load = (k,f)=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f));
 const save = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
-// STATE
 let debts = load("debts",{});
 let events = load("events",{});
 let selectedDate = null;
 
-// HELPERS
 const uid=()=>Math.random().toString(36).slice(2,9);
 const money=v=>"R$ "+v.toFixed(2).replace(".",",");
 
-// INIT MONTH INPUTS
+// mês atual
 const now=new Date();
 const monthKey=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
 document.getElementById("debts-month").value=monthKey;
 document.getElementById("events-month").value=monthKey;
 
-// RENDER DEBTS
+// dívidas
 function renderDebts(){
   const m=document.getElementById("debts-month").value;
   if(!debts[m])debts[m]=[];
@@ -258,8 +260,7 @@ function renderDebts(){
 
   document.querySelectorAll(".toggle").forEach(c=>{
     c.onclick=()=>{
-      let id=c.dataset.id;
-      let item=list.find(x=>x.id===id);
+      let item=list.find(x=>x.id===c.dataset.id);
       item.paid=!item.paid;
       save("debts",debts);
       renderDebts();
@@ -268,8 +269,7 @@ function renderDebts(){
 
   document.querySelectorAll(".remove").forEach(c=>{
     c.onclick=()=>{
-      let id=c.dataset.id;
-      debts[m]=list.filter(x=>x.id!==id);
+      debts[m]=list.filter(x=>x.id!==c.dataset.id);
       save("debts",debts);
       renderDebts();
     };
@@ -277,6 +277,7 @@ function renderDebts(){
 }
 
 document.getElementById("debts-month").onchange=renderDebts;
+
 document.getElementById("add-debt").onclick=()=>{
   const m=document.getElementById("debts-month").value;
   if(!debts[m])debts[m]=[];
@@ -289,7 +290,7 @@ document.getElementById("add-debt").onclick=()=>{
   renderDebts();
 };
 
-// EVENTS
+// eventos
 function daysInMonth(m){
   let [y,mo]=m.split("-").map(Number);
   let d=new Date(y,mo-1,1),arr=[];
@@ -308,29 +309,30 @@ function renderCalendar(){
 
   let html='<div class="calendar">';
 
-  // cabeçalho dos dias da semana
   ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].forEach(w=>{
     html+=`<div class="weekday">${w}</div>`;
   });
 
-  // espaços em branco antes do dia 1
   if(days.length){
-    const firstDow = days[0].getDay(); // 0 = Dom ... 6 = Sáb
-    for(let i=0;i<firstDow;i++){
-      html+='<div class="day empty"></div>';
+    const firstDow = days[0].getDay();
+    for(let i=0;i<firstOffset;i++){
+      html+='<div class="day.empty"></div>';
     }
   }
 
-  // dias do mês
   days.forEach(d=>{
     let iso=d.toISOString().slice(0,10);
-    let dayEv=ev.filter(e=>e.date===iso);
+    let dayEv=events[m].filter(e=>e.date===iso);
+
+    // cálculo parcial
+    let parcialSum = dayEv.reduce((acc,e)=>acc + (e.parcial||0), 0);
+
     html+=`
     <div class="day ${selectedDate===iso?"selected":""}" data-date="${iso}">
       <strong>${d.getDate()}</strong>
       ${dayEv.slice(0,2).map(e=>`
         <div class="event-pill ${e.paid?"paid":"pending"}">
-          ${e.company} - ${money(e.value)}
+          ${e.company}: ${money(e.value)}
         </div>`).join("")}
       ${dayEv.length>2?`<div>+${dayEv.length-2}</div>`:""}
     </div>`;
@@ -352,14 +354,20 @@ function renderEventSummary(){
   const m=document.getElementById("events-month").value;
   if(!events[m])events[m]=[];
   const ev=events[m];
-  let total=ev.reduce((a,b)=>a+b.value,0);
-  let paid=ev.filter(x=>x.paid).reduce((a,b)=>a+b.value,0);
+
+  let total = ev.reduce((a,b)=>a+b.value,0);
+  let parcial = ev.reduce((a,b)=>a+(b.parcial||0),0);
+  let paid = ev.filter(x=>x.paid).reduce((a,b)=>a+b.value,0);
+
+  let recebido = paid + parcial;
+  let pendente = total - recebido;
 
   document.getElementById("events-summary").innerHTML=`
     <strong>Eventos:</strong> ${ev.length}<br>
     <strong>Total:</strong> ${money(total)}<br>
-    <strong>Recebido:</strong> <span style="color:#16a34a">${money(paid)}</span><br>
-    <strong>Pendente:</strong> <span style="color:#dc2626">${money(total-paid)}</span>
+    <strong>Recebido parcial:</strong> ${money(parcial)}<br>
+    <strong>Recebido total:</strong> <span style="color:#16a34a">${money(recebido)}</span><br>
+    <strong>Pendente:</strong> <span style="color:#dc2626">${money(pendente)}</span>
   `;
 }
 
@@ -374,13 +382,23 @@ function renderDay(){
   let html=`<h3>Dia ${selectedDate}</h3>`;
 
   ev.forEach(e=>{
+    let parcial = e.parcial || 0;
+    let rest = e.value - parcial;
+
     html+=`
     <div class="card">
       <strong>${e.company}</strong><br>
       ${e.description}<br>
-      ${money(e.value)}<br>
+      Valor total: ${money(e.value)}<br>
+      Recebido parcial: ${money(parcial)}<br>
+      Falta: ${money(rest)}<br>
+
       Status: ${e.paid?"Pago":"Pendente"}<br>
-      <button class="toggle-event" data-id="${e.id}">${e.paid?"Marcar pendente":"Marcar pago"}</button>
+
+      <button class="toggle-event" data-id="${e.id}">
+        ${e.paid?"Marcar pendente":"Marcar pago"}
+      </button>
+
       <button class="remove-event" data-id="${e.id}" style="background:#dc2626;margin-top:4px;">Remover</button>
     </div>`;
   });
@@ -390,16 +408,17 @@ function renderDay(){
     <h3>Novo evento</h3>
     <input id="e-company" placeholder="Empresa/cliente">
     <input id="e-desc" placeholder="Descrição">
-    <input id="e-value" placeholder="Valor (ex: 400,00)">
+    <input id="e-value" placeholder="Valor total (ex: 400,00)">
+    <input id="e-parcial" placeholder="Recebido parcial (opcional)">
     <button id="add-event">Adicionar</button>
   </div>
   `;
 
   document.getElementById("events-day").innerHTML=html;
 
+  // botões
   document.querySelectorAll(".toggle-event").forEach(b=>{
     b.onclick=()=>{
-      let m=document.getElementById("events-month").value;
       let item=events[m].find(x=>x.id===b.dataset.id);
       item.paid=!item.paid;
       save("events",events);
@@ -409,7 +428,6 @@ function renderDay(){
 
   document.querySelectorAll(".remove-event").forEach(b=>{
     b.onclick=()=>{
-      let m=document.getElementById("events-month").value;
       events[m]=events[m].filter(x=>x.id!==b.dataset.id);
       save("events",events);
       renderEvents();
@@ -421,8 +439,22 @@ function renderDay(){
     let c=document.getElementById("e-company").value.trim();
     let d=document.getElementById("e-desc").value.trim();
     let v=parseFloat(document.getElementById("e-value").value.replace(",","."));
+    let p=parseFloat(document.getElementById("e-parcial").value.replace(",","."));
+
     if(!c||isNaN(v)){alert("Preencha corretamente.");return}
-    events[m].push({id:uid(),date:selectedDate,company:c,description:d,value:v,paid:false});
+
+    let parcial = isNaN(p)? 0 : p;
+
+    events[m].push({
+      id:uid(),
+      date:selectedDate,
+      company:c,
+      description:d,
+      value:v,
+      parcial: parcial,
+      paid:false
+    });
+
     save("events",events);
     renderEvents();
   };
@@ -439,13 +471,14 @@ document.getElementById("events-month").onchange=()=>{
   renderEvents();
 };
 
-// Tabs
+// tabs
 document.getElementById("tab1").onclick=()=>{
   document.getElementById("debts").classList.remove("hidden");
   document.getElementById("events").classList.add("hidden");
   document.getElementById("tab1").classList.add("active");
   document.getElementById("tab2").classList.remove("active");
 };
+
 document.getElementById("tab2").onclick=()=>{
   document.getElementById("events").classList.remove("hidden");
   document.getElementById("debts").classList.add("hidden");
@@ -453,9 +486,16 @@ document.getElementById("tab2").onclick=()=>{
   document.getElementById("tab1").classList.remove("active");
 };
 
-// Init
+// init
 renderDebts();
 renderEvents();
+
+// pwa
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch((err) => {
+    console.log("SW erro:", err);
+  });
+}
 </script>
 </body>
 </html>
