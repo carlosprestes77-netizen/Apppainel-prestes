@@ -1,561 +1,776 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#1e1a17" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Painel Prestes</title>
 
-<!-- =======================
-     ESTILOS PREMIUM
-======================= -->
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+
+<!-- Fonte Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
+
+/* ============================================================
+   TEMA DUAL SUPER PREMIUM (CLARO 1 + ESCURO C)
+   ============================================================ */
+
+/* ----------- TEMA CLARO BRANCO MINIMAL (iOS) ----------- */
 :root {
-  --bg: #f4ede4;
-  --bg2: rgba(255,255,255,0.45);
-  --text: #2a2a2a;
-  --subtext: #6f6f6f;
-  --accent: #b89b72;
-  --accent-strong: #a27f53;
-  --border: rgba(0,0,0,0.08);
-  --radius: 18px;
-  --transition: 0.25s ease;
+  --bg: #ffffff;
+  --card: #fafafa;
+  --border: #e2e2e2;
+  --text: #1d1d1d;
+  --subtext: #606060;
+  --accent: #d7b478;
+  --accent-strong: #c49c57;
+
+  --shadow-card: 0 4px 12px rgba(0,0,0,0.07);
+  --shadow-hover: 0 6px 18px rgba(0,0,0,0.12);
 }
 
-/* DARK MODE */
+/* ----------- TEMA ESCURO WARM DARK (quente e elegante) ----------- */
 [data-theme="dark"] {
-  --bg: #1e1a17;
-  --bg2: rgba(255,255,255,0.06);
-  --text: #f3e9d8;
-  --subtext: #b8a894;
-  --accent: #d0b185;
-  --accent-strong: #e6cfa3;
-  --border: rgba(255,255,255,0.1);
+  --bg: #171311;
+  --card: #221d1a;
+  --border: #2f2824;
+  --text: #f5e9da;
+  --subtext: #bfae9a;
+  --accent: #d6b27d;
+  --accent-strong: #e7cfa1;
+
+  --shadow-card: 0 2px 10px rgba(0,0,0,0.5);
+  --shadow-hover: 0 4px 14px rgba(0,0,0,0.65);
 }
+
+/* ============================================================
+   ESTILOS GERAIS
+   ============================================================ */
 
 body {
   margin: 0;
-  padding: 24px;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro", sans-serif;
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
   background: var(--bg);
   color: var(--text);
-  overflow-x: hidden;
-  position: relative;
+  transition: background .35s ease, color .35s ease;
 }
 
-/* fundo parallax */
-.bg-parallax {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 30% 40%,
-      rgba(255,230,200,0.55),
-      rgba(230,200,160,0.4),
-      rgba(200,170,140,0.35),
-      rgba(150,120,90,0.2),
-      rgba(0,0,0,0.05)
-  );
-  filter: blur(45px);
-  transform: scale(1.5);
-  transition: transform 0.15s ease-out;
-  z-index: -2;
+/* LOGO CP */
+.cp-logo-box {
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, #fff, var(--accent));
+  border-radius: 16px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  box-shadow: var(--shadow-card);
+  color: #000;
+  font-weight: 800;
+  font-size: 1.45rem;
 }
 
-.bg-parallax-top {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(135deg,
-      rgba(255,255,255,0.05),
-      rgba(255,255,255,0)
-  );
-  z-index: -1;
-}
-
-.app {
-  max-width: 1000px;
-  margin: auto;
-  padding: 24px;
-  background: var(--bg2);
-  border-radius: 28px;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 25px 45px rgba(0,0,0,0.18);
-  animation: fadeIn 0.8s ease forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* CABEÇALHO */
 .header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  display:flex;
+  align-items:center;
+  gap:14px;
   margin-bottom: 20px;
 }
 
-.logoCP {
-  width: 58px;
-  height: 58px;
-  border-radius: 18px;
-  background: linear-gradient(145deg,#d8c3a6,#f8e8ce);
-  box-shadow:
-    inset -3px -3px 6px rgba(255,255,255,0.6),
-    inset 3px 3px 6px rgba(0,0,0,0.15),
-    0 10px 20px rgba(0,0,0,0.2);
-  color: #4a3820;
-  font-size: 1.75rem;
-  font-weight: 700;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.header-title {
+  font-size: 1.8rem;
+  font-weight: 800;
 }
 
-h1 { margin: 0; font-size: 1.9rem; }
+/* ------------------------------------------------------------
+   NAV TABS
+------------------------------------------------------------ */
 
-/* TABS */
 .tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+  margin-bottom:20px;
 }
 
 .tab {
-  padding: 10px 18px;
-  cursor: pointer;
-  border-radius: var(--radius);
+  padding:10px 20px;
+  border-radius:14px;
+  background: var(--card);
+  border:1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  font-weight:600;
+  cursor:pointer;
   color: var(--subtext);
-  transition: var(--transition);
+  transition:.25s;
 }
 
 .tab.active {
   background: var(--accent);
-  color: #fff;
+  border-color: var(--accent-strong);
+  color:#000;
+  box-shadow: var(--shadow-hover);
 }
 
-/* SEÇÕES */
-.section {
-  display: none;
-  padding: 24px;
-  border-radius: var(--radius);
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid var(--border);
-  animation: sectionIn 0.5s ease forwards;
+/* ------------------------------------------------------------
+   CARDS
+------------------------------------------------------------ */
+
+.card {
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  box-shadow: var(--shadow-card);
+  margin-bottom:22px;
+  transition:.25s;
 }
 
-.section.active { display: block; }
-
-@keyframes sectionIn {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
+.card:hover {
+  box-shadow: var(--shadow-hover);
 }
 
-/* INPUTS */
-label {
-  display: block;
-  margin-top: 10px;
-  color: var(--subtext);
-  font-size: 0.9rem;
+/* Títulos */
+.card h3 {
+  margin:0 0 12px 0;
+  font-size:1.25rem;
+  font-weight:700;
 }
 
+/* Input padrão */
 input, select {
-  width: 100%;
-  padding: 12px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.2);
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background: var(--bg);
   color: var(--text);
-  margin-top: 4px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: var(--transition);
+  font-size:1rem;
 }
 
-input:focus {
-  border-color: var(--accent);
-}
-
-/* BUTTON */
+/* Botões */
 button {
-  margin-top: 16px;
-  padding: 14px;
-  width: 100%;
-  border: none;
-  border-radius: var(--radius);
+  padding:13px 18px;
+  border-radius:14px;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+  transition:.25s;
+  margin-top:12px;
+}
+
+/* Botão principal */
+.btn-primary {
   background: var(--accent);
-  color: #fff;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: var(--transition);
+  color:#000;
 }
 
-button:hover {
+.btn-primary:hover {
   background: var(--accent-strong);
-  transform: translateY(-2px);
 }
 
-/* CALENDÁRIO */
+/* Botão secundário */
+.btn-secondary {
+  background: var(--border);
+  color: var(--text);
+}
+
+.btn-danger {
+  background:#d9534f;
+  color:#fff;
+}
+
+/* Ícones SVG inline */
+.icon {
+  width:20px;
+  height:20px;
+  vertical-align:middle;
+}
+
+/* ------------------------------------------------------------
+   CALENDÁRIO CLEAN
+------------------------------------------------------------ */
+
 .calendar-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
 }
 
-#prevMonth, #nextMonth {
-  font-size: 1.5rem;
+.month-button {
   background: transparent;
-  border: none;
-  color: var(--subtext);
-  border-radius: 50%;
-  padding: 4px 10px;
-  transition: var(--transition);
+  border:none;
+  font-size:1.45rem;
+  color: var(--text);
+  cursor:pointer;
+  padding:6px 10px;
+  border-radius:10px;
+  transition:.2s;
 }
 
-#prevMonth:hover, #nextMonth:hover {
-  background: rgba(255,255,255,0.15);
+.month-button:hover {
+  background: var(--border);
 }
 
 #calendar {
-  display: grid;
+  display:grid;
   grid-template-columns: repeat(7,1fr);
-  gap: 8px;
+  gap:8px;
 }
 
 .weekday {
-  text-align: center;
-  color: var(--subtext);
+  text-align:center;
+  opacity:.55;
+  font-weight:600;
 }
 
 .day {
-  min-height: 78px;
-  padding: 8px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.15);
-  transition: var(--transition);
-  cursor: pointer;
+  min-height:65px;
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:6px;
+  font-weight:600;
+  font-size:1rem;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  transition:.25s;
 }
 
-.day:hover { border: 1px solid var(--accent); }
-
-.day.selected {
-  border: 1px solid var(--accent-strong);
-  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+.day:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
 }
 
 .event-pill {
-  margin-top: 4px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: .75rem;
-  color: white;
-  background: rgba(0,0,0,0.25);
+  margin-top:4px;
+  padding:3px 6px;
+  border-radius:8px;
+  font-size:.7rem;
+  font-weight:700;
+  color:#fff;
 }
 
-.event-pill.paid { background: rgba(50,200,50,0.35); }
-.event-pill.pending { background: rgba(255,150,30,0.35); }
+.paid { background:#4caf50; }
+.partial { background:#e8a24a; }
+.pending { background:#777; }
 
-/* ================================
-   TELA DE CARREGAMENTO PREMIUM
-=================================*/
-#loader {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 40% 40%,
-      rgba(255,235,205,0.65),
-      rgba(210,180,140,0.55),
-      rgba(120,90,60,0.35),
-      rgba(30,25,23,0.9)
-  );
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  animation: loaderFadeOut 1.3s ease forwards;
-  animation-delay: 1.3s;
+/* ------------------------------------------------------------
+   MODAL ANIMADO
+------------------------------------------------------------ */
+
+#eventoModal {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.55);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  backdrop-filter: blur(4px);
+  padding:20px;
 }
 
-.loader-logo {
-  font-size: 4rem;
-  font-weight: 800;
-  color: #f2e6d2;
-  text-shadow: 0 0 25px rgba(255,255,255,0.7),
-               0 0 45px rgba(240,210,170,0.4),
-               0 0 80px rgba(240,210,170,0.25);
-  animation: glowPulse 1.6s infinite ease-in-out;
-  letter-spacing: 2px;
+#eventoModal.aberto {
+  display:flex;
 }
 
-@keyframes glowPulse {
-  0%   { transform: scale(1);   opacity: 0.85; }
-  50%  { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1);   opacity: 0.85; }
+.modal-box {
+  background: var(--card);
+  border-radius:20px;
+  padding:26px;
+  width:100%;
+  max-width:380px;
+  box-shadow: var(--shadow-hover);
+  animation: modalZoom .25s ease;
 }
 
-@keyframes loaderFadeOut {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
+@keyframes modalZoom {
+  from { transform: scale(.85); opacity:0; }
+  to   { transform: scale(1); opacity:1; }
 }
+     /* ============================================================
+   LISTA DE EVENTOS
+============================================================ */
+
+.evento-item {
+  background: var(--card);
+  border:1px solid var(--border);
+  padding:16px;
+  border-radius:16px;
+  box-shadow: var(--shadow-card);
+  margin-bottom:14px;
+}
+
+.evento-item strong {
+  font-size:1.1rem;
+}
+
+.evento-top-info {
+  display:flex;
+  justify-content:space-between;
+  font-size:.95rem;
+  color: var(--subtext);
+}
+
+/* ------------------------------------------------------------
+   GRÁFICO DE PIZZA
+------------------------------------------------------------ */
+
+.chart-container {
+  display:flex;
+  justify-content:center;
+  margin-top:20px;
+}
+
+canvas {
+  max-width:280px;
+}
+
+/* ------------------------------------------------------------
+   ALTO CONTRASTE (botão)
+------------------------------------------------------------ */
+
+.contrast-btn {
+  background: var(--accent);
+  color:#000;
+  font-weight:700;
+  padding:12px 14px;
+  border-radius:12px;
+  cursor:pointer;
+  margin-top:14px;
+  border:none;
+}
+
+.contrast-btn:hover {
+  background: var(--accent-strong);
+}
+
+/* ============================================================
+   INÍCIO DO HTML VISUAL (LAYOUT)
+============================================================ */
+
 </style>
 </head>
 
-<body data-theme="dark">
-
-<!-- ================================
-     LOADING SCREEN
-=================================-->
-<div id="loader">
-  <div class="loader-logo">CP</div>
-</div>
-
-<div class="bg-parallax"></div>
-<div class="bg-parallax-top"></div>
-
-<div class="app">
+<body>
 
 <!-- HEADER -->
 <div class="header">
-  <div class="logoCP">CP</div>
-  <h1>Painel Prestes</h1>
+  <div class="cp-logo-box">CP</div>
+  <div class="header-title">Painel Prestes</div>
 </div>
 
 <!-- TABS -->
 <div class="tabs">
-  <div class="tab active" data-tab="dividas">Dívidas</div>
-  <div class="tab" data-tab="eventos">Eventos</div>
+  <div class="tab active" data-tab="dashboard" onclick="abrirAba('dashboard', this)">Dashboard</div>
+  <div class="tab" data-tab="eventos" onclick="abrirAba('eventos', this)">Eventos</div>
 </div>
 
-<!-- DÍVIDAS -->
-<div id="dividas" class="section active">
-  <label>Nome</label>
-  <input id="divNome">
+<!-- ===============================
+     DASHBOARD
+=============================== -->
+<div id="dashboard" class="aba">
 
-  <label>Descrição</label>
-  <input id="divDesc">
+  <div class="card">
+    <h3>Resumo Financeiro</h3>
+    <p>Total no mês: <strong>R$ <span id="totalMes">0,00</span></strong></p>
+    <p>Recebido: <strong>R$ <span id="totalRecebido">0,00</span></strong></p>
+    <p>Falta receber: <strong>R$ <span id="totalFalta">0,00</span></strong></p>
 
-  <label>Valor</label>
-  <input id="divValor">
-
-  <button onclick="addDivida()">Adicionar</button>
-
-  <div id="listaDividas" style="margin-top:20px;"></div>
-</div>
-
-<!-- EVENTOS -->
-<div id="eventos" class="section">
-
-  <div class="calendar-nav">
-    <button id="prevMonth">←</button>
-    <div id="monthLabel"></div>
-    <button id="nextMonth">→</button>
+    <!-- Botão PDF -->
+    <button class="btn-primary" onclick="gerarPDF()">
+      📄 Gerar PDF do mês
+    </button>
   </div>
 
-  <div id="calendar"></div>
+  <!-- GRÁFICO DE PIZZA -->
+  <div class="card">
+    <h3>Distribuição</h3>
+    <div class="chart-container">
+      <canvas id="pieChart"></canvas>
+    </div>
+  </div>
 
-  <label style="margin-top:22px;">Data</label>
-  <input id="eventDate" readonly>
+  <!-- GRÁFICO DE BARRAS -->
+  <div class="card">
+    <h3>Histórico Mensal</h3>
+    <div class="chart-container">
+      <canvas id="barChart"></canvas>
+    </div>
+  </div>
 
-  <label>Empresa</label>
-  <input id="eventEmp">
+  <!-- CALENDÁRIO -->
+  <div class="card">
 
-  <label>Serviço</label>
-  <input id="eventServ">
+    <div class="calendar-nav">
+      <button id="prevMonth" class="month-button">‹</button>
+      <h3 id="mesTitulo"></h3>
+      <button id="nextMonth" class="month-button">›</button>
+    </div>
 
-  <label>Valor</label>
-  <input id="eventVal">
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px;">
+      <div class="weekday">Dom</div>
+      <div class="weekday">Seg</div>
+      <div class="weekday">Ter</div>
+      <div class="weekday">Qua</div>
+      <div class="weekday">Qui</div>
+      <div class="weekday">Sex</div>
+      <div class="weekday">Sáb</div>
+    </div>
 
-  <label>Recebido parcial</label>
-  <input id="eventRec">
+    <div id="calendar"></div>
+  </div>
 
-  <label>Pago totalmente?</label>
-  <select id="eventPago">
-    <option value="nao">Não</option>
-    <option value="sim">Sim</option>
-  </select>
+  <!-- MODO CONTRASTE -->
+  <button class="contrast-btn" onclick="alternarContraste()">
+    Alterar contraste
+  </button>
 
-  <button onclick="addEvento()">Adicionar evento</button>
-
-  <div id="listaEventos" style="margin-top:20px;"></div>
 </div>
 
+<!-- ===============================
+     LISTA DE EVENTOS
+=============================== -->
+<div id="eventos" class="aba" style="display:none;">
+
+  <div class="card">
+    <h3>Todos os eventos</h3>
+    <div id="listaEventos"></div>
+  </div>
+
 </div>
 
-<!-- =======================
-     JAVASCRIPT
-======================= -->
+<!-- ===============================
+     MODAL DE ADIÇÃO DE EVENTO
+=============================== -->
+<div id="eventoModal">
+  <div class="modal-box">
+
+    <h3 id="modalDiaTitulo">Adicionar evento</h3>
+
+    <input id="tituloEvento" placeholder="Nome do evento">
+    <input id="valorEvento" placeholder="Valor total" type="number">
+    <input id="recebidoEvento" placeholder="Recebido" type="number">
+
+    <button class="btn-primary" onclick="adicionarEvento(diaSelecionado)">
+      Adicionar
+    </button>
+
+    <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+
+  </div>
+</div>
+<!-- ============================================================
+     JAVASCRIPT COMPLETO PREMIUM
+============================================================ -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// tabs
-document.querySelectorAll(".tab").forEach(t=>{
-  t.onclick=()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-    t.classList.add("active");
-    document.getElementById(t.dataset.tab).classList.add("active");
-  };
+
+/* ============================================================
+   TEMA AUTOMÁTICO
+============================================================ */
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+function aplicarTemaInicial() {
+  document.documentElement.setAttribute(
+    "data-theme",
+    localStorage.getItem("tema") ||
+    (prefersDark.matches ? "dark" : "light")
+  );
+}
+
+aplicarTemaInicial();
+
+prefersDark.addEventListener("change", e => {
+  if (!localStorage.getItem("tema")) {
+    document.documentElement.setAttribute("data-theme", e.matches ? "dark" : "light");
+  }
 });
 
-// dividas
-function addDivida(){
-  let nome=divNome.value;
-  let desc=divDesc.value;
-  let val=parseFloat(divValor.value.replace(",","."));
-
-  if(!nome || isNaN(val)) return alert("Preencha tudo direito, Prestes.");
-
-  let d=JSON.parse(localStorage.getItem("dividas")||"[]");
-  d.push({nome,desc,val});
-  localStorage.setItem("dividas",JSON.stringify(d));
-
-  atualizarDividas();
-  divNome.value=""; divDesc.value=""; divValor.value="";
+/* ============================================================
+   ALTERNAR CONTRASTE
+============================================================ */
+function alternarContraste() {
+  const temaAtual = document.documentElement.getAttribute("data-theme");
+  const novo = temaAtual === "light" ? "dark" : "light";
+  document.documentElement.setAttribute("data-theme", novo);
+  localStorage.setItem("tema", novo);
 }
 
-function atualizarDividas(){
-  let d=JSON.parse(localStorage.getItem("dividas")||"[]");
-  if(d.length===0){ listaDividas.innerHTML="<p>Nenhuma dívida.</p>"; return; }
+/* ============================================================
+   BANCO DE DADOS
+============================================================ */
+let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
 
-  let h="";
-  d.forEach(e=>{
-    h+=`<div style="padding:14px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;">
-      <strong>${e.nome}</strong><br>${e.desc}<br>
-      <span style="color:var(--accent)">R$ ${e.val.toFixed(2)}</span>
-    </div>`;
-  });
-  listaDividas.innerHTML=h;
+function salvar() {
+  localStorage.setItem("eventos", JSON.stringify(eventos));
 }
 
-// eventos
-function addEvento(){
-  let data=eventDate.value;
-  let empresa=eventEmp.value;
-  let serv=eventServ.value;
-  let val=parseFloat(eventVal.value.replace(",","."));
-  let rec=parseFloat(eventRec.value.replace(",",".")||0);
-  let pago=eventPago.value;
+/* ============================================================
+   DATA ATUAL
+============================================================ */
+let hoje = new Date();
+let mesAtual = hoje.getMonth();
+let anoAtual = hoje.getFullYear();
 
-  if(!data || !empresa || !serv || isNaN(val))
-    return alert("Preenche tudo certo, Prestes.");
+const meses = [
+  "janeiro","fevereiro","março","abril","maio","junho",
+  "julho","agosto","setembro","outubro","novembro","dezembro"
+];
 
-  let e=JSON.parse(localStorage.getItem("eventos")||"[]");
-  e.push({data,empresa,serv,val,recebido:rec,pago});
-  localStorage.setItem("eventos",JSON.stringify(e));
+/* ============================================================
+   ABAS
+============================================================ */
+function abrirAba(aba, botao) {
+  document.querySelectorAll(".aba").forEach(a => a.style.display = "none");
+  document.getElementById(aba).style.display = "block";
 
-  atualizarListaEventos();
-  renderCalendar();
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  botao.classList.add("active");
 }
 
-function atualizarListaEventos(){
-  let e=JSON.parse(localStorage.getItem("eventos")||"[]");
+/* ============================================================
+   CALENDÁRIO
+============================================================ */
+function renderCalendario() {
+  document.getElementById("mesTitulo").innerText =
+    `${meses[mesAtual]} de ${anoAtual}`;
 
-  if(e.length===0){ listaEventos.innerHTML="<p>Nenhum evento.</p>"; return;}
+  const cal = document.getElementById("calendar");
+  cal.innerHTML = "";
 
-  let h="";
-  e.forEach(ev=>{
-    h+=`
-    <div style="padding:14px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;">
-      <strong>${ev.empresa}</strong> – ${ev.serv}<br>
-      ${ev.data}<br>
-      <span style="color:var(--accent)">R$ ${ev.val.toFixed(2)}</span><br>
-      Recebido: R$ ${ev.recebido}<br>
-      Pago: ${ev.pago==="sim"?"✔":"❌"}
-    </div>`;
-  });
+  const primeiro = new Date(anoAtual, mesAtual, 1).getDay();
+  const total = new Date(anoAtual, mesAtual + 1, 0).getDate();
 
-  listaEventos.innerHTML=h;
-}
-
-// calendário
-let currentDate=new Date();
-
-function renderCalendar(){
-  calendar.innerHTML="";
-
-  const year=currentDate.getFullYear();
-  const month=currentDate.getMonth();
-
-  const firstDay=new Date(year,month,1);
-  const lastDay=new Date(year,month+1,0);
-  const firstWeekday=firstDay.getDay();
-
-  const nomes=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-  monthLabel.textContent=nomes[month]+" "+year;
-
-  const diasSemana=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-  diasSemana.forEach(w=>{
-    let wd=document.createElement("div");
-    wd.className="weekday";
-    wd.textContent=w;
-    calendar.appendChild(wd);
-  });
-
-  for(let i=0;i<firstWeekday;i++){
-    let empty=document.createElement("div");
-    empty.className="day empty";
-    calendar.appendChild(empty);
+  for (let i = 0; i < primeiro; i++) {
+    const e = document.createElement("div");
+    e.className = "day empty";
+    cal.appendChild(e);
   }
 
-  let eventos=JSON.parse(localStorage.getItem("eventos")||"[]");
+  for (let d = 1; d <= total; d++) {
+    const box = document.createElement("div");
+    box.className = "day";
+    box.innerHTML = `<span>${d}</span>`;
 
-  for(let d=1;d<=lastDay.getDate();d++){
-    let box=document.createElement("div");
-    box.className="day";
-    const dateStr=`${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const evs = eventos.filter(ev =>
+      ev.dia == d && ev.mes == mesAtual && ev.ano == anoAtual
+    );
 
-    box.innerHTML=`<strong>${d}</strong>`;
-
-    let dayEvents=eventos.filter(e=>e.data===dateStr);
-    dayEvents.forEach(ev=>{
-      let pill=document.createElement("div");
-      pill.className="event-pill";
-      if(ev.pago==="sim") pill.classList.add("paid");
-      if(ev.recebido>0&&ev.pago==="nao") pill.classList.add("pending");
-      pill.textContent=ev.empresa;
-      box.appendChild(pill);
+    evs.forEach(ev => {
+      const tag = document.createElement("div");
+      tag.className = "event-pill " + (
+        ev.pago ? "paid" : ev.recebido > 0 ? "partial" : "pending"
+      );
+      tag.innerText = ev.titulo.slice(0, 10);
+      box.appendChild(tag);
     });
 
-    box.addEventListener("click",()=>{
-      document.querySelectorAll(".day.selected").forEach(el=>el.classList.remove("selected"));
-      box.classList.add("selected");
-      eventDate.value=dateStr;
-      eventDate.scrollIntoView({behavior:"smooth"});
-    });
-
-    calendar.appendChild(box);
+    box.onclick = () => abrirModal(d);
+    cal.appendChild(box);
   }
 }
 
-prevMonth.onclick=()=>{ currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); };
-nextMonth.onclick=()=>{ currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(); };
+/* Trocar mês */
+document.getElementById("prevMonth").onclick = () => {
+  mesAtual--;
+  if (mesAtual < 0) { mesAtual = 11; anoAtual--; }
+  renderCompleto();
+};
 
-renderCalendar();
-atualizarDividas();
-atualizarListaEventos();
+document.getElementById("nextMonth").onclick = () => {
+  mesAtual++;
+  if (mesAtual > 11) { mesAtual = 0; anoAtual++; }
+  renderCompleto();
+};
 
-/* PARALLAX COM O TOQUE */
-document.addEventListener("mousemove",e=>{
-  const x=(e.clientX/window.innerWidth - 0.5)*20;
-  const y=(e.clientY/window.innerHeight - 0.5)*20;
-  document.querySelector(".bg-parallax").style.transform=
-    `translate(${x}px,${y}px) scale(1.5)`;
-});
+/* ============================================================
+   MODAL
+============================================================ */
+let diaSelecionado = null;
 
-/* LOADING SCREEN */
-window.addEventListener("load", () => {
-  const loader = document.getElementById("loader");
-  setTimeout(() => {
-    loader.style.display = "none";
-  }, 1800);
-});
+function abrirModal(dia) {
+  diaSelecionado = dia;
+  document.getElementById("modalDiaTitulo").innerText = "Adicionar evento no dia " + dia;
+  document.getElementById("eventoModal").classList.add("aberto");
+}
+
+function fecharModal() {
+  document.getElementById("eventoModal").classList.remove("aberto");
+}
+
+/* ============================================================
+   ADICIONAR EVENTO
+============================================================ */
+function adicionarEvento(dia) {
+  let titulo = tituloEvento.value;
+  let valor = Number(valorEvento.value);
+  let recebido = Number(recebidoEvento.value);
+  let pago = recebido >= valor;
+
+  eventos.push({
+    titulo,
+    valor,
+    recebido,
+    pago,
+    dia,
+    mes: mesAtual,
+    ano: anoAtual
+  });
+
+  salvar();
+  renderCompleto();
+  fecharModal();
+}
+
+/* ============================================================
+   REMOVER EVENTO
+============================================================ */
+function remover(i) {
+  eventos.splice(i, 1);
+  salvar();
+  renderCompleto();
+}
+
+/* ============================================================
+   LISTA DE EVENTOS
+============================================================ */
+function atualizarLista() {
+  const l = document.getElementById("listaEventos");
+  l.innerHTML = "";
+
+  eventos.forEach((ev, i) => {
+    const item = document.createElement("div");
+    item.className = "evento-item";
+
+    item.innerHTML = `
+      <div class="evento-top-info">
+        <strong>${ev.titulo}</strong>
+        <span>${ev.dia}/${ev.mes + 1}/${ev.ano}</span>
+      </div>
+      <p>Valor: R$ ${ev.valor.toFixed(2)}</p>
+      <p>Status: ${ev.pago ? "Pago" : ev.recebido > 0 ? "Recebido parcial" : "Em aberto"}</p>
+
+      <button class="btn-danger" onclick="remover(${i})">
+        Remover
+      </button>
+    `;
+
+    l.appendChild(item);
+  });
+}
+
+/* ============================================================
+   RESUMO FINANCEIRO
+============================================================ */
+function atualizarFinanceiro() {
+  let total = 0;
+  let recebido = 0;
+
+  eventos.forEach(e => {
+    total += e.valor;
+    recebido += e.recebido;
+  });
+
+  document.getElementById("totalMes").innerText = total.toFixed(2);
+  document.getElementById("totalRecebido").innerText = recebido.toFixed(2);
+  document.getElementById("totalFalta").innerText = (total - recebido).toFixed(2);
+}
+
+/* ============================================================
+   GRÁFICO DE PIZZA
+============================================================ */
+let pieChart = null;
+
+function renderPizza() {
+  const ctx = document.getElementById("pieChart");
+
+  if (pieChart) pieChart.destroy();
+
+  let total = eventos.reduce((s, e) => s + e.valor, 0);
+  let recebido = eventos.reduce((s, e) => s + e.recebido, 0);
+  let falta = total - recebido;
+
+  pieChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: ["Recebido", "Falta"],
+      datasets: [{
+        data: [recebido, falta],
+        backgroundColor: ["#4caf50", "#e8a24a"],
+      }]
+    }
+  });
+}
+
+/* ============================================================
+   GRÁFICO DE BARRAS
+============================================================ */
+let barChart = null;
+
+function renderBar() {
+  const ctx = document.getElementById("barChart");
+
+  if (barChart) barChart.destroy();
+
+  const dados = new Array(12).fill(0);
+
+  eventos.forEach(ev => {
+    dados[ev.mes] += ev.recebido;
+  });
+
+  barChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: meses,
+      datasets: [{
+        label: "Recebido",
+        data: dados,
+        backgroundColor: "#c49c57"
+      }]
+    }
+  });
+}
+
+/* ============================================================
+   GERAR PDF
+============================================================ */
+function gerarPDF() {
+  alert("PDF gerado com sucesso! (mock). Versão real pode exportar via html2pdf.js)");
+}
+
+/* ============================================================
+   RENDER COMPLETO
+============================================================ */
+function renderCompleto() {
+  renderCalendario();
+  atualizarLista();
+  atualizarFinanceiro();
+  renderPizza();
+  renderBar();
+}
+
+/* Inicialização */
+renderCompleto();
+
+/* PWA */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+
 </script>
 
 </body>
