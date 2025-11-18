@@ -16,485 +16,298 @@
   font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif
 }
 body{
-  background:#0f172a;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#1d4ed8 0,#020617 45%,#020617 100%);
   padding:16px;
-  color:#111
+  color:#111;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
 }
 .app{
+  width:100%;
   max-width:1100px;
-  margin:auto;
-  background:#fff;
+  background:linear-gradient(135deg,#0f172a,#020617);
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 24px 60px rgba(15,23,42,.9);
+  color:#e5e7eb;
+  border:1px solid rgba(148,163,184,.35);
+}
+.app-inner{
+  background:#020617dd;
   border-radius:18px;
-  padding:20px;
-  box-shadow:0 20px 40px rgba(0,0,0,.25)
+  padding:18px;
+}
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.logo-circle{
+  width:40px;
+  height:40px;
+  border-radius:16px;
+  background:radial-gradient(circle at 30% 20%,#e5e7eb,#818cf8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#020617;
+  font-weight:800;
+  font-size:1.1rem;
+  box-shadow:0 10px 25px rgba(129,140,248,.7);
 }
 h1{
-  font-size:1.8rem;
-  margin-bottom:4px
+  font-size:1.4rem;
+  margin-bottom:2px;
 }
 p.sub{
-  color:#6b7280;
-  margin-bottom:14px;
-  font-size:.9rem
+  color:#9ca3af;
+  font-size:.8rem;
+}
+.badge{
+  font-size:.7rem;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid #4f46e5;
+  background:radial-gradient(circle at top,#4f46e5,#1e293b);
+  color:#e5e7eb;
 }
 .tabs{
   display:flex;
   gap:6px;
-  border-bottom:1px solid #e5e7eb;
-  margin-bottom:16px
+  border-bottom:1px solid #111827;
+  margin-bottom:16px;
+  margin-top:10px;
 }
 .tab{
   padding:8px 14px;
   border-radius:10px 10px 0 0;
-  background:#f1f5f9;
-  font-size:.85rem;
-  color:#475569;
-  cursor:pointer
+  background:#020617;
+  font-size:.8rem;
+  color:#9ca3af;
+  cursor:pointer;
+  border:1px solid transparent;
 }
 .tab.active{
-  background:#fff;
+  background:#020617;
   font-weight:600;
-  border:1px solid #e2e8f0;
-  border-bottom-color:#fff
+  border:1px solid #1e293b;
+  border-bottom-color:#020617;
+  color:#e5e7eb;
 }
 .hidden{display:none}
 .card{
-  background:#f8fafc;
-  border:1px solid #e2e8f0;
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:14px
+  background:linear-gradient(135deg,#020617,#020617);
+  border:1px solid #111827;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
+  box-shadow:0 10px 30px rgba(15,23,42,.8);
+}
+.card h3{
+  font-size:.9rem;
+  margin-bottom:6px;
+  color:#e5e7eb;
+}
+label{
+  font-size:.8rem;
+  color:#9ca3af;
 }
 input,button{
-  border-radius:8px;
-  border:1px solid #cbd5e1;
-  padding:8px;
-  font-size:.9rem;
-  width:100%
+  border-radius:9px;
+  border:1px solid #1f2937;
+  padding:8px 9px;
+  font-size:.85rem;
+  width:100%;
+  background:#020617;
+  color:#e5e7eb;
+}
+input::placeholder{
+  color:#6b7280;
 }
 button{
-  background:#1e3a8a;
-  color:#fff;
+  background:linear-gradient(135deg,#4f46e5,#2563eb);
+  color:#e5e7eb;
   border:none;
   font-weight:600;
   cursor:pointer;
-  margin-top:8px
+  margin-top:8px;
+  box-shadow:0 10px 30px rgba(37,99,235,.7);
 }
 button:hover{
-  background:#1d4ed8
+  filter:brightness(1.07);
 }
+button.danger{
+  background:linear-gradient(135deg,#dc2626,#b91c1c);
+  box-shadow:0 10px 30px rgba(220,38,38,.6);
+}
+.summary-line{
+  font-size:.8rem;
+  margin-bottom:2px;
+}
+.summary-label{
+  color:#9ca3af;
+}
+.summary-value{
+  font-weight:600;
+}
+.summary-value.positive{color:#22c55e;}
+.summary-value.negative{color:#f97316;}
+.summary-value.alert{color:#f97373;}
 table{
   width:100%;
   border-collapse:collapse;
   margin-top:8px;
-  font-size:.8rem
+  font-size:.78rem;
 }
 th,td{
   text-align:left;
-  border-bottom:1px solid #e2e8f0;
-  padding:6px
+  border-bottom:1px solid #111827;
+  padding:6px 4px;
 }
 th{
   text-transform:uppercase;
   font-size:.7rem;
-  color:#64748b
+  color:#6b7280;
 }
 .calendar{
   display:grid;
   grid-template-columns:repeat(7,1fr);
   gap:4px;
   margin-top:8px;
-  font-size:.75rem
+  font-size:.75rem;
 }
 .weekday{
   text-align:center;
   font-weight:600;
   font-size:.7rem;
-  color:#64748b;
-  padding:2px 0
+  color:#6b7280;
+  padding:2px 0;
 }
 .day{
-  border:1px solid #e2e8f0;
-  border-radius:8px;
-  min-height:70px;
+  border:1px solid #111827;
+  border-radius:10px;
+  min-height:74px;
   padding:4px;
   cursor:pointer;
-  background:#fff
+  background:radial-gradient(circle at top left,#0b1120,#020617);
+  transition:all .15s ease-out;
 }
 .day:hover{
-  border-color:#94a3b8;
-  box-shadow:0 5px 12px rgba(0,0,0,.1)
+  border-color:#4f46e5;
+  box-shadow:0 10px 26px rgba(79,70,229,.75);
+  transform:translateY(-1px);
 }
 .day.selected{
-  background:#eef2ff;
-  border-color:#6366f1
+  background:radial-gradient(circle at top left,#4f46e5,#020617);
+  border-color:#6366f1;
 }
 .day.empty{
   border:none;
   background:transparent;
   box-shadow:none;
-  cursor:default
+  cursor:default;
+}
+.day strong{
+  font-size:.8rem;
+  color:#e5e7eb;
 }
 .event-pill{
-  background:#e0e7ff;
-  border-radius:6px;
+  background:rgba(129,140,248,.17);
+  border-radius:8px;
   padding:2px 4px;
   margin-top:3px;
   font-size:.65rem;
   font-weight:600;
-  color:#3730a3
+  color:#c7d2fe;
+  border:1px solid rgba(129,140,248,.4);
 }
 .event-pill.paid{
-  background:#dcfce7;
-  color:#166534
+  background:rgba(34,197,94,.16);
+  color:#bbf7d0;
+  border-color:rgba(34,197,94,.6);
 }
 .event-pill.pending{
-  background:#fef9c3;
-  color:#854d0e
+  background:rgba(250,204,21,.12);
+  color:#facc15;
+  border-color:rgba(250,204,21,.5);
+}
+.info-small{
+  font-size:.7rem;
+  color:#6b7280;
+  margin-top:4px;
 }
 </style>
 </head>
-  <body>
+<body>
 <div class="app">
-  <h1>Painel Financeiro & Fotográfico</h1>
-  <p class="sub">Organize suas dívidas e eventos de fotografia com estilo e clareza.</p>
-
-  <div class="tabs">
-    <div id="tab1" class="tab active">Dívidas</div>
-    <div id="tab2" class="tab">Eventos</div>
-  </div>
-
-  <!-- Dívidas -->
-  <div id="debts">
-    <div class="card">
-      <label>Mês:
-        <input type="month" id="debts-month">
-      </label>
-    </div>
-    <div class="card" id="debts-summary"></div>
-
-    <div class="card">
-      <h3>Adicionar dívida</h3>
-      <input id="d-name" placeholder="Nome (ex: Cartão Nubank)">
-      <input id="d-desc" placeholder="Descrição (ex: Fatura dezembro)">
-      <input id="d-value" placeholder="Valor (ex: 450,00)">
-      <button id="add-debt">Adicionar</button>
+  <div class="app-inner">
+    <div class="header">
+      <div class="brand">
+        <div class="logo-circle">P</div>
+        <div>
+          <h1>Painel Financeiro & Fotográfico</h1>
+          <p class="sub">Fluxo de dívidas e corridas em um só lugar.</p>
+        </div>
+      </div>
+      <div class="badge">Versão web · uso pessoal</div>
     </div>
 
-    <div class="card" id="debts-table"></div>
-  </div>
-
-  <!-- Eventos -->
-  <div id="events" class="hidden">
-    <div class="card">
-      <label>Mês:
-        <input type="month" id="events-month">
-      </label>
+    <div class="tabs">
+      <div id="tab1" class="tab active">Dívidas</div>
+      <div id="tab2" class="tab">Eventos</div>
     </div>
 
-    <div class="card" id="events-summary"></div>
+    <!-- Dívidas -->
+    <div id="debts">
+      <div class="card">
+        <label>Mês:
+          <input type="month" id="debts-month">
+        </label>
+      </div>
+      <div class="card" id="debts-summary"></div>
 
-    <div class="card">
-      <h3>Calendário</h3>
-      <div id="calendar"></div>
+      <div class="card">
+        <h3>Adicionar dívida</h3>
+        <input id="d-name" placeholder="Nome (ex: Cartão Nubank)">
+        <input id="d-desc" placeholder="Descrição (ex: Fatura dezembro)">
+        <input id="d-value" placeholder="Valor (ex: 450,00)">
+        <button id="add-debt">Adicionar</button>
+        <p class="info-small">Dica: use este bloco para organizar fixas + extras de cada mês.</p>
+      </div>
+
+      <div class="card" id="debts-table"></div>
     </div>
 
-    <div class="card" id="events-day"></div>
+    <!-- Eventos -->
+    <div id="events" class="hidden">
+      <div class="card">
+        <label>Mês:
+          <input type="month" id="events-month">
+        </label>
+      </div>
+
+      <div class="card" id="events-summary"></div>
+
+      <div class="card">
+        <h3>Calendário</h3>
+        <div id="calendar"></div>
+        <p class="info-small">Toque em um dia para ver/registrar eventos, recebidos parciais e pendentes.</p>
+      </div>
+
+      <div class="card" id="events-day"></div>
+    </div>
   </div>
 </div>
-    <script>
-// storage
-const load = (k,f)=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f));
-const save = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
-let debts = load("debts",{});
-let events = load("events",{});
-let selectedDate = null;
-
-const uid=()=>Math.random().toString(36).slice(2,9);
-const money=v=>"R$ "+v.toFixed(2).replace(".",",");
-
-// mês atual
-const now=new Date();
-const monthKey=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
-document.getElementById("debts-month").value=monthKey;
-document.getElementById("events-month").value=monthKey;
-
-// dívidas
-function renderDebts(){
-  const m=document.getElementById("debts-month").value;
-  if(!debts[m])debts[m]=[];
-  const list=debts[m];
-
-  let total=0,paid=0;
-  list.forEach(d=>{total+=d.value;if(d.paid)paid+=d.value});
-  const open=total-paid;
-
-  document.getElementById("debts-summary").innerHTML=`
-    <strong>Total:</strong> ${money(total)}<br>
-    <strong>Pago:</strong> <span style="color:#16a34a">${money(paid)}</span><br>
-    <strong>Em aberto:</strong> <span style="color:#dc2626">${money(open)}</span>
-  `;
-
-  if(list.length===0){
-    document.getElementById("debts-table").innerHTML="<p>Nenhuma dívida neste mês.</p>";
-    return;
-  }
-
-  let rows=list.map(d=>`
-    <tr>
-      <td><input data-id="${d.id}" class="toggle" type="checkbox" ${d.paid?"checked":""}></td>
-      <td>${d.name}</td>
-      <td>${d.description}</td>
-      <td>${money(d.value)}</td>
-      <td><button data-id="${d.id}" class="remove">X</button></td>
-    </tr>`).join("");
-
-  document.getElementById("debts-table").innerHTML=`
-    <table>
-      <tr><th>Pago</th><th>Nome</th><th>Desc</th><th>Valor</th><th></th></tr>
-      ${rows}
-    </table>
-  `;
-
-  document.querySelectorAll(".toggle").forEach(c=>{
-    c.onclick=()=>{
-      let item=list.find(x=>x.id===c.dataset.id);
-      item.paid=!item.paid;
-      save("debts",debts);
-      renderDebts();
-    };
-  });
-
-  document.querySelectorAll(".remove").forEach(c=>{
-    c.onclick=()=>{
-      debts[m]=list.filter(x=>x.id!==c.dataset.id);
-      save("debts",debts);
-      renderDebts();
-    };
-  });
-}
-
-document.getElementById("debts-month").onchange=renderDebts;
-
-document.getElementById("add-debt").onclick=()=>{
-  const m=document.getElementById("debts-month").value;
-  if(!debts[m])debts[m]=[];
-  let name=document.getElementById("d-name").value.trim();
-  let desc=document.getElementById("d-desc").value.trim();
-  let val=parseFloat(document.getElementById("d-value").value.replace(",","."));
-  if(!name||isNaN(val)){alert("Preencha corretamente.");return}
-  debts[m].push({id:uid(),name,description:desc,value:val,paid:false});
-  save("debts",debts);
-  renderDebts();
-};
-
-// eventos
-function daysInMonth(m){
-  let [y,mo]=m.split("-").map(Number);
-  let d=new Date(y,mo-1,1),arr=[];
-  while(d.getMonth()==mo-1){
-    arr.push(new Date(d));
-    d.setDate(d.getDate()+1);
-  }
-  return arr;
-}
-
-function renderCalendar(){
-  const m=document.getElementById("events-month").value;
-  if(!events[m])events[m]=[];
-  const ev=events[m];
-  const days=daysInMonth(m);
-
-  let html='<div class="calendar">';
-
-  ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].forEach(w=>{
-    html+=`<div class="weekday">${w}</div>`;
-  });
-
-  if(days.length){
-    const firstDow=days[0].getDay();
-    for(let i=0;i<firstDow;i++){
-      html+='<div class="day empty"></div>';
-    }
-  }
-
-  days.forEach(d=>{
-    let iso=d.toISOString().slice(0,10);
-    let dayEv=events[m].filter(e=>e.date===iso);
-
-    html+=`
-    <div class="day ${selectedDate===iso?"selected":""}" data-date="${iso}">
-      <strong>${d.getDate()}</strong>
-      ${dayEv.slice(0,2).map(e=>`
-        <div class="event-pill ${e.paid?"paid":"pending"}">
-          ${e.company}: ${money(e.value)}
-        </div>`).join("")}
-      ${dayEv.length>2?`<div>+${dayEv.length-2}</div>`:""}
-    </div>`;
-  });
-
-  html+="</div>";
-  document.getElementById("calendar").innerHTML=html;
-
-  document.querySelectorAll(".day").forEach(d=>{
-    if(d.classList.contains("empty")) return;
-    d.onclick=()=>{
-      selectedDate=d.dataset.date;
-      renderEvents();
-    };
-  });
-}
-
-function renderEventSummary(){
-  const m=document.getElementById("events-month").value;
-  if(!events[m])events[m]=[];
-  const ev=events[m];
-
-  let total = ev.reduce((a,b)=>a+b.value,0);
-  let parcial = ev.reduce((a,b)=>a+(b.parcial||0),0);
-  let paid = ev.filter(x=>x.paid).reduce((a,b)=>a+b.value,0);
-
-  let recebido = paid + parcial;
-  let pendente = total - recebido;
-
-  document.getElementById("events-summary").innerHTML=`
-    <strong>Eventos:</strong> ${ev.length}<br>
-    <strong>Total:</strong> ${money(total)}<br>
-    <strong>Recebido parcial:</strong> ${money(parcial)}<br>
-    <strong>Recebido total:</strong> <span style="color:#16a34a">${money(recebido)}</span><br>
-    <strong>Pendente:</strong> <span style="color:#dc2626">${money(pendente)}</span>
-  `;
-}
-
-function renderDay(){
-  if(!selectedDate){
-    document.getElementById("events-day").innerHTML="<p>Selecione um dia.</p>";
-    return;
-  }
-  const m=document.getElementById("events-month").value;
-  const ev=events[m].filter(e=>e.date===selectedDate);
-
-  let html=`<h3>Dia ${selectedDate}</h3>`;
-
-  ev.forEach(e=>{
-    let parcial = e.parcial || 0;
-    let rest = e.value - parcial;
-
-    html+=`
-    <div class="card">
-      <strong>${e.company}</strong><br>
-      ${e.description}<br>
-      Valor total: ${money(e.value)}<br>
-      Recebido parcial: ${money(parcial)}<br>
-      Falta: ${money(rest)}<br>
-
-      Status: ${e.paid?"Pago":"Pendente"}<br>
-
-      <button class="toggle-event" data-id="${e.id}">
-        ${e.paid?"Marcar pendente":"Marcar pago"}
-      </button>
-
-      <button class="remove-event" data-id="${e.id}" style="background:#dc2626;margin-top:4px;">Remover</button>
-    </div>`;
-  });
-
-  html+=`
-  <div class="card">
-    <h3>Novo evento</h3>
-    <input id="e-company" placeholder="Empresa/cliente">
-    <input id="e-desc" placeholder="Descrição">
-    <input id="e-value" placeholder="Valor total (ex: 400,00)">
-    <input id="e-parcial" placeholder="Recebido parcial (opcional)">
-    <button id="add-event">Adicionar</button>
-  </div>
-  `;
-
-  document.getElementById("events-day").innerHTML=html;
-
-  // botões
-  document.querySelectorAll(".toggle-event").forEach(b=>{
-    b.onclick=()=>{
-      let item=events[m].find(x=>x.id===b.dataset.id);
-      item.paid=!item.paid;
-      save("events",events);
-      renderEvents();
-    };
-  });
-
-  document.querySelectorAll(".remove-event").forEach(b=>{
-    b.onclick=()=>{
-      events[m]=events[m].filter(x=>x.id!==b.dataset.id);
-      save("events",events);
-      renderEvents();
-    };
-  });
-
-  document.getElementById("add-event").onclick=()=>{
-    const m=document.getElementById("events-month").value;
-    let c=document.getElementById("e-company").value.trim();
-    let d=document.getElementById("e-desc").value.trim();
-    let v=parseFloat(document.getElementById("e-value").value.replace(",","."));
-    let p=parseFloat(document.getElementById("e-parcial").value.replace(",","."));
-
-    if(!c||isNaN(v)){alert("Preencha corretamente.");return}
-
-    let parcial = isNaN(p)? 0 : p;
-
-    events[m].push({
-      id:uid(),
-      date:selectedDate,
-      company:c,
-      description:d,
-      value:v,
-      parcial: parcial,
-      paid:false
-    });
-
-    save("events",events);
-    renderEvents();
-  };
-}
-
-function renderEvents(){
-  renderEventSummary();
-  renderCalendar();
-  renderDay();
-}
-
-document.getElementById("events-month").onchange=()=>{
-  selectedDate=null;
-  renderEvents();
-};
-
-// tabs
-document.getElementById("tab1").onclick=()=>{
-  document.getElementById("debts").classList.remove("hidden");
-  document.getElementById("events").classList.add("hidden");
-  document.getElementById("tab1").classList.add("active");
-  document.getElementById("tab2").classList.remove("active");
-};
-
-document.getElementById("tab2").onclick=()=>{
-  document.getElementById("events").classList.remove("hidden");
-  document.getElementById("debts").classList.add("hidden");
-  document.getElementById("tab2").classList.add("active");
-  document.getElementById("tab1").classList.remove("active");
-};
-
-// init
-renderDebts();
-renderEvents();
-
-// pwa
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").catch((err) => {
-    console.log("SW erro:", err);
-  });
-}
-</script>
-</body>
-</html>
 <script>
 // storage
 const load = (k,f)=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f));
@@ -524,13 +337,22 @@ function renderDebts(){
   const open=total-paid;
 
   document.getElementById("debts-summary").innerHTML=`
-    <strong>Total:</strong> ${money(total)}<br>
-    <strong>Pago:</strong> <span style="color:#16a34a">${money(paid)}</span><br>
-    <strong>Em aberto:</strong> <span style="color:#dc2626">${money(open)}</span>
+    <div class="summary-line">
+      <span class="summary-label">Total:</span>
+      <span class="summary-value">${money(total)}</span>
+    </div>
+    <div class="summary-line">
+      <span class="summary-label">Pago:</span>
+      <span class="summary-value positive">${money(paid)}</span>
+    </div>
+    <div class="summary-line">
+      <span class="summary-label">Em aberto:</span>
+      <span class="summary-value negative">${money(open)}</span>
+    </div>
   `;
 
   if(list.length===0){
-    document.getElementById("debts-table").innerHTML="<p>Nenhuma dívida neste mês.</p>";
+    document.getElementById("debts-table").innerHTML="<p style='font-size:.8rem;color:#9ca3af;'>Nenhuma dívida cadastrada neste mês.</p>";
     return;
   }
 
@@ -540,7 +362,7 @@ function renderDebts(){
       <td>${d.name}</td>
       <td>${d.description}</td>
       <td>${money(d.value)}</td>
-      <td><button data-id="${d.id}" class="remove">X</button></td>
+      <td><button data-id="${d.id}" class="remove danger">X</button></td>
     </tr>`).join("");
 
   document.getElementById("debts-table").innerHTML=`
@@ -576,7 +398,7 @@ document.getElementById("add-debt").onclick=()=>{
   let name=document.getElementById("d-name").value.trim();
   let desc=document.getElementById("d-desc").value.trim();
   let val=parseFloat(document.getElementById("d-value").value.replace(",","."));
-  if(!name||isNaN(val)){alert("Preencha corretamente.");return}
+  if(!name||isNaN(val)){alert("Preencha nome e valor corretamente.");return}
   debts[m].push({id:uid(),name,description:desc,value:val,paid:false});
   save("debts",debts);
   renderDebts();
@@ -614,16 +436,20 @@ function renderCalendar(){
 
   days.forEach(d=>{
     let iso=d.toISOString().slice(0,10);
-    let dayEv=events[m].filter(e=>e.date===iso);
+    let dayEv=ev.filter(e=>e.date===iso);
 
     html+=`
     <div class="day ${selectedDate===iso?"selected":""}" data-date="${iso}">
       <strong>${d.getDate()}</strong>
-      ${dayEv.slice(0,2).map(e=>`
+      ${dayEv.slice(0,2).map(e=>{
+        let parcial = e.parcial || 0;
+        let label = e.paid ? "Pago" : (parcial>0 ? "Parcial" : "Pendente");
+        return `
         <div class="event-pill ${e.paid?"paid":"pending"}">
-          ${e.company}: ${money(e.value)}
-        </div>`).join("")}
-      ${dayEv.length>2?`<div>+${dayEv.length-2}</div>`:""}
+          ${e.company}: ${money(e.value)} · ${label}
+        </div>`;
+      }).join("")}
+      ${dayEv.length>2?`<div class="info-small">+${dayEv.length-2} eventos</div>`:""}
     </div>`;
   });
 
@@ -652,17 +478,32 @@ function renderEventSummary(){
   let pendente = total - recebido;
 
   document.getElementById("events-summary").innerHTML=`
-    <strong>Eventos:</strong> ${ev.length}<br>
-    <strong>Total:</strong> ${money(total)}<br>
-    <strong>Recebido parcial:</strong> ${money(parcial)}<br>
-    <strong>Recebido total:</strong> <span style="color:#16a34a">${money(recebido)}</span><br>
-    <strong>Pendente:</strong> <span style="color:#dc2626">${money(pendente)}</span>
+    <div class="summary-line">
+      <span class="summary-label">Eventos:</span>
+      <span class="summary-value">${ev.length}</span>
+    </div>
+    <div class="summary-line">
+      <span class="summary-label">Total:</span>
+      <span class="summary-value">${money(total)}</span>
+    </div>
+    <div class="summary-line">
+      <span class="summary-label">Recebido parcial:</span>
+      <span class="summary-value">${money(parcial)}</span>
+    </div>
+    <div class="summary-line">
+      <span class="summary-label">Recebido total:</span>
+      <span class="summary-value positive">${money(recebido)}</span>
+    </div>
+    <div class="summary-line">
+      <span class="summary-label">Pendente:</span>
+      <span class="summary-value alert">${money(pendente)}</span>
+    </div>
   `;
 }
 
 function renderDay(){
   if(!selectedDate){
-    document.getElementById("events-day").innerHTML="<p>Selecione um dia.</p>";
+    document.getElementById("events-day").innerHTML="<p style='font-size:.8rem;color:#9ca3af;'>Selecione um dia no calendário para ver ou lançar eventos.</p>";
     return;
   }
   const m=document.getElementById("events-month").value;
@@ -673,33 +514,34 @@ function renderDay(){
   ev.forEach(e=>{
     let parcial = e.parcial || 0;
     let rest = e.value - parcial;
+    if(rest < 0) rest = 0;
 
     html+=`
-    <div class="card">
+    <div class="card" style="margin-bottom:10px;">
       <strong>${e.company}</strong><br>
-      ${e.description}<br>
-      Valor total: ${money(e.value)}<br>
-      Recebido parcial: ${money(parcial)}<br>
-      Falta: ${money(rest)}<br>
-
-      Status: ${e.paid?"Pago":"Pendente"}<br>
+      <span style="font-size:.8rem;color:#9ca3af;">${e.description || ""}</span><br><br>
+      <span class="summary-label">Valor total:</span> ${money(e.value)}<br>
+      <span class="summary-label">Recebido parcial:</span> ${money(parcial)}<br>
+      <span class="summary-label">Falta:</span> ${money(rest)}<br><br>
+      <span class="summary-label">Status:</span> ${e.paid?"<span class='summary-value positive'>Pago</span>":"<span class='summary-value alert'>Pendente</span>"}<br><br>
 
       <button class="toggle-event" data-id="${e.id}">
         ${e.paid?"Marcar pendente":"Marcar pago"}
       </button>
 
-      <button class="remove-event" data-id="${e.id}" style="background:#dc2626;margin-top:4px;">Remover</button>
+      <button class="remove-event danger" data-id="${e.id}" style="margin-top:6px;">Remover</button>
     </div>`;
   });
 
   html+=`
-  <div class="card">
+  <div class="card" style="margin-top:10px;">
     <h3>Novo evento</h3>
     <input id="e-company" placeholder="Empresa/cliente">
-    <input id="e-desc" placeholder="Descrição">
+    <input id="e-desc" placeholder="Descrição do evento (ex: corrida, ensaio, formatura)">
     <input id="e-value" placeholder="Valor total (ex: 400,00)">
     <input id="e-parcial" placeholder="Recebido parcial (opcional)">
     <button id="add-event">Adicionar</button>
+    <p class="info-small">Use "Recebido parcial" quando sacar apenas uma parte da corrida/ensaio.</p>
   </div>
   `;
 
@@ -708,6 +550,7 @@ function renderDay(){
   // botões
   document.querySelectorAll(".toggle-event").forEach(b=>{
     b.onclick=()=>{
+      const m=document.getElementById("events-month").value;
       let item=events[m].find(x=>x.id===b.dataset.id);
       item.paid=!item.paid;
       save("events",events);
@@ -717,6 +560,7 @@ function renderDay(){
 
   document.querySelectorAll(".remove-event").forEach(b=>{
     b.onclick=()=>{
+      const m=document.getElementById("events-month").value;
       events[m]=events[m].filter(x=>x.id!==b.dataset.id);
       save("events",events);
       renderEvents();
@@ -730,10 +574,13 @@ function renderDay(){
     let v=parseFloat(document.getElementById("e-value").value.replace(",","."));
     let p=parseFloat(document.getElementById("e-parcial").value.replace(",","."));
 
-    if(!c||isNaN(v)){alert("Preencha corretamente.");return}
+    if(!c||isNaN(v)){alert("Preencha pelo menos empresa e valor total.");return}
 
     let parcial = isNaN(p)? 0 : p;
+    if(parcial < 0) parcial = 0;
+    if(parcial > v) parcial = v;
 
+    if(!events[m])events[m]=[];
     events[m].push({
       id:uid(),
       date:selectedDate,
