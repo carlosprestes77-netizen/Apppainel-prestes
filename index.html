@@ -1,315 +1,291 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="theme-color" content="#0f172a" />
-<link rel="manifest" href="manifest.webmanifest" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>Painel Financeiro & Fotográfico</title>
 
-<title>Painel Financeiro & Fotográfico</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif
-}
-body{
-  min-height:100vh;
-  background:radial-gradient(circle at top,#1d4ed8 0,#020617 45%,#020617 100%);
-  padding:16px;
-  color:#111;
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-}
-.app{
-  width:100%;
-  max-width:1100px;
-  background:linear-gradient(135deg,#0f172a,#020617);
-  border-radius:22px;
-  padding:18px;
-  box-shadow:0 24px 60px rgba(15,23,42,.9);
-  color:#e5e7eb;
-  border:1px solid rgba(148,163,184,.35);
-}
-.app-inner{
-  background:#020617dd;
-  border-radius:18px;
-  padding:18px;
-}
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:12px;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.logo-circle{
-  width:40px;
-  height:40px;
-  border-radius:16px;
-  background:radial-gradient(circle at 30% 20%,#e5e7eb,#818cf8);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#020617;
-  font-weight:800;
-  font-size:1.1rem;
-  box-shadow:0 10px 25px rgba(129,140,248,.7);
-}
-h1{
-  font-size:1.4rem;
-  margin-bottom:2px;
-}
-p.sub{
-  color:#9ca3af;
-  font-size:.8rem;
-}
-.badge{
-  font-size:.7rem;
-  padding:4px 10px;
-  border-radius:999px;
-  border:1px solid #4f46e5;
-  background:radial-gradient(circle at top,#4f46e5,#1e293b);
-  color:#e5e7eb;
-}
-.tabs{
-  display:flex;
-  gap:6px;
-  border-bottom:1px solid #111827;
-  margin-bottom:16px;
-  margin-top:10px;
-}
-.tab{
-  padding:8px 14px;
-  border-radius:10px 10px 0 0;
-  background:#020617;
-  font-size:.8rem;
-  color:#9ca3af;
-  cursor:pointer;
-  border:1px solid transparent;
-}
-.tab.active{
-  background:#020617;
-  font-weight:600;
-  border:1px solid #1e293b;
-  border-bottom-color:#020617;
-  color:#e5e7eb;
-}
-.hidden{display:none}
-.card{
-  background:linear-gradient(135deg,#020617,#020617);
-  border:1px solid #111827;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:12px;
-  box-shadow:0 10px 30px rgba(15,23,42,.8);
-}
-.card h3{
-  font-size:.9rem;
-  margin-bottom:6px;
-  color:#e5e7eb;
-}
-label{
-  font-size:.8rem;
-  color:#9ca3af;
-}
-input,button{
-  border-radius:9px;
-  border:1px solid #1f2937;
-  padding:8px 9px;
-  font-size:.85rem;
-  width:100%;
-  background:#020617;
-  color:#e5e7eb;
-}
-input::placeholder{
-  color:#6b7280;
-}
-button{
-  background:linear-gradient(135deg,#4f46e5,#2563eb);
-  color:#e5e7eb;
-  border:none;
-  font-weight:600;
-  cursor:pointer;
-  margin-top:8px;
-  box-shadow:0 10px 30px rgba(37,99,235,.7);
-}
-button:hover{
-  filter:brightness(1.07);
-}
-button.danger{
-  background:linear-gradient(135deg,#dc2626,#b91c1c);
-  box-shadow:0 10px 30px rgba(220,38,38,.6);
-}
-.summary-line{
-  font-size:.8rem;
-  margin-bottom:2px;
-}
-.summary-label{
-  color:#9ca3af;
-}
-.summary-value{
-  font-weight:600;
-}
-.summary-value.positive{color:#22c55e;}
-.summary-value.negative{color:#f97316;}
-.summary-value.alert{color:#f97373;}
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:8px;
-  font-size:.78rem;
-}
-th,td{
-  text-align:left;
-  border-bottom:1px solid #111827;
-  padding:6px 4px;
-}
-th{
-  text-transform:uppercase;
-  font-size:.7rem;
-  color:#6b7280;
-}
-.calendar{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:4px;
-  margin-top:8px;
-  font-size:.75rem;
-}
-.weekday{
-  text-align:center;
-  font-weight:600;
-  font-size:.7rem;
-  color:#6b7280;
-  padding:2px 0;
-}
-.day{
-  border:1px solid #111827;
-  border-radius:10px;
-  min-height:74px;
-  padding:4px;
-  cursor:pointer;
-  background:radial-gradient(circle at top left,#0b1120,#020617);
-  transition:all .15s ease-out;
-}
-.day:hover{
-  border-color:#4f46e5;
-  box-shadow:0 10px 26px rgba(79,70,229,.75);
-  transform:translateY(-1px);
-}
-.day.selected{
-  background:radial-gradient(circle at top left,#4f46e5,#020617);
-  border-color:#6366f1;
-}
-.day.empty{
-  border:none;
-  background:transparent;
-  box-shadow:none;
-  cursor:default;
-}
-.day strong{
-  font-size:.8rem;
-  color:#e5e7eb;
-}
-.event-pill{
-  background:rgba(129,140,248,.17);
-  border-radius:8px;
-  padding:2px 4px;
-  margin-top:3px;
-  font-size:.65rem;
-  font-weight:600;
-  color:#c7d2fe;
-  border:1px solid rgba(129,140,248,.4);
-}
-.event-pill.paid{
-  background:rgba(34,197,94,.16);
-  color:#bbf7d0;
-  border-color:rgba(34,197,94,.6);
-}
-.event-pill.pending{
-  background:rgba(250,204,21,.12);
-  color:#facc15;
-  border-color:rgba(250,204,21,.5);
-}
-.info-small{
-  font-size:.7rem;
-  color:#6b7280;
-  margin-top:4px;
-}
-</style>
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif
+    }
+    body{
+      min-height:100vh;
+      background:radial-gradient(circle at top,#1d4ed8 0,#020617 45%,#020617 100%);
+      padding:16px;
+      color:#e5e7eb;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+    }
+    .app{
+      width:100%;
+      max-width:1100px;
+      background:linear-gradient(135deg,#0f172a,#020617);
+      border-radius:22px;
+      padding:18px;
+      box-shadow:0 24px 60px rgba(15,23,42,.9);
+      border:1px solid rgba(148,163,184,.35);
+    }
+    .app-inner{
+      background:#020617dd;
+      border-radius:18px;
+      padding:18px;
+    }
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .logo-circle{
+      width:40px;
+      height:40px;
+      border-radius:16px;
+      background:radial-gradient(circle at 30% 20%,#e5e7eb,#818cf8);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#020617;
+      font-weight:800;
+      font-size:1.1rem;
+      box-shadow:0 10px 25px rgba(129,140,248,.7);
+    }
+    h1{font-size:1.4rem;margin-bottom:2px;}
+    p.sub{color:#9ca3af;font-size:.8rem;}
+    .badge{
+      font-size:.7rem;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid #4f46e5;
+      background:radial-gradient(circle at top,#4f46e5,#1e293b);
+    }
+    .tabs{
+      display:flex;
+      gap:6px;
+      border-bottom:1px solid #111827;
+      margin-bottom:16px;
+      margin-top:10px;
+    }
+    .tab{
+      padding:8px 14px;
+      border-radius:10px 10px 0 0;
+      background:#020617;
+      font-size:.8rem;
+      color:#9ca3af;
+      cursor:pointer;
+      border:1px solid transparent;
+    }
+    .tab.active{
+      background:#020617;
+      font-weight:600;
+      border:1px solid #1e293b;
+      border-bottom-color:#020617;
+      color:#e5e7eb;
+    }
+    .hidden{display:none}
+    .card{
+      background:#020617;
+      border:1px solid #111827;
+      border-radius:14px;
+      padding:12px;
+      margin-bottom:12px;
+      box-shadow:0 10px 30px rgba(15,23,42,.8);
+    }
+    .card h3{
+      font-size:.9rem;
+      margin-bottom:6px;
+      color:#e5e7eb;
+    }
+    label{font-size:.8rem;color:#9ca3af;}
+    input,button{
+      border-radius:9px;
+      border:1px solid #1f2937;
+      padding:8px 9px;
+      font-size:.85rem;
+      width:100%;
+      background:#020617;
+      color:#e5e7eb;
+    }
+    input::placeholder{color:#6b7280;}
+    button{
+      background:linear-gradient(135deg,#4f46e5,#2563eb);
+      border:none;
+      font-weight:600;
+      cursor:pointer;
+      margin-top:8px;
+      box-shadow:0 10px 30px rgba(37,99,235,.7);
+    }
+    button:hover{filter:brightness(1.07);}
+    button.danger{
+      background:linear-gradient(135deg,#dc2626,#b91c1c);
+      box-shadow:0 10px 30px rgba(220,38,38,.6);
+    }
+    .summary-line{font-size:.8rem;margin-bottom:2px;}
+    .summary-label{color:#9ca3af;}
+    .summary-value{font-weight:600;}
+    .summary-value.positive{color:#22c55e;}
+    .summary-value.negative{color:#f97316;}
+    .summary-value.alert{color:#f97373;}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:.78rem;
+    }
+    th,td{
+      text-align:left;
+      border-bottom:1px solid #111827;
+      padding:6px 4px;
+    }
+    th{
+      text-transform:uppercase;
+      font-size:.7rem;
+      color:#6b7280;
+    }
+    .calendar{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:4px;
+      margin-top:8px;
+      font-size:.75rem;
+    }
+    .weekday{
+      text-align:center;
+      font-weight:600;
+      font-size:.7rem;
+      color:#6b7280;
+      padding:2px 0;
+    }
+    .day{
+      border:1px solid #111827;
+      border-radius:10px;
+      min-height:74px;
+      padding:4px;
+      cursor:pointer;
+      background:radial-gradient(circle at top left,#0b1120,#020617);
+      transition:all .15s ease-out;
+    }
+    .day:hover{
+      border-color:#4f46e5;
+      box-shadow:0 10px 26px rgba(79,70,229,.75);
+      transform:translateY(-1px);
+    }
+    .day.selected{
+      background:radial-gradient(circle at top left,#4f46e5,#020617);
+      border-color:#6366f1;
+    }
+    .day.empty{
+      border:none;
+      background:transparent;
+      box-shadow:none;
+      cursor:default;
+    }
+    .day strong{
+      font-size:.8rem;
+      color:#e5e7eb;
+    }
+    .event-pill{
+      background:rgba(129,140,248,.17);
+      border-radius:8px;
+      padding:2px 4px;
+      margin-top:3px;
+      font-size:.65rem;
+      font-weight:600;
+      color:#c7d2fe;
+      border:1px solid rgba(129,140,248,.4);
+    }
+    .event-pill.paid{
+      background:rgba(34,197,94,.16);
+      color:#bbf7d0;
+      border-color:rgba(34,197,94,.6);
+    }
+    .event-pill.pending{
+      background:rgba(250,204,21,.12);
+      color:#facc15;
+      border-color:rgba(250,204,21,.5);
+    }
+    .info-small{
+      font-size:.7rem;
+      color:#6b7280;
+      margin-top:4px;
+    }
+  </style>
 </head>
 <body>
-<div class="app">
-  <div class="app-inner">
-    <div class="header">
-      <div class="brand">
-        <div class="logo-circle">P</div>
-        <div>
-          <h1>Painel Financeiro & Fotográfico</h1>
-          <p class="sub">Fluxo de dívidas e corridas em um só lugar.</p>
+  <div class="app">
+    <div class="app-inner">
+      <div class="header">
+        <div class="brand">
+          <div class="logo-circle">P</div>
+          <div>
+            <h1>Painel Financeiro & Fotográfico</h1>
+            <p class="sub">Fluxo de dívidas e corridas em um só lugar.</p>
+          </div>
         </div>
-      </div>
-      <div class="badge">Versão web · uso pessoal</div>
-    </div>
-
-    <div class="tabs">
-      <div id="tab1" class="tab active">Dívidas</div>
-      <div id="tab2" class="tab">Eventos</div>
-    </div>
-
-    <!-- Dívidas -->
-    <div id="debts">
-      <div class="card">
-        <label>Mês:
-          <input type="month" id="debts-month">
-        </label>
-      </div>
-      <div class="card" id="debts-summary"></div>
-
-      <div class="card">
-        <h3>Adicionar dívida</h3>
-        <input id="d-name" placeholder="Nome (ex: Cartão Nubank)">
-        <input id="d-desc" placeholder="Descrição (ex: Fatura dezembro)">
-        <input id="d-value" placeholder="Valor (ex: 450,00)">
-        <button id="add-debt">Adicionar</button>
-        <p class="info-small">Dica: use este bloco para organizar fixas + extras de cada mês.</p>
+        <div class="badge">Versão web · uso pessoal</div>
       </div>
 
-      <div class="card" id="debts-table"></div>
-    </div>
-
-    <!-- Eventos -->
-    <div id="events" class="hidden">
-      <div class="card">
-        <label>Mês:
-          <input type="month" id="events-month">
-        </label>
+      <div class="tabs">
+        <div id="tab1" class="tab active">Dívidas</div>
+        <div id="tab2" class="tab">Eventos</div>
       </div>
 
-      <div class="card" id="events-summary"></div>
+      <!-- DÍVIDAS -->
+      <div id="debts">
+        <div class="card">
+          <label>Mês:
+            <input type="month" id="debts-month">
+          </label>
+        </div>
+        <div class="card" id="debts-summary"></div>
 
-      <div class="card">
-        <h3>Calendário</h3>
-        <div id="calendar"></div>
-        <p class="info-small">Toque em um dia para ver/registrar eventos, recebidos parciais e pendentes.</p>
+        <div class="card">
+          <h3>Adicionar dívida</h3>
+          <input id="d-name" placeholder="Nome (ex: Cartão Nubank)">
+          <input id="d-desc" placeholder="Descrição (ex: Fatura dezembro)">
+          <input id="d-value" placeholder="Valor (ex: 450,00)">
+          <button id="add-debt">Adicionar</button>
+          <p class="info-small">Use para fixas + extras de cada mês.</p>
+        </div>
+
+        <div class="card" id="debts-table"></div>
       </div>
 
-      <div class="card" id="events-day"></div>
+      <!-- EVENTOS -->
+      <div id="events" class="hidden">
+        <div class="card">
+          <label>Mês:
+            <input type="month" id="events-month">
+          </label>
+        </div>
+
+        <div class="card" id="events-summary"></div>
+
+        <div class="card">
+          <h3>Calendário</h3>
+          <div id="calendar"></div>
+          <p class="info-small">Toque em um dia para ver/lançar eventos.</p>
+        </div>
+
+        <div class="card" id="events-day"></div>
+      </div>
     </div>
   </div>
-</div>
 
 <script>
-// storage
+// STORAGE
 const load = (k,f)=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f));
 const save = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
@@ -320,13 +296,13 @@ let selectedDate = null;
 const uid=()=>Math.random().toString(36).slice(2,9);
 const money=v=>"R$ "+v.toFixed(2).replace(".",",");
 
-// mês atual
+// inicia mês atual
 const now=new Date();
 const monthKey=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
 document.getElementById("debts-month").value=monthKey;
 document.getElementById("events-month").value=monthKey;
 
-// dívidas
+// DÍVIDAS
 function renderDebts(){
   const m=document.getElementById("debts-month").value;
   if(!debts[m])debts[m]=[];
@@ -398,13 +374,13 @@ document.getElementById("add-debt").onclick=()=>{
   let name=document.getElementById("d-name").value.trim();
   let desc=document.getElementById("d-desc").value.trim();
   let val=parseFloat(document.getElementById("d-value").value.replace(",","."));
-  if(!name||isNaN(val)){alert("Preencha nome e valor corretamente.");return}
+  if(!name||isNaN(val)){alert("Preencha nome e valor.");return}
   debts[m].push({id:uid(),name,description:desc,value:val,paid:false});
   save("debts",debts);
   renderDebts();
 };
 
-// eventos
+// EVENTOS / CORRIDAS
 function daysInMonth(m){
   let [y,mo]=m.split("-").map(Number);
   let d=new Date(y,mo-1,1),arr=[];
@@ -422,22 +398,18 @@ function renderCalendar(){
   const days=daysInMonth(m);
 
   let html='<div class="calendar">';
-
   ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].forEach(w=>{
     html+=`<div class="weekday">${w}</div>`;
   });
 
   if(days.length){
     const firstDow=days[0].getDay();
-    for(let i=0;i<firstDow;i++){
-      html+='<div class="day empty"></div>';
-    }
+    for(let i=0;i<firstDow;i++) html+='<div class="day empty"></div>';
   }
 
   days.forEach(d=>{
     let iso=d.toISOString().slice(0,10);
     let dayEv=ev.filter(e=>e.date===iso);
-
     html+=`
     <div class="day ${selectedDate===iso?"selected":""}" data-date="${iso}">
       <strong>${d.getDate()}</strong>
@@ -473,7 +445,6 @@ function renderEventSummary(){
   let total = ev.reduce((a,b)=>a+b.value,0);
   let parcial = ev.reduce((a,b)=>a+(b.parcial||0),0);
   let paid = ev.filter(x=>x.paid).reduce((a,b)=>a+b.value,0);
-
   let recebido = paid + parcial;
   let pendente = total - recebido;
 
@@ -528,7 +499,6 @@ function renderDay(){
       <button class="toggle-event" data-id="${e.id}">
         ${e.paid?"Marcar pendente":"Marcar pago"}
       </button>
-
       <button class="remove-event danger" data-id="${e.id}" style="margin-top:6px;">Remover</button>
     </div>`;
   });
@@ -541,13 +511,12 @@ function renderDay(){
     <input id="e-value" placeholder="Valor total (ex: 400,00)">
     <input id="e-parcial" placeholder="Recebido parcial (opcional)">
     <button id="add-event">Adicionar</button>
-    <p class="info-small">Use "Recebido parcial" quando sacar apenas uma parte da corrida/ensaio.</p>
+    <p class="info-small">Use "Recebido parcial" quando sacar apenas uma parte.</p>
   </div>
   `;
 
   document.getElementById("events-day").innerHTML=html;
 
-  // botões
   document.querySelectorAll(".toggle-event").forEach(b=>{
     b.onclick=()=>{
       const m=document.getElementById("events-month").value;
@@ -573,12 +542,10 @@ function renderDay(){
     let d=document.getElementById("e-desc").value.trim();
     let v=parseFloat(document.getElementById("e-value").value.replace(",","."));
     let p=parseFloat(document.getElementById("e-parcial").value.replace(",","."));
-
-    if(!c||isNaN(v)){alert("Preencha pelo menos empresa e valor total.");return}
-
-    let parcial = isNaN(p)? 0 : p;
-    if(parcial < 0) parcial = 0;
-    if(parcial > v) parcial = v;
+    if(!c||isNaN(v)){alert("Preencha empresa e valor total.");return}
+    let parcial = isNaN(p)?0:p;
+    if(parcial<0)parcial=0;
+    if(parcial>v)parcial=v;
 
     if(!events[m])events[m]=[];
     events[m].push({
@@ -587,10 +554,9 @@ function renderDay(){
       company:c,
       description:d,
       value:v,
-      parcial: parcial,
+      parcial:parcial,
       paid:false
     });
-
     save("events",events);
     renderEvents();
   };
@@ -607,7 +573,7 @@ document.getElementById("events-month").onchange=()=>{
   renderEvents();
 };
 
-// tabs
+// TABS
 document.getElementById("tab1").onclick=()=>{
   document.getElementById("debts").classList.remove("hidden");
   document.getElementById("events").classList.add("hidden");
@@ -622,14 +588,14 @@ document.getElementById("tab2").onclick=()=>{
   document.getElementById("tab1").classList.remove("active");
 };
 
-// init
+// INIT
 renderDebts();
 renderEvents();
 
-// pwa
+// PWA - SERVICE WORKER
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").catch((err) => {
-    console.log("SW erro:", err);
+  navigator.serviceWorker.register("sw.js").catch(err=>{
+    console.log("Erro SW",err);
   });
 }
 </script>
