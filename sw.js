@@ -1,19 +1,17 @@
-self.addEventListener("install", e => {
-  e.waitUntil(
-    caches.open("app-prestes-v1").then(cache => {
-      return cache.addAll([
-        "./",
-        "./index.html",
-        "./manifest.webmanifest"
-      ]);
-    })
+// sw.js - versão limpa para sempre buscar a versão nova do app
+
+self.addEventListener("install", (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((key) => caches.delete(key)))
+    )
   );
 });
 
-self.addEventListener("fetch", e => {
-  e.respondWith(
-    caches.match(e.request).then(response => {
-      return response || fetch(e.request);
-    })
-  );
+self.addEventListener("fetch", (event) => {
+  event.respondWith(fetch(event.request));
 });
