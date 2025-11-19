@@ -1,0 +1,17 @@
+{
+  "name": "Painel Prestes",
+  "short_name": "CP Painel",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#d7b478",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icon512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
