@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Painel Prestes</title>
+  <meta name="theme-color" content="#f5f5fa" />
+  <link rel="manifest" href="manifest.webmanifest" />
 
   <style>
     :root {
@@ -101,7 +103,6 @@
     .tab-panel {
       display: none;
     }
-
     .tab-panel.active {
       display: block;
     }
@@ -171,7 +172,6 @@
       display: flex;
       gap: 8px;
     }
-
     .row > div {
       flex: 1;
     }
@@ -236,4 +236,935 @@
 
     .summary-value {
       font-size: 0.85rem;
-      font
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    .summary-value.green { color: var(--success); }
+    .summary-value.red { color: var(--danger); }
+
+    .bar-wrap {
+      margin-top: 10px;
+    }
+
+    .bar-line {
+      height: 10px;
+      border-radius: 999px;
+      background: #e3e3f5;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-soft), var(--accent));
+      transition: width 0.2s;
+    }
+
+    /* TABLES */
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+
+    th, td {
+      padding: 4px 3px;
+      text-align: left;
+      border-bottom: 1px solid #f0f0ff;
+    }
+
+    th {
+      color: var(--text-soft);
+      font-size: 0.7rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #f3f1ff;
+      font-size: 0.7rem;
+      color: var(--text-soft);
+    }
+
+    .tag.green {
+      background: #e3f8ed;
+      color: var(--success);
+    }
+
+    .tag.orange {
+      background: #ffece3;
+      color: #ff8a4a;
+    }
+
+    /* CALENDÁRIO */
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 4px 0 6px;
+    }
+
+    .calendar-header span {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .cal-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f5f5ff;
+      width: 26px;
+      height: 26px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    .weekday-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      font-size: 0.7rem;
+      color: var(--text-soft);
+      margin-bottom: 3px;
+      text-align: center;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+
+    .day {
+      aspect-ratio: 0.8 / 1;
+      border-radius: 12px;
+      background: #f5f5ff;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-soft);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .day.empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    .day.has {
+      background: #e7e2ff;
+      color: var(--text-main);
+    }
+
+    .day.today {
+      border: 1px solid var(--accent);
+    }
+
+    .day.selected {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .note {
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+
+    @media (min-width: 860px) {
+      .grid-2 {
+        display: grid;
+        grid-template-columns: minmax(0,1.1fr) minmax(0,1fr);
+        gap: 10px;
+      }
+    }
+
+    /* BACKUP SECTION */
+    .backup-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .backup-actions button {
+      margin-top: 0;
+    }
+
+    @media print {
+      .tabs,
+      .backup-actions,
+      #events-day-card,
+      #debts-add-card {
+        display: none !important;
+      }
+      body {
+        background: #ffffff;
+      }
+      .card {
+        box-shadow: none;
+        border-radius: 0;
+        border: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="logo">CP</div>
+      <div class="title-block">
+        <h1>Painel Prestes</h1>
+        <p>Fluxo de dívidas e eventos em modo lilás clean.</p>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="dash">Dashboard</button>
+      <button class="tab-btn" data-tab="debts">Dívidas</button>
+      <button class="tab-btn" data-tab="events">Eventos</button>
+    </nav>
+
+    <!-- DASHBOARD -->
+    <section id="dash" class="tab-panel active">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Resumo do mês</div>
+            <div class="card-sub">Baseado nos eventos cadastrados.</div>
+          </div>
+          <div>
+            <label for="dash-month">Mês:</label>
+            <input type="month" id="dash-month" />
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="summary-label">Total contratado</div>
+            <div class="summary-value" id="dash-total">R$ 0,00</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Recebido</div>
+            <div class="summary-value green" id="dash-recebido">R$ 0,00</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Falta receber</div>
+            <div class="summary-value red" id="dash-falta">R$ 0,00</div>
+          </div>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="summary-label">Percentual recebido</div>
+          <div class="bar-line">
+            <div class="bar-fill" id="dash-bar"></div>
+          </div>
+        </div>
+
+        <button id="btn-pdf" style="margin-top:10px;">🧾 Gerar PDF / impressão do mês</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Backup & Restaurar</div>
+            <div class="card-sub">Salva tudo em arquivo .json.</div>
+          </div>
+        </div>
+        <div class="backup-actions">
+          <button class="secondary" id="btn-backup">📦 Backup</button>
+          <button class="secondary" id="btn-restore">♻️ Restaurar</button>
+        </div>
+        <input type="file" id="restore-file" accept=".json,application/json" style="display:none" />
+        <p class="note">
+          O backup inclui dívidas e eventos. Guarde o arquivo em algum lugar seguro.
+        </p>
+      </div>
+    </section>
+
+    <!-- DÍVIDAS -->
+    <section id="debts" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Dívidas do mês</div>
+              <div class="card-sub">Únicas, parceladas e recorrentes.</div>
+            </div>
+            <div>
+              <label for="debts-month">Mês:</label>
+              <input type="month" id="debts-month" />
+            </div>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-item">
+              <div class="summary-label">Total dívidas</div>
+              <div class="summary-value red" id="debts-total">R$ 0,00</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Qtd. lançamentos</div>
+              <div class="summary-value" id="debts-count">0</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Média por dívida</div>
+              <div class="summary-value" id="debts-media">R$ 0,00</div>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Tipo</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="debts-table-body"></tbody>
+          </table>
+        </div>
+
+        <div class="card" id="debts-add-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Adicionar dívida</div>
+              <div class="card-sub">Com opção de parcelas e recorrência.</div>
+            </div>
+          </div>
+
+          <label for="d-nome">Nome</label>
+          <input id="d-nome" type="text" placeholder="Ex: Cartão Nubank" />
+
+          <label for="d-desc">Descrição</label>
+          <input id="d-desc" type="text" placeholder="Ex: Fatura dezembro" />
+
+          <div class="row">
+            <div>
+              <label for="d-valor">Valor (por parcela ou total)</label>
+              <input id="d-valor" type="number" step="0.01" placeholder="Ex: 400" />
+            </div>
+            <div>
+              <label for="d-parcelas">Parcelas</label>
+              <input id="d-parcelas" type="number" min="1" placeholder="Ex: 6" />
+            </div>
+          </div>
+
+          <div class="checkbox-line">
+            <input id="d-recorrente" type="checkbox" />
+            <label for="d-recorrente">Dívida recorrente (repete por 12 meses)</label>
+          </div>
+
+          <button id="btn-add-debt">Adicionar dívida</button>
+
+          <p class="note">
+            • Se informar parcelas, serão criadas parcelas 1/n, 2/n etc, mês a mês.<br />
+            • Se marcar recorrente sem parcelas, replica a mesma dívida por 12 meses.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENTOS -->
+    <section id="events" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Calendário de eventos</div>
+              <div class="card-sub">Clique no dia para lançar corridas.</div>
+            </div>
+            <div>
+              <label for="events-month">Mês:</label>
+              <input type="month" id="events-month" />
+            </div>
+          </div>
+
+          <div class="calendar-header">
+            <span id="events-month-label"></span>
+            <div class="cal-nav">
+              <button class="icon-btn" id="cal-prev">&lt;</button>
+              <button class="icon-btn" id="cal-next">&gt;</button>
+            </div>
+          </div>
+
+          <div class="weekday-row">
+            <div>Dom</div>
+            <div>Seg</div>
+            <div>Ter</div>
+            <div>Qua</div>
+            <div>Qui</div>
+            <div>Sex</div>
+            <div>Sáb</div>
+          </div>
+
+          <div id="calendar-grid" class="calendar-grid"></div>
+        </div>
+
+        <div class="card" id="events-day-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title" id="events-day-title">Selecione um dia</div>
+              <div class="card-sub">Empresa, serviço, valor e recebido parcial.</div>
+            </div>
+          </div>
+
+          <div id="events-form-wrapper" style="display:none;">
+            <label for="ev-empresa">Empresa</label>
+            <input id="ev-empresa" type="text" placeholder="Ex: Foco Radical" />
+
+            <label for="ev-servico">Serviço</label>
+            <input id="ev-servico" type="text" placeholder="Ex: Corrida 5km" />
+
+            <div class="row">
+              <div>
+                <label for="ev-valor">Valor total</label>
+                <input id="ev-valor" type="number" step="0.01" placeholder="Ex: 400" />
+              </div>
+              <div>
+                <label for="ev-recebido">Recebido</label>
+                <input id="ev-recebido" type="number" step="0.01" placeholder="Ex: 200" />
+              </div>
+            </div>
+
+            <div class="checkbox-line">
+              <input id="ev-pago" type="checkbox" />
+              <label for="ev-pago">Pago total (considerar tudo recebido)</label>
+            </div>
+
+            <label for="ev-obs">Observações</label>
+            <textarea id="ev-obs" placeholder="Ex: Pix na hora, restante depois."></textarea>
+
+            <button id="btn-add-event">Adicionar evento</button>
+          </div>
+
+          <p class="note" id="events-empty">Clique em um dia no calendário para lançar evento.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Eventos do mês</div>
+            <div class="card-sub">Resumo das corridas e ensaios.</div>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="summary-label">Qtd. eventos</div>
+            <div class="summary-value" id="ev-count">0</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Total contratado</div>
+            <div class="summary-value" id="ev-total">R$ 0,00</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Recebido</div>
+            <div class="summary-value green" id="ev-recebido-total">R$ 0,00</div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Empresa</th>
+              <th>Serviço</th>
+              <th>Valor</th>
+              <th>Recebido</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="events-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ---------- helpers ----------
+    const load = (key, fallback) => {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    };
+    const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+
+    let debts = load("pp_debts", []);
+    let events = load("pp_events", []);
+    let selectedDate = null; // YYYY-MM-DD
+
+    const money = v =>
+      "R$ " + (v || 0).toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+    const today = new Date();
+    const defaultMonth =
+      today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0");
+
+    const dashMonthInput = document.getElementById("dash-month");
+    const debtsMonthInput = document.getElementById("debts-month");
+    const eventsMonthInput = document.getElementById("events-month");
+
+    dashMonthInput.value = defaultMonth;
+    debtsMonthInput.value = defaultMonth;
+    eventsMonthInput.value = defaultMonth;
+
+    // ---------- tabs ----------
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        const tabId = btn.dataset.tab;
+        document.getElementById(tabId).classList.add("active");
+      });
+    });
+
+    // ---------- dívidas ----------
+    const debtsTableBody = document.getElementById("debts-table-body");
+    const debtsTotalEl = document.getElementById("debts-total");
+    const debtsCountEl = document.getElementById("debts-count");
+    const debtsMediaEl = document.getElementById("debts-media");
+
+    function renderDebts() {
+      const mk = debtsMonthInput.value;
+      const monthDebts = debts.filter(d => d.month === mk);
+
+      debtsTableBody.innerHTML = "";
+      let total = 0;
+
+      monthDebts.forEach(d => {
+        total += d.valor;
+        const tr = document.createElement("tr");
+        const tipo = d.parcelaTotal
+          ? "Parcela " + d.parcelaAtual + "/" + d.parcelaTotal
+          : d.recorrente
+          ? "Recorrente"
+          : "Única";
+
+        tr.innerHTML =
+          "<td>" + d.nome + "</td>" +
+          "<td>" + (d.desc || "") + "</td>" +
+          "<td>" + money(d.valor) + "</td>" +
+          "<td><span class='tag'>" + tipo + "</span></td>" +
+          "<td><button class='small secondary'>Excluir</button></td>";
+
+        tr.querySelector("button").addEventListener("click", () => {
+          debts = debts.filter(x => x.id !== d.id);
+          save("pp_debts", debts);
+          renderDebts();
+        });
+
+        debtsTableBody.appendChild(tr);
+      });
+
+      debtsTotalEl.textContent = money(total);
+      debtsCountEl.textContent = monthDebts.length;
+      debtsMediaEl.textContent = monthDebts.length ? money(total / monthDebts.length) : "R$ 0,00";
+    }
+
+    function addDebt() {
+      const nome = document.getElementById("d-nome").value.trim();
+      const desc = document.getElementById("d-desc").value.trim();
+      const valor = parseFloat(document.getElementById("d-valor").value || "0");
+      const parcelas = parseInt(document.getElementById("d-parcelas").value || "0", 10);
+      const recorrente = document.getElementById("d-recorrente").checked;
+      const mk = debtsMonthInput.value;
+
+      if (!nome || !valor || !mk) return;
+
+      const [yStr, mStr] = mk.split("-");
+      const baseYear = Number(yStr);
+      const baseMonth = Number(mStr); // 1-12
+
+      const toAdd = [];
+      const makeId = () =>
+        (crypto.randomUUID && crypto.randomUUID()) ||
+        (Date.now() + "-" + Math.random().toString(36).slice(2, 8));
+
+      if (parcelas > 0) {
+        for (let i = 0; i < parcelas; i++) {
+          const d = new Date(baseYear, baseMonth - 1 + i, 1);
+          const mKey = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+          toAdd.push({
+            id: makeId(),
+            nome,
+            desc,
+            valor,
+            month: mKey,
+            recorrente: false,
+            parcelaAtual: i + 1,
+            parcelaTotal: parcelas
+          });
+        }
+      } else if (recorrente) {
+        for (let i = 0; i < 12; i++) {
+          const d = new Date(baseYear, baseMonth - 1 + i, 1);
+          const mKey = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+          toAdd.push({
+            id: makeId(),
+            nome,
+            desc,
+            valor,
+            month: mKey,
+            recorrente: true,
+            parcelaAtual: null,
+            parcelaTotal: null
+          });
+        }
+      } else {
+        toAdd.push({
+          id: makeId(),
+          nome,
+          desc,
+          valor,
+          month: mk,
+          recorrente: false,
+          parcelaAtual: null,
+          parcelaTotal: null
+        });
+      }
+
+      debts = debts.concat(toAdd);
+      save("pp_debts", debts);
+
+      document.getElementById("d-nome").value = "";
+      document.getElementById("d-desc").value = "";
+      document.getElementById("d-valor").value = "";
+      document.getElementById("d-parcelas").value = "";
+      document.getElementById("d-recorrente").checked = false;
+
+      renderDebts();
+    }
+
+    document.getElementById("btn-add-debt").addEventListener("click", addDebt);
+    debtsMonthInput.addEventListener("change", renderDebts);
+
+    // ---------- eventos ----------
+    const eventsMonthLabel = document.getElementById("events-month-label");
+    const calendarGrid = document.getElementById("calendar-grid");
+    const eventsDayTitle = document.getElementById("events-day-title");
+    const eventsFormWrapper = document.getElementById("events-form-wrapper");
+    const eventsEmpty = document.getElementById("events-empty");
+    const evCountEl = document.getElementById("ev-count");
+    const evTotalEl = document.getElementById("ev-total");
+    const evRecebidoTotalEl = document.getElementById("ev-recebido-total");
+    const eventsTableBody = document.getElementById("events-table-body");
+
+    function monthLabel(mk) {
+      const [y, m] = mk.split("-");
+      const d = new Date(Number(y), Number(m) - 1, 1);
+      return d.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+    }
+
+    function renderCalendar() {
+      const mk = eventsMonthInput.value;
+      const [yStr, mStr] = mk.split("-");
+      const year = Number(yStr);
+      const month = Number(mStr); // 1-12
+
+      eventsMonthLabel.textContent = monthLabel(mk);
+
+      const first = new Date(year, month - 1, 1);
+      const firstDow = first.getDay(); // 0 dom
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      const todayStr =
+        today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
+
+      const hasEventByDay = {};
+      events.forEach(ev => {
+        const [y2, m2, d2] = ev.data.split("-");
+        if (y2 + "-" + m2 === mk) {
+          const day = Number(d2);
+          hasEventByDay[day] = true;
+        }
+      });
+
+      calendarGrid.innerHTML = "";
+
+      for (let i = 0; i < firstDow; i++) {
+        const div = document.createElement("div");
+        div.className = "day empty";
+        calendarGrid.appendChild(div);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const div = document.createElement("div");
+        div.className = "day";
+        div.textContent = d;
+
+        const dateStr =
+          year + "-" + String(month).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+
+        if (dateStr === todayStr) div.classList.add("today");
+        if (hasEventByDay[d]) div.classList.add("has");
+        if (selectedDate === dateStr) div.classList.add("selected");
+
+        div.addEventListener("click", () => {
+          selectedDate = dateStr;
+          document.querySelectorAll(".day").forEach(day => day.classList.remove("selected"));
+          div.classList.add("selected");
+
+          eventsDayTitle.textContent = new Date(year, month - 1, d).toLocaleDateString("pt-BR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long"
+          });
+
+          eventsFormWrapper.style.display = "block";
+          eventsEmpty.style.display = "none";
+
+          document.getElementById("ev-empresa").value = "";
+          document.getElementById("ev-servico").value = "";
+          document.getElementById("ev-valor").value = "";
+          document.getElementById("ev-recebido").value = "";
+          document.getElementById("ev-pago").checked = false;
+          document.getElementById("ev-obs").value = "";
+        });
+
+        calendarGrid.appendChild(div);
+      }
+    }
+
+    function renderEventsList() {
+      const mk = eventsMonthInput.value;
+      const monthEvents = events
+        .filter(ev => ev.data.slice(0,7) === mk)
+        .sort((a, b) => (a.data < b.data ? -1 : 1));
+
+      eventsTableBody.innerHTML = "";
+      let total = 0;
+      let recebidoTotal = 0;
+
+      monthEvents.forEach(ev => {
+        total += ev.valor;
+        recebidoTotal += ev.recebido;
+
+        const tr = document.createElement("tr");
+        const status = ev.pago
+          ? "<span class='tag green'>Pago</span>"
+          : ev.recebido > 0
+          ? "<span class='tag orange'>Parcial</span>"
+          : "<span class='tag'>Pendente</span>";
+
+        tr.innerHTML =
+          "<td>" + new Date(ev.data).toLocaleDateString("pt-BR") + "</td>" +
+          "<td>" + (ev.empresa || "") + "</td>" +
+          "<td>" + (ev.servico || "") + "</td>" +
+          "<td>" + money(ev.valor) + "</td>" +
+          "<td>" + money(ev.recebido) + "</td>" +
+          "<td>" + status + "</td>" +
+          "<td><button class='small secondary'>Excluir</button></td>";
+
+        tr.querySelector("button").addEventListener("click", () => {
+          events = events.filter(e => e.id !== ev.id);
+          save("pp_events", events);
+          renderCalendar();
+          renderEventsList();
+          renderDashboard();
+        });
+
+        eventsTableBody.appendChild(tr);
+      });
+
+      evCountEl.textContent = monthEvents.length;
+      evTotalEl.textContent = money(total);
+      evRecebidoTotalEl.textContent = money(recebidoTotal);
+    }
+
+    function renderEvents() {
+      renderCalendar();
+      renderEventsList();
+    }
+
+    function addEvent() {
+      if (!selectedDate) return;
+
+      const empresa = document.getElementById("ev-empresa").value.trim();
+      const servico = document.getElementById("ev-servico").value.trim();
+      const valor = parseFloat(document.getElementById("ev-valor").value || "0");
+      let recebido = parseFloat(document.getElementById("ev-recebido").value || "0");
+      const pago = document.getElementById("ev-pago").checked;
+      const obs = document.getElementById("ev-obs").value.trim();
+
+      if (!empresa || !valor) return;
+      if (pago) recebido = valor;
+
+      const makeId = () =>
+        (crypto.randomUUID && crypto.randomUUID()) ||
+        (Date.now() + "-" + Math.random().toString(36).slice(2, 8));
+
+      events.push({
+        id: makeId(),
+        data: selectedDate,
+        empresa,
+        servico,
+        valor,
+        recebido,
+        pago,
+        obs
+      });
+
+      save("pp_events", events);
+      renderEvents();
+      renderDashboard();
+
+      document.getElementById("ev-empresa").value = "";
+      document.getElementById("ev-servico").value = "";
+      document.getElementById("ev-valor").value = "";
+      document.getElementById("ev-recebido").value = "";
+      document.getElementById("ev-pago").checked = false;
+      document.getElementById("ev-obs").value = "";
+    }
+
+    document.getElementById("btn-add-event").addEventListener("click", addEvent);
+
+    document.getElementById("cal-prev").addEventListener("click", () => {
+      const val = eventsMonthInput.value;
+      const [y,m] = val.split("-");
+      const d = new Date(Number(y), Number(m) - 2, 1);
+      eventsMonthInput.value = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
+      selectedDate = null;
+      eventsFormWrapper.style.display = "none";
+      eventsEmpty.style.display = "block";
+      renderEvents();
+      renderDashboard();
+    });
+
+    document.getElementById("cal-next").addEventListener("click", () => {
+      const val = eventsMonthInput.value;
+      const [y,m] = val.split("-");
+      const d = new Date(Number(y), Number(m), 1);
+      eventsMonthInput.value = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
+      selectedDate = null;
+      eventsFormWrapper.style.display = "none";
+      eventsEmpty.style.display = "block";
+      renderEvents();
+      renderDashboard();
+    });
+
+    eventsMonthInput.addEventListener("change", () => {
+      selectedDate = null;
+      eventsFormWrapper.style.display = "none";
+      eventsEmpty.style.display = "block";
+      renderEvents();
+      renderDashboard();
+    });
+
+    // ---------- dashboard ----------
+    const dashTotalEl = document.getElementById("dash-total");
+    const dashRecebidoEl = document.getElementById("dash-recebido");
+    const dashFaltaEl = document.getElementById("dash-falta");
+    const dashBarFill = document.getElementById("dash-bar");
+
+    function renderDashboard() {
+      const mk = dashMonthInput.value;
+      const monthEvents = events.filter(ev => ev.data.slice(0,7) === mk);
+
+      let total = 0;
+      let recebido = 0;
+
+      monthEvents.forEach(ev => {
+        total += ev.valor;
+        recebido += ev.recebido;
+      });
+
+      dashTotalEl.textContent = money(total);
+      dashRecebidoEl.textContent = money(recebido);
+      dashFaltaEl.textContent = money(Math.max(total - recebido, 0));
+
+      const perc = total > 0 ? Math.round((recebido / total) * 100) : 0;
+      dashBarFill.style.width = perc + "%";
+    }
+
+    dashMonthInput.addEventListener("change", renderDashboard);
+
+    // ---------- PDF ----------
+    document.getElementById("btn-pdf").addEventListener("click", () => {
+      window.print();
+    });
+
+    // ---------- backup ----------
+    document.getElementById("btn-backup").addEventListener("click", () => {
+      const payload = {
+        debts,
+        events,
+        exportedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {
+        type: "application/json"
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "painel-prestes-backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    const restoreFileInput = document.getElementById("restore-file");
+    document.getElementById("btn-restore").addEventListener("click", () => {
+      restoreFileInput.click();
+    });
+
+    restoreFileInput.addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => {
+        try {
+          const data = JSON.parse(evt.target.result);
+          if (data.debts && data.events) {
+            debts = data.debts;
+            events = data.events;
+            save("pp_debts", debts);
+            save("pp_events", events);
+            renderDebts();
+            renderEvents();
+            renderDashboard();
+            alert("Backup restaurado com sucesso.");
+          } else {
+            alert("Arquivo inválido.");
+          }
+        } catch {
+          alert("Erro ao ler o arquivo.");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // ---------- init ----------
+    renderDebts();
+    renderEvents();
+    renderDashboard();
+
+    // ---------- PWA (se tiver sw.js) ----------
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
