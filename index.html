@@ -14,14 +14,21 @@
 
     <!-- Estilos do app -->
     <style>
-      body {
-        margin: 0;
-        font-family: system-ui, sans-serif;
-        background: #f2f2f7;
+      * {
+        box-sizing: border-box;
       }
 
-      .dark body {
-        background: #0f0f13;
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: #f2f2f7;
+        color: #111827;
+      }
+
+      body.dark {
+        background: #020617;
+        color: #e5e7eb;
       }
 
       .app {
@@ -32,35 +39,59 @@
       .sidebar {
         width: 240px;
         padding: 16px;
-        background: #fff;
-        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.12);
+        background: #ffffff;
+        box-shadow: 2px 0 12px rgba(15, 23, 42, 0.12);
         display: flex;
         flex-direction: column;
         gap: 16px;
       }
 
-      .dark .sidebar {
-        background: #18181d;
-        color: #eee;
+      body.dark .sidebar {
+        background: #0f172a;
+        color: #e5e7eb;
+      }
+
+      .sidebar h2 {
+        margin: 0 0 8px 0;
+        font-size: 1.2rem;
       }
 
       .sidebar nav a {
         display: block;
         text-decoration: none;
         color: inherit;
-        padding: 8px 0;
-        font-size: 1rem;
+        padding: 6px 0;
+        font-size: 0.95rem;
+      }
+
+      .sidebar nav a:hover {
+        text-decoration: underline;
       }
 
       .sidebar button,
       .sidebar label {
         border: none;
-        padding: 10px 14px;
-        background: #c7a8ff;
-        border-radius: 10px;
-        font-weight: 600;
+        padding: 8px 12px;
+        background: #c4a5f5;
+        border-radius: 999px;
+        font-weight: 500;
         cursor: pointer;
-        margin-bottom: 6px;
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      body.dark .sidebar button,
+      body.dark .sidebar label {
+        background: #8b5cf6;
+        color: #f9fafb;
+      }
+
+      .sidebar label input {
+        display: none;
       }
 
       .main {
@@ -71,77 +102,156 @@
 
       h1 {
         margin-top: 0;
+        margin-bottom: 16px;
       }
 
       .cards {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
+        margin-bottom: 20px;
       }
 
       .card {
         padding: 16px;
-        background: white;
+        background: #ffffff;
         border-radius: 16px;
-        min-width: 200px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        min-width: 220px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
       }
 
-      .dark .card {
-        background: #1f1f25;
-        color: #e8e8e8;
+      body.dark .card {
+        background: #020617;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      }
+
+      .card h3 {
+        margin-top: 0;
+        margin-bottom: 8px;
       }
 
       .form {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
         margin-bottom: 12px;
+        align-items: center;
       }
 
       .form input[type="text"],
       .form input[type="number"],
       .form input[type="date"] {
-        padding: 8px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
+        padding: 7px 9px;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        font-size: 0.9rem;
+        background: #f9fafb;
+      }
+
+      body.dark .form input[type="text"],
+      body.dark .form input[type="number"],
+      body.dark .form input[type="date"] {
+        background: #020617;
+        border-color: #1f2937;
+        color: #e5e7eb;
+      }
+
+      .form label {
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .form button {
+        border-radius: 999px;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        background: #8b5cf6;
+        color: #f9fafb;
+        font-weight: 500;
+        font-size: 0.9rem;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 14px;
+        margin-top: 8px;
+        font-size: 0.9rem;
       }
 
       table th,
       table td {
-        border-bottom: 1px solid #ccc;
-        padding: 6px;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 6px 4px;
       }
 
-      .filter-bar {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 12px;
+      body.dark table th,
+      body.dark table td {
+        border-color: #1f2937;
+      }
+
+      table th {
+        text-align: left;
+        font-weight: 600;
+      }
+
+      table td button {
+        border-radius: 999px;
+        border: none;
+        padding: 4px 10px;
+        cursor: pointer;
+        background: rgba(139, 92, 246, 0.15);
+        font-size: 0.8rem;
+      }
+
+      body.dark table td button {
+        background: rgba(139, 92, 246, 0.35);
+        color: #f9fafb;
+      }
+
+      .status-paid {
+        color: #16a34a;
+        font-weight: 600;
+      }
+
+      .status-open {
+        color: #e11d48;
+        font-weight: 600;
       }
 
       .chart {
         margin-top: 24px;
+        padding: 16px;
+        border-radius: 16px;
+        background: rgba(196, 165, 245, 0.16);
+      }
+
+      body.dark .chart {
+        background: rgba(148, 163, 184, 0.18);
       }
 
       .chart-row {
         margin-bottom: 12px;
       }
 
+      .chart-label {
+        display: block;
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+      }
+
       .chart-track {
         width: 100%;
         height: 10px;
-        background: #d8d8e3;
-        border-radius: 100px;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.4);
       }
 
       .chart-bar {
         height: 10px;
+        border-radius: 999px;
       }
 
       .chart-bar.entradas {
@@ -151,128 +261,239 @@
       .chart-bar.saidas {
         background: #ef4444;
       }
+
+      @media print {
+        .sidebar {
+          display: none;
+        }
+        .app {
+          display: block;
+        }
+        .main {
+          padding: 0 16px 16px 16px;
+        }
+      }
     </style>
   </head>
 
   <body>
     <div id="root"></div>
 
-    <!-- APP React -->
     <script type="text/babel">
-
       const { useState, useEffect } = React;
 
       function App() {
-        const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-
-        const saveTheme = (t) => {
-          setTheme(t);
-          localStorage.setItem("theme", t);
-          document.body.className = t === "dark" ? "dark" : "";
-        };
+        // tema
+        const [theme, setTheme] = useState(
+          localStorage.getItem("theme") || "light"
+        );
 
         useEffect(() => {
           document.body.className = theme === "dark" ? "dark" : "";
-        }, []);
+        }, [theme]);
 
+        const toggleTheme = () => {
+          const next = theme === "light" ? "dark" : "light";
+          setTheme(next);
+          localStorage.setItem("theme", next);
+        };
+
+        // eventos
         const [events, setEvents] = useState(() => {
-          return JSON.parse(localStorage.getItem("events") || "[]");
+          const stored = localStorage.getItem("events");
+          return stored ? JSON.parse(stored) : [];
         });
 
+        // dívidas
         const [debts, setDebts] = useState(() => {
-          return JSON.parse(localStorage.getItem("debts") || "[]");
+          const stored = localStorage.getItem("debts");
+          return stored ? JSON.parse(stored) : [];
         });
 
-        useEffect(() => localStorage.setItem("events", JSON.stringify(events)), [events]);
-        useEffect(() => localStorage.setItem("debts", JSON.stringify(debts)), [debts]);
+        // salvar no localStorage
+        useEffect(() => {
+          localStorage.setItem("events", JSON.stringify(events));
+        }, [events]);
 
+        useEffect(() => {
+          localStorage.setItem("debts", JSON.stringify(debts));
+        }, [debts]);
+
+        // navegação simples
         const [page, setPage] = useState("dashboard");
-        const [eventForm, setEventForm] = useState({ nome: "", data: "", valor: "", pago: false });
-        const [debtForm, setDebtForm] = useState({ descricao: "", vencimento: "", valor: "", pago: false });
+
+        // formulários
+        const [eventForm, setEventForm] = useState({
+          nome: "",
+          data: "",
+          valor: "",
+          pago: false,
+        });
+
+        const [debtForm, setDebtForm] = useState({
+          descricao: "",
+          vencimento: "",
+          valor: "",
+          pago: false,
+        });
 
         const addEvent = (e) => {
           e.preventDefault();
-          setEvents((prev) => [...prev, { id: Date.now(), ...eventForm, valor: Number(eventForm.valor) }]);
+          if (!eventForm.nome || !eventForm.data || !eventForm.valor) return;
+
+          setEvents((prev) => [
+            ...prev,
+            {
+              id: Date.now(),
+              nome: eventForm.nome,
+              data: eventForm.data,
+              valor: Number(eventForm.valor),
+              pago: eventForm.pago,
+            },
+          ]);
+
           setEventForm({ nome: "", data: "", valor: "", pago: false });
         };
 
         const addDebt = (e) => {
           e.preventDefault();
-          setDebts((prev) => [...prev, { id: Date.now(), ...debtForm, valor: Number(debtForm.valor) }]);
-          setDebtForm({ descricao: "", vencimento: "", valor: "", pago: false });
+          if (!debtForm.descricao || !debtForm.vencimento || !debtForm.valor)
+            return;
+
+          setDebts((prev) => [
+            ...prev,
+            {
+              id: Date.now(),
+              descricao: debtForm.descricao,
+              vencimento: debtForm.vencimento,
+              valor: Number(debtForm.valor),
+              pago: debtForm.pago,
+            },
+          ]);
+
+          setDebtForm({
+            descricao: "",
+            vencimento: "",
+            valor: "",
+            pago: false,
+          });
         };
 
-        const togglePayEvent = (id) => {
-          setEvents((prev) => prev.map((ev) => (ev.id === id ? { ...ev, pago: !ev.pago } : ev)));
+        const toggleEventPaid = (id) => {
+          setEvents((prev) =>
+            prev.map((e) =>
+              e.id === id ? { ...e, pago: !e.pago } : e
+            )
+          );
         };
 
-        const togglePayDebt = (id) => {
-          setDebts((prev) => prev.map((d) => (d.id === id ? { ...d, pago: !d.pago } : d)));
+        const toggleDebtPaid = (id) => {
+          setDebts((prev) =>
+            prev.map((d) =>
+              d.id === id ? { ...d, pago: !d.pago } : d
+            )
+          );
         };
 
-        // Dashboard totals
+        // totais
         const totalEventos = events.reduce((acc, e) => acc + e.valor, 0);
-        const totalEventosPagos = events.filter((e) => e.pago).reduce((acc, e) => acc + e.valor, 0);
+        const totalEventosPagos = events
+          .filter((e) => e.pago)
+          .reduce((acc, e) => acc + e.valor, 0);
         const totalEventosPendentes = totalEventos - totalEventosPagos;
 
         const totalDividas = debts.reduce((acc, d) => acc + d.valor, 0);
-        const totalDividasPagas = debts.filter((d) => d.pago).reduce((acc, d) => acc + d.valor, 0);
+        const totalDividasPagas = debts
+          .filter((d) => d.pago)
+          .reduce((acc, d) => acc + d.valor, 0);
         const totalDividasAbertas = totalDividas - totalDividasPagas;
 
-        const backup = () => {
-          const data = JSON.stringify({ theme, events, debts });
-          const blob = new Blob([data], { type: "application/json" });
+        const entradas = totalEventosPagos;
+        const saidas = totalDividasPagas;
+        const maxVal = Math.max(entradas, saidas, 1);
+        const pctEntradas = (entradas / maxVal) * 100;
+        const pctSaidas = (saidas / maxVal) * 100;
+
+        // backup
+        const handleBackup = () => {
+          const data = {
+            theme,
+            events,
+            debts,
+          };
+
+          const blob = new Blob([JSON.stringify(data, null, 2)], {
+            type: "application/json",
+          });
+
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
-          a.download = "backup.json";
+          a.download = "backup-painel-prestes.json";
           a.click();
+          URL.revokeObjectURL(url);
         };
 
-        const restore = (e) => {
-          const file = e.target.files[0];
+        const handleRestore = (e) => {
+          const file = e.target.files?.[0];
           if (!file) return;
 
           const reader = new FileReader();
           reader.onload = (ev) => {
-            const json = JSON.parse(ev.target.result);
-            if (json.theme) saveTheme(json.theme);
-            if (json.events) setEvents(json.events);
-            if (json.debts) setDebts(json.debts);
+            try {
+              const data = JSON.parse(ev.target.result);
+              if (data.theme) {
+                setTheme(data.theme);
+                document.body.className =
+                  data.theme === "dark" ? "dark" : "";
+              }
+              if (Array.isArray(data.events)) setEvents(data.events);
+              if (Array.isArray(data.debts)) setDebts(data.debts);
+            } catch (err) {
+              alert("Arquivo de backup inválido.");
+            }
           };
           reader.readAsText(file);
+        };
+
+        const handlePrint = () => {
+          window.print();
         };
 
         return (
           <div className="app">
             <aside className="sidebar">
               <h2>Painel</h2>
-
               <nav>
-                <a href="#" onClick={() => setPage("dashboard")}>Dashboard</a>
-                <a href="#" onClick={() => setPage("eventos")}>Eventos</a>
-                <a href="#" onClick={() => setPage("dividas")}>Dívidas</a>
+                <a href="#" onClick={() => setPage("dashboard")}>
+                  Dashboard
+                </a>
+                <a href="#" onClick={() => setPage("eventos")}>
+                  Eventos
+                </a>
+                <a href="#" onClick={() => setPage("dividas")}>
+                  Dívidas
+                </a>
               </nav>
 
-              <button onClick={() => saveTheme(theme === "light" ? "dark" : "light")}>
-                {theme === "light" ? "🌙 Modo Noite" : "☀️ Modo Claro"}
+              <button onClick={toggleTheme}>
+                {theme === "light" ? "🌙 Modo noite" : "☀️ Modo claro"}
               </button>
 
-              <button onClick={backup}>💾 Backup</button>
+              <button onClick={handleBackup}>💾 Backup</button>
 
               <label>
                 📂 Importar
-                <input type="file" style={{ display: "none" }} onChange={restore} />
+                <input type="file" accept="application/json" onChange={handleRestore} />
               </label>
 
-              <button onClick={() => window.print()}>🧾 PDF</button>
+              <button onClick={handlePrint}>🧾 PDF</button>
             </aside>
 
             <main className="main">
               {page === "dashboard" && (
                 <>
                   <h1>Dashboard</h1>
-
                   <div className="cards">
                     <div className="card">
                       <h3>Eventos</h3>
@@ -280,7 +501,6 @@
                       <p>Pagos: R$ {totalEventosPagos.toFixed(2)}</p>
                       <p>Pendentes: R$ {totalEventosPendentes.toFixed(2)}</p>
                     </div>
-
                     <div className="card">
                       <h3>Dívidas</h3>
                       <p>Total: R$ {totalDividas.toFixed(2)}</p>
@@ -290,25 +510,29 @@
                   </div>
 
                   <div className="chart">
-                    <h2>Entradas x Saídas</h2>
+                    <h2>Entradas x Saídas (valores pagos)</h2>
 
                     <div className="chart-row">
-                      <strong>Entradas</strong>
+                      <span className="chart-label">
+                        Entradas (eventos pagos): R$ {entradas.toFixed(2)}
+                      </span>
                       <div className="chart-track">
                         <div
                           className="chart-bar entradas"
-                          style={{ width: `${(totalEventosPagos / (totalEventosPagos + totalDividasPagas + 1)) * 100}%` }}
-                        />
+                          style={{ width: pctEntradas + "%" }}
+                        ></div>
                       </div>
                     </div>
 
                     <div className="chart-row">
-                      <strong>Saídas</strong>
+                      <span className="chart-label">
+                        Saídas (dívidas pagas): R$ {saidas.toFixed(2)}
+                      </span>
                       <div className="chart-track">
                         <div
                           className="chart-bar saidas"
-                          style={{ width: `${(totalDividasPagas / (totalEventosPagos + totalDividasPagas + 1)) * 100}%` }}
-                        />
+                          style={{ width: pctSaidas + "%" }}
+                        ></div>
                       </div>
                     </div>
                   </div>
@@ -322,30 +546,43 @@
                   <form className="form" onSubmit={addEvent}>
                     <input
                       type="text"
-                      placeholder="Nome"
+                      placeholder="Nome do evento"
                       value={eventForm.nome}
-                      onChange={(e) => setEventForm({ ...eventForm, nome: e.target.value })}
+                      onChange={(e) =>
+                        setEventForm({ ...eventForm, nome: e.target.value })
+                      }
                     />
                     <input
                       type="date"
                       value={eventForm.data}
-                      onChange={(e) => setEventForm({ ...eventForm, data: e.target.value })}
+                      onChange={(e) =>
+                        setEventForm({ ...eventForm, data: e.target.value })
+                      }
                     />
                     <input
                       type="number"
-                      placeholder="Valor"
+                      placeholder="Valor (R$)"
                       value={eventForm.valor}
-                      onChange={(e) => setEventForm({ ...eventForm, valor: e.target.value })}
+                      onChange={(e) =>
+                        setEventForm({
+                          ...eventForm,
+                          valor: e.target.value,
+                        })
+                      }
                     />
                     <label>
                       Pago?
                       <input
                         type="checkbox"
                         checked={eventForm.pago}
-                        onChange={(e) => setEventForm({ ...eventForm, pago: e.target.checked })}
+                        onChange={(e) =>
+                          setEventForm({
+                            ...eventForm,
+                            pago: e.target.checked,
+                          })
+                        }
                       />
                     </label>
-
                     <button type="submit">Adicionar</button>
                   </form>
 
@@ -359,21 +596,29 @@
                         <th></th>
                       </tr>
                     </thead>
-
                     <tbody>
                       {events.map((ev) => (
                         <tr key={ev.id}>
                           <td>{ev.data}</td>
                           <td>{ev.nome}</td>
                           <td>R$ {ev.valor.toFixed(2)}</td>
-                          <td>{ev.pago ? "Pago" : "Pendente"}</td>
+                          <td className={ev.pago ? "status-paid" : "status-open"}>
+                            {ev.pago ? "Pago" : "Pendente"}
+                          </td>
                           <td>
-                            <button onClick={() => togglePayEvent(ev.id)}>
+                            <button onClick={() => toggleEventPaid(ev.id)}>
                               {ev.pago ? "Desmarcar" : "Pagar"}
                             </button>
                           </td>
                         </tr>
                       ))}
+                      {events.length === 0 && (
+                        <tr>
+                          <td colSpan="5" style={{ opacity: 0.7, textAlign: "center" }}>
+                            Nenhum evento cadastrado.
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </>
@@ -388,28 +633,47 @@
                       type="text"
                       placeholder="Descrição"
                       value={debtForm.descricao}
-                      onChange={(e) => setDebtForm({ ...debtForm, descricao: e.target.value })}
+                      onChange={(e) =>
+                        setDebtForm({
+                          ...debtForm,
+                          descricao: e.target.value,
+                        })
+                      }
                     />
                     <input
                       type="date"
                       value={debtForm.vencimento}
-                      onChange={(e) => setDebtForm({ ...debtForm, vencimento: e.target.value })}
+                      onChange={(e) =>
+                        setDebtForm({
+                          ...debtForm,
+                          vencimento: e.target.value,
+                        })
+                      }
                     />
                     <input
                       type="number"
-                      placeholder="Valor"
+                      placeholder="Valor (R$)"
                       value={debtForm.valor}
-                      onChange={(e) => setDebtForm({ ...debtForm, valor: e.target.value })}
+                      onChange={(e) =>
+                        setDebtForm({
+                          ...debtForm,
+                          valor: e.target.value,
+                        })
+                      }
                     />
                     <label>
                       Pago?
                       <input
                         type="checkbox"
                         checked={debtForm.pago}
-                        onChange={(e) => setDebtForm({ ...debtForm, pago: e.target.checked })}
+                        onChange={(e) =>
+                          setDebtForm({
+                            ...debtForm,
+                            pago: e.target.checked,
+                          })
+                        }
                       />
                     </label>
-
                     <button type="submit">Adicionar</button>
                   </form>
 
@@ -423,21 +687,29 @@
                         <th></th>
                       </tr>
                     </thead>
-
                     <tbody>
                       {debts.map((d) => (
                         <tr key={d.id}>
                           <td>{d.vencimento}</td>
                           <td>{d.descricao}</td>
                           <td>R$ {d.valor.toFixed(2)}</td>
-                          <td>{d.pago ? "Paga" : "Aberta"}</td>
+                          <td className={d.pago ? "status-paid" : "status-open"}>
+                            {d.pago ? "Paga" : "Em aberto"}
+                          </td>
                           <td>
-                            <button onClick={() => togglePayDebt(d.id)}>
+                            <button onClick={() => toggleDebtPaid(d.id)}>
                               {d.pago ? "Desmarcar" : "Pagar"}
                             </button>
                           </td>
                         </tr>
                       ))}
+                      {debts.length === 0 && (
+                        <tr>
+                          <td colSpan="5" style={{ opacity: 0.7, textAlign: "center" }}>
+                            Nenhuma dívida cadastrada.
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </>
@@ -448,8 +720,6 @@
       }
 
       ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-
     </script>
   </body>
 </html>
-
