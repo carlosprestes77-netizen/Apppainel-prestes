@@ -3,41 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#120d08" />
   <title>Painel Prestes</title>
-  <link rel="manifest" href="manifest.webmanifest" />
 
   <style>
     :root {
-      --bg-main: #120d08;
-      --bg-card: #1d1510;
-      --bg-card-soft: #221811;
-      --accent: #d9b070;
-      --accent-soft: #f1d5a0;
-      --accent-dark: #b4894d;
-      --text-main: #fff3df;
-      --text-soft: #cbb59a;
-      --border-soft: #3a2a1f;
-      --danger: #ff7043;
-      --success: #66bb6a;
+      --bg: #f5f5fa;
+      --bg-card: #ffffff;
+      --border: #e1e1f0;
+      --text-main: #222235;
+      --text-soft: #6a6a88;
+      --accent: #8a7bff;
+      --accent-soft: #d6d1ff;
+      --accent-bg: #f3f1ff;
+      --danger: #ff6b6b;
+      --success: #3bb273;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, system-ui, BlinkMacSystemFont, "SF Pro Text",
-        "Roboto", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     }
 
     body {
-      background: radial-gradient(circle at top, #2b2017 0, #120d08 55%);
+      background: var(--bg);
       color: var(--text-main);
-      padding: 18px 12px 40px;
+      padding: 16px 10px 40px;
     }
 
     .app {
-      max-width: 1100px;
+      max-width: 960px;
       margin: 0 auto;
     }
 
@@ -46,34 +42,31 @@
     .header {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 24px;
-      background: radial-gradient(circle at top left, #fff4dd, #cfa46d);
-      box-shadow:
-        0 10px 24px rgba(0, 0, 0, 0.55),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, #ffffff, #cabdff);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #1f130b;
       font-weight: 800;
-      font-size: 1.3rem;
-      letter-spacing: 0.04em;
+      font-size: 1.2rem;
+      color: #262235;
+      border: 1px solid #ded6ff;
     }
 
     .title-block h1 {
-      font-size: 1.8rem;
-      letter-spacing: 0.02em;
+      font-size: 1.4rem;
+      font-weight: 700;
     }
 
     .title-block p {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-soft);
       margin-top: 2px;
     }
@@ -82,34 +75,27 @@
 
     .tabs {
       display: flex;
-      gap: 8px;
-      margin: 14px 0 18px;
+      gap: 6px;
+      margin-bottom: 12px;
     }
 
     .tab-btn {
       flex: 1;
-      padding: 10px 14px;
-      border-radius: 16px;
+      padding: 8px 10px;
+      border-radius: 999px;
       border: 1px solid transparent;
-      background: #1a120c;
+      background: #e8e8f5;
       color: var(--text-soft);
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: 0.15s;
     }
 
     .tab-btn.active {
       background: var(--accent);
-      color: #201408;
-      border-color: rgba(0, 0, 0, 0.2);
-      box-shadow:
-        0 12px 24px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(0, 0, 0, 0.4);
-    }
-
-    .tab-btn:not(.active):hover {
-      border-color: var(--border-soft);
+      color: #ffffff;
+      border-color: #7265ff;
     }
 
     .tab-panel {
@@ -120,64 +106,55 @@
       display: block;
     }
 
-    /* CARDS */
+    /* CARD */
 
     .card {
-      background: linear-gradient(145deg, var(--bg-card), var(--bg-card-soft));
-      border-radius: 22px;
-      padding: 18px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-      box-shadow:
-        0 18px 40px rgba(0, 0, 0, 0.6),
-        0 0 0 1px rgba(0, 0, 0, 0.5);
-      margin-bottom: 14px;
+      background: var(--bg-card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      margin-bottom: 12px;
     }
 
     .card-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
+      align-items: center;
+      margin-bottom: 8px;
     }
 
     .card-title {
-      font-size: 1.1rem;
+      font-size: 1rem;
+      font-weight: 600;
     }
 
     .card-sub {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-soft);
     }
 
-    /* FORM & INPUTS */
+    /* INPUTS */
 
     label {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-soft);
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     input[type="text"],
     input[type="number"],
     input[type="month"],
-    input[type="date"],
-    textarea,
-    select {
+    textarea {
       width: 100%;
-      background: #1a120c;
-      border-radius: 12px;
-      border: 1px solid var(--border-soft);
-      padding: 8px 10px;
-      color: var(--text-main);
-      font-size: 0.9rem;
-      outline: none;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fafaff;
+      padding: 7px 9px;
+      font-size: 0.85rem;
       margin-bottom: 8px;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: #6f5a46;
+      color: var(--text-main);
     }
 
     textarea {
@@ -185,9 +162,14 @@
       resize: vertical;
     }
 
+    input::placeholder,
+    textarea::placeholder {
+      color: #a2a2c0;
+    }
+
     .row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
 
     .row > div {
@@ -197,9 +179,9 @@
     .checkbox-line {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin: 6px 0 4px;
-      font-size: 0.85rem;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
       color: var(--text-soft);
     }
 
@@ -209,496 +191,49 @@
     }
 
     button {
-      border-radius: 14px;
+      border-radius: 999px;
       border: none;
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-      color: #201408;
-      padding: 10px 14px;
-      font-size: 0.9rem;
+      padding: 8px 12px;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
+      background: var(--accent);
+      color: #fff;
       width: 100%;
-      box-shadow:
-        0 10px 22px rgba(0, 0, 0, 0.65),
-        0 0 0 1px rgba(0, 0, 0, 0.5);
-      margin-top: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      margin-top: 4px;
     }
 
     button.secondary {
-      background: #1a120c;
+      background: #f0f0ff;
       color: var(--text-soft);
-      border: 1px solid var(--border-soft);
-      box-shadow: none;
-    }
-
-    button.danger {
-      background: #3b1810;
-      color: var(--danger);
-      border: 1px solid rgba(255, 112, 67, 0.35);
-      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.7);
     }
 
     button.small {
-      padding: 6px 10px;
-      font-size: 0.8rem;
-      box-shadow: none;
-    }
-
-    button:active {
-      transform: translateY(1px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
+      width: auto;
+      padding: 4px 10px;
+      font-size: 0.75rem;
     }
 
     /* DASHBOARD */
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 10px;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 6px;
+      margin-top: 8px;
     }
 
     .summary-item {
-      background: #1a120c;
-      border-radius: 14px;
-      padding: 8px 10px;
-      border: 1px solid var(--border-soft);
+      background: var(--accent-bg);
+      border-radius: 12px;
+      padding: 6px 8px;
     }
 
     .summary-label {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--text-soft);
     }
 
     .summary-value {
-      margin-top: 4px;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .summary-value.green {
-      color: var(--success);
-    }
-
-    .summary-value.orange {
-      color: var(--danger);
-    }
-
-    .bar-wrapper {
-      margin-top: 12px;
-      background: #1a120c;
-      border-radius: 14px;
-      padding: 10px 10px 12px;
-      border: 1px solid var(--border-soft);
-    }
-
-    .bar-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--text-soft);
-      margin-bottom: 6px;
-    }
-
-    .bar-line {
-      position: relative;
-      height: 18px;
-      border-radius: 999px;
-      background: #24160f;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--success), var(--accent));
-      transition: width 0.25s ease;
-    }
-
-    .month-bars {
-      margin-top: 12px;
-    }
-
-    .month-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-      font-size: 0.75rem;
-      color: var(--text-soft);
-    }
-
-    .month-row span {
-      width: 70px;
-    }
-
-    .month-bar {
-      flex: 1;
-      height: 6px;
-      border-radius: 999px;
-      background: #24160f;
-      overflow: hidden;
-    }
-
-    .month-bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent-soft), var(--accent-dark));
-      width: 0;
-    }
-
-    /* LIST TABELAS */
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      font-size: 0.8rem;
-    }
-
-    th,
-    td {
-      padding: 6px 4px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    th {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      color: var(--text-soft);
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 6px;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .tag.green {
-      color: var(--success);
-      border-color: rgba(102, 187, 106, 0.4);
-    }
-
-    .tag.orange {
-      color: var(--danger);
-      border-color: rgba(255, 112, 67, 0.4);
-    }
-
-    /* CALENDÁRIO */
-
-    .calendar-wrapper {
-      margin-top: 8px;
-    }
-
-    .calendar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-
-    .calendar-month-label {
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .calendar-nav {
-      display: flex;
-      gap: 6px;
-    }
-
-    .icon-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      background: #1a120c;
-      color: var(--text-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      cursor: pointer;
-      padding: 0;
-      box-shadow: none;
-    }
-
-    .icon-btn:active {
-      transform: translateY(1px);
-    }
-
-    .weekday-row {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 4px;
-      margin-bottom: 4px;
-      font-size: 0.7rem;
-      color: var(--text-soft);
-      text-align: center;
-    }
-
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 4px;
-    }
-
-    .day {
-      aspect-ratio: 0.75 / 1;
-      border-radius: 999px;
-      background: #1a120c;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      color: var(--text-soft);
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.15s ease;
-    }
-
-    .day.empty {
-      background: transparent;
-      border-color: transparent;
-      cursor: default;
-    }
-
-    .day.has-events::after {
-      content: "";
-      position: absolute;
-      bottom: 5px;
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-    }
-
-    .day.today {
-      border-color: rgba(217, 176, 112, 0.9);
-    }
-
-    .day.selected {
-      background: linear-gradient(145deg, var(--accent-soft), var(--accent-dark));
-      color: #201408;
-      border-color: rgba(0, 0, 0, 0.35);
-      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.7);
-    }
-
-    /* BACKUP */
-
-    .backup-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .backup-actions button {
-      flex: 1;
-      margin-top: 0;
-    }
-
-    .note {
-      font-size: 0.75rem;
-      color: var(--text-soft);
-      margin-top: 6px;
-    }
-
-    @media (min-width: 900px) {
-      .grid-2 {
-        display: grid;
-        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-        gap: 14px;
-      }
-
-      .grid-2 > .card {
-        margin-bottom: 0;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <!-- HEADER -->
-    <header class="header">
-      <div class="logo">CP</div>
-      <div class="title-block">
-        <h1>Painel Prestes</h1>
-        <p>Fluxo de dívidas e corridas no estilo champagne premium.</p>
-      </div>
-    </header>
-
-    <!-- TABS -->
-    <nav class="tabs">
-      <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
-      <button class="tab-btn" data-tab="debts">Dívidas</button>
-      <button class="tab-btn" data-tab="events">Eventos</button>
-    </nav>
-
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="tab-panel active">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Resumo Financeiro</div>
-            <div class="card-sub">Mês consolidado de eventos (entradas).</div>
-          </div>
-          <div>
-            <label for="dash-month">Mês:</label>
-            <input type="month" id="dash-month" />
-          </div>
-        </div>
-
-        <div class="summary-grid">
-          <div class="summary-item">
-            <div class="summary-label">Total no mês</div>
-            <div class="summary-value" id="dash-total">R$ 0,00</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Recebido</div>
-            <div class="summary-value green" id="dash-recebido">R$ 0,00</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Falta receber</div>
-            <div class="summary-value orange" id="dash-falta">R$ 0,00</div>
-          </div>
-        </div>
-
-        <button id="btn-pdf">
-          🧾 Gerar PDF do mês
-        </button>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Gráfico Financeiro</div>
-            <div class="card-sub">Comparativo recebido x falta receber.</div>
-          </div>
-        </div>
-
-        <div class="bar-wrapper">
-          <div class="bar-labels">
-            <span>Recebido</span>
-            <span id="bar-percent">0%</span>
-          </div>
-          <div class="bar-line">
-            <div class="bar-fill" id="bar-fill" style="width:0%"></div>
-          </div>
-        </div>
-
-        <div class="month-bars" id="month-bars"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Backup & Restaurar</div>
-            <div class="card-sub">Leva seus dados com você se o mundo pegar fogo.</div>
-          </div>
-        </div>
-
-        <div class="backup-actions">
-          <button class="secondary small" id="btn-backup">📦 Backup</button>
-          <button class="secondary small" id="btn-restore">♻️ Restaurar</button>
-        </div>
-        <input type="file" id="restore-file" accept=".json" style="display:none" />
-        <p class="note">
-          Backup inclui dívidas, eventos e configurações do painel. Arquivo
-          gerado em formato <strong>.json</strong>.
-        </p>
-      </div>
-    </section>
-
-    <!-- DÍVIDAS -->
-    <section id="debts" class="tab-panel">
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Dívidas do mês</div>
-              <div class="card-sub">Lançamentos fixos, parcelas e recorrentes.</div>
-            </div>
-            <div>
-              <label for="debts-month">Mês:</label>
-              <input type="month" id="debts-month" />
-            </div>
-          </div>
-
-          <div class="summary-grid">
-            <div class="summary-item">
-              <div class="summary-label">Total dívidas</div>
-              <div class="summary-value orange" id="debts-total">R$ 0,00</div>
-            </div>
-            <div class="summary-item">
-              <div class="summary-label">Qtd. lançamentos</div>
-              <div class="summary-value" id="debts-count">0</div>
-            </div>
-            <div class="summary-item">
-              <div class="summary-label">Média por dívida</div>
-              <div class="summary-value" id="debts-media">R$ 0,00</div>
-            </div>
-          </div>
-
-          <div id="debts-table-wrapper" style="margin-top:10px;">
-            <table id="debts-table">
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>Descrição</th>
-                  <th>Valor</th>
-                  <th>Tipo</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Adicionar dívida</div>
-              <div class="card-sub">Lançamento rápido com parcelas e recorrência.</div>
-            </div>
-          </div>
-
-          <label for="d-nome">Nome</label>
-          <input id="d-nome" type="text" placeholder="Ex: Cartão Nubank" />
-
-          <label for="d-desc">Descrição</label>
-          <input
-            id="d-desc"
-            type="text"
-            placeholder="Ex: Fatura dezembro / IPVA / Aluguel"
-          />
-
-          <div class="row">
-            <div>
-              <label for="d-valor">Valor</label>
-              <input id="d-valor" type="number" step="0.01" placeholder="Ex: 450,00" />
-            </div>
-            <div>
-              <label for="d-parcelas">Parcelas</label>
-              <input id="d-parcelas" type="number" min="1" placeholder="Ex: 6" />
-            </div>
-          </div>
-
-          <div class="
+      font-size: 0.85rem;
+      font
