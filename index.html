@@ -1,776 +1,340 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#d7b478">
+<link rel="manifest" href="manifest.webmanifest">
 
 <title>Painel Prestes</title>
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.webmanifest">
-
-<!-- Fonte Inter -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
 <style>
-
-/* ============================================================
-   TEMA DUAL SUPER PREMIUM (CLARO 1 + ESCURO C)
-   ============================================================ */
-
-/* ----------- TEMA CLARO BRANCO MINIMAL (iOS) ----------- */
-:root {
-  --bg: #ffffff;
-  --card: #fafafa;
-  --border: #e2e2e2;
-  --text: #1d1d1d;
-  --subtext: #606060;
-  --accent: #d7b478;
-  --accent-strong: #c49c57;
-
-  --shadow-card: 0 4px 12px rgba(0,0,0,0.07);
-  --shadow-hover: 0 6px 18px rgba(0,0,0,0.12);
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial}
+body{
+  background:#1d1814;
+  color:#f3e7d6;
+  padding:16px;
 }
 
-/* ----------- TEMA ESCURO WARM DARK (quente e elegante) ----------- */
-[data-theme="dark"] {
-  --bg: #171311;
-  --card: #221d1a;
-  --border: #2f2824;
-  --text: #f5e9da;
-  --subtext: #bfae9a;
-  --accent: #d6b27d;
-  --accent-strong: #e7cfa1;
-
-  --shadow-card: 0 2px 10px rgba(0,0,0,0.5);
-  --shadow-hover: 0 4px 14px rgba(0,0,0,0.65);
-}
-
-/* ============================================================
-   ESTILOS GERAIS
-   ============================================================ */
-
-body {
-  margin: 0;
-  padding: 20px;
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  transition: background .35s ease, color .35s ease;
-}
-
-/* LOGO CP */
-.cp-logo-box {
-  width: 54px;
-  height: 54px;
-  background: linear-gradient(135deg, #fff, var(--accent));
-  border-radius: 16px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  box-shadow: var(--shadow-card);
-  color: #000;
-  font-weight: 800;
-  font-size: 1.45rem;
-}
-
-.header {
+header{
   display:flex;
   align-items:center;
-  gap:14px;
-  margin-bottom: 20px;
-}
-
-.header-title {
-  font-size: 1.8rem;
-  font-weight: 800;
-}
-
-/* ------------------------------------------------------------
-   NAV TABS
------------------------------------------------------------- */
-
-.tabs {
-  display:flex;
-  gap:10px;
-  margin-top:14px;
+  gap:12px;
   margin-bottom:20px;
 }
 
-.tab {
-  padding:10px 20px;
-  border-radius:14px;
-  background: var(--card);
-  border:1px solid var(--border);
-  box-shadow: var(--shadow-card);
-  font-weight:600;
-  cursor:pointer;
-  color: var(--subtext);
-  transition:.25s;
+.logo{
+  width:58px;
+  height:58px;
+  border-radius:16px;
+  background:linear-gradient(145deg,#fdf7ec,#c6a87a);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:900;
+  color:#1a1a1a;
 }
 
-.tab.active {
-  background: var(--accent);
-  border-color: var(--accent-strong);
-  color:#000;
-  box-shadow: var(--shadow-hover);
+h1{
+  font-size:26px;
+  font-weight:800;
 }
 
-/* ------------------------------------------------------------
-   CARDS
------------------------------------------------------------- */
-
-.card {
-  background: var(--card);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:20px;
-  box-shadow: var(--shadow-card);
+.tabs{
+  display:flex;
+  gap:12px;
   margin-bottom:22px;
-  transition:.25s;
 }
 
-.card:hover {
-  box-shadow: var(--shadow-hover);
-}
-
-/* Títulos */
-.card h3 {
-  margin:0 0 12px 0;
-  font-size:1.25rem;
-  font-weight:700;
-}
-
-/* Input padrão */
-input, select {
-  width:100%;
-  padding:14px;
-  margin-top:10px;
+.tab{
+  flex:1;
+  text-align:center;
+  padding:10px 14px;
   border-radius:12px;
-  border:1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-size:1rem;
+  background:#302820;
+  color:#e8d6b8;
+  font-size:17px;
+  font-weight:600;
+  border:1px solid #473a2d;
 }
 
-/* Botões */
-button {
-  padding:13px 18px;
-  border-radius:14px;
-  border:none;
+.tab.active{
+  background:#d7b478;
+  color:#1d1814;
+}
+
+/* CONTAINER */
+.card{
+  background:#2b241e;
+  border:1px solid #463a2e;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:20px;
+}
+
+/* BOTÃO */
+.btn{
+  margin-top:14px;
+  background:#d7b478;
+  color:#1d1814;
   font-weight:700;
-  cursor:pointer;
-  transition:.25s;
+  padding:14px 20px;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  width:100%;
+}
+
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:10px;
   margin-top:12px;
 }
 
-/* Botão principal */
-.btn-primary {
-  background: var(--accent);
-  color:#000;
+.day{
+  background:#3a3128;
+  padding:14px 0;
+  border-radius:14px;
+  text-align:center;
+  font-size:15px;
+  font-weight:600;
+  color:#f1e3c9;
 }
 
-.btn-primary:hover {
-  background: var(--accent-strong);
+.day.has{
+  background:#d7b478;
+  color:#1d1a18;
+  font-weight:900;
 }
 
-/* Botão secundário */
-.btn-secondary {
-  background: var(--border);
-  color: var(--text);
-}
-
-.btn-danger {
-  background:#d9534f;
-  color:#fff;
-}
-
-/* Ícones SVG inline */
-.icon {
-  width:20px;
-  height:20px;
-  vertical-align:middle;
-}
-
-/* ------------------------------------------------------------
-   CALENDÁRIO CLEAN
------------------------------------------------------------- */
-
-.calendar-nav {
+.monthHeader{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:14px;
+  margin-bottom:12px;
+  font-size:20px;
+  font-weight:700;
 }
 
-.month-button {
-  background: transparent;
+.monthBtn{
+  background:none;
   border:none;
-  font-size:1.45rem;
-  color: var(--text);
-  cursor:pointer;
-  padding:6px 10px;
-  border-radius:10px;
-  transition:.2s;
-}
-
-.month-button:hover {
-  background: var(--border);
-}
-
-#calendar {
-  display:grid;
-  grid-template-columns: repeat(7,1fr);
-  gap:8px;
-}
-
-.weekday {
-  text-align:center;
-  opacity:.55;
-  font-weight:600;
-}
-
-.day {
-  min-height:65px;
-  background: var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
+  color:#d7b478;
+  font-size:26px;
   padding:6px;
-  font-weight:600;
-  font-size:1rem;
-  cursor:pointer;
+}
+
+/* INPUTS */
+input, select{
+  width:100%;
+  margin-bottom:12px;
+  padding:12px;
+  background:#3a3128;
+  border:1px solid #574938;
+  border-radius:12px;
+  color:#f1e3c9;
+  font-size:16px;
+}
+
+.lista{
   display:flex;
   flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  transition:.25s;
+  gap:12px;
+  margin-top:12px;
 }
 
-.day:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-hover);
+.item{
+  background:#3b3229;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #4d4033;
 }
 
-.event-pill {
-  margin-top:4px;
-  padding:3px 6px;
-  border-radius:8px;
-  font-size:.7rem;
-  font-weight:700;
-  color:#fff;
-}
-
-.paid { background:#4caf50; }
-.partial { background:#e8a24a; }
-.pending { background:#777; }
-
-/* ------------------------------------------------------------
-   MODAL ANIMADO
------------------------------------------------------------- */
-
-#eventoModal {
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.55);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  backdrop-filter: blur(4px);
-  padding:20px;
-}
-
-#eventoModal.aberto {
-  display:flex;
-}
-
-.modal-box {
-  background: var(--card);
-  border-radius:20px;
-  padding:26px;
-  width:100%;
-  max-width:380px;
-  box-shadow: var(--shadow-hover);
-  animation: modalZoom .25s ease;
-}
-
-@keyframes modalZoom {
-  from { transform: scale(.85); opacity:0; }
-  to   { transform: scale(1); opacity:1; }
-}
-     /* ============================================================
-   LISTA DE EVENTOS
-============================================================ */
-
-.evento-item {
-  background: var(--card);
-  border:1px solid var(--border);
-  padding:16px;
-  border-radius:16px;
-  box-shadow: var(--shadow-card);
-  margin-bottom:14px;
-}
-
-.evento-item strong {
-  font-size:1.1rem;
-}
-
-.evento-top-info {
+.itemHeader{
   display:flex;
   justify-content:space-between;
-  font-size:.95rem;
-  color: var(--subtext);
-}
-
-/* ------------------------------------------------------------
-   GRÁFICO DE PIZZA
------------------------------------------------------------- */
-
-.chart-container {
-  display:flex;
-  justify-content:center;
-  margin-top:20px;
-}
-
-canvas {
-  max-width:280px;
-}
-
-/* ------------------------------------------------------------
-   ALTO CONTRASTE (botão)
------------------------------------------------------------- */
-
-.contrast-btn {
-  background: var(--accent);
-  color:#000;
   font-weight:700;
-  padding:12px 14px;
-  border-radius:12px;
-  cursor:pointer;
-  margin-top:14px;
-  border:none;
 }
-
-.contrast-btn:hover {
-  background: var(--accent-strong);
-}
-
-/* ============================================================
-   INÍCIO DO HTML VISUAL (LAYOUT)
-============================================================ */
 
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="cp-logo-box">CP</div>
-  <div class="header-title">Painel Prestes</div>
-</div>
+<header>
+  <div class="logo">CP</div>
+  <h1>Painel Prestes</h1>
+</header>
 
-<!-- TABS -->
 <div class="tabs">
-  <div class="tab active" data-tab="dashboard" onclick="abrirAba('dashboard', this)">Dashboard</div>
-  <div class="tab" data-tab="eventos" onclick="abrirAba('eventos', this)">Eventos</div>
+  <div class="tab active" id="tabDashboard">Dashboard</div>
+  <div class="tab" id="tabDividas">Dívidas</div>
+  <div class="tab" id="tabEventos">Eventos</div>
 </div>
 
-<!-- ===============================
-     DASHBOARD
-=============================== -->
-<div id="dashboard" class="aba">
+<div id="telaDashboard"></div>
+<div id="telaDividas" style="display:none"></div>
+<div id="telaEventos" style="display:none"></div>
 
-  <div class="card">
-    <h3>Resumo Financeiro</h3>
-    <p>Total no mês: <strong>R$ <span id="totalMes">0,00</span></strong></p>
-    <p>Recebido: <strong>R$ <span id="totalRecebido">0,00</span></strong></p>
-    <p>Falta receber: <strong>R$ <span id="totalFalta">0,00</span></strong></p>
-
-    <!-- Botão PDF -->
-    <button class="btn-primary" onclick="gerarPDF()">
-      📄 Gerar PDF do mês
-    </button>
-  </div>
-
-  <!-- GRÁFICO DE PIZZA -->
-  <div class="card">
-    <h3>Distribuição</h3>
-    <div class="chart-container">
-      <canvas id="pieChart"></canvas>
-    </div>
-  </div>
-
-  <!-- GRÁFICO DE BARRAS -->
-  <div class="card">
-    <h3>Histórico Mensal</h3>
-    <div class="chart-container">
-      <canvas id="barChart"></canvas>
-    </div>
-  </div>
-
-  <!-- CALENDÁRIO -->
-  <div class="card">
-
-    <div class="calendar-nav">
-      <button id="prevMonth" class="month-button">‹</button>
-      <h3 id="mesTitulo"></h3>
-      <button id="nextMonth" class="month-button">›</button>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px;">
-      <div class="weekday">Dom</div>
-      <div class="weekday">Seg</div>
-      <div class="weekday">Ter</div>
-      <div class="weekday">Qua</div>
-      <div class="weekday">Qui</div>
-      <div class="weekday">Sex</div>
-      <div class="weekday">Sáb</div>
-    </div>
-
-    <div id="calendar"></div>
-  </div>
-
-  <!-- MODO CONTRASTE -->
-  <button class="contrast-btn" onclick="alternarContraste()">
-    Alterar contraste
-  </button>
-
-</div>
-
-<!-- ===============================
-     LISTA DE EVENTOS
-=============================== -->
-<div id="eventos" class="aba" style="display:none;">
-
-  <div class="card">
-    <h3>Todos os eventos</h3>
-    <div id="listaEventos"></div>
-  </div>
-
-</div>
-
-<!-- ===============================
-     MODAL DE ADIÇÃO DE EVENTO
-=============================== -->
-<div id="eventoModal">
-  <div class="modal-box">
-
-    <h3 id="modalDiaTitulo">Adicionar evento</h3>
-
-    <input id="tituloEvento" placeholder="Nome do evento">
-    <input id="valorEvento" placeholder="Valor total" type="number">
-    <input id="recebidoEvento" placeholder="Recebido" type="number">
-
-    <button class="btn-primary" onclick="adicionarEvento(diaSelecionado)">
-      Adicionar
-    </button>
-
-    <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
-
-  </div>
-</div>
-<!-- ============================================================
-     JAVASCRIPT COMPLETO PREMIUM
-============================================================ -->
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+   // ----------------------
+// DATA STORAGE
+// ----------------------
+let dividas = JSON.parse(localStorage.getItem("dividas") || "[]");
+let eventos = JSON.parse(localStorage.getItem("eventos") || "[]");
 
-/* ============================================================
-   TEMA AUTOMÁTICO
-============================================================ */
-const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+// ----------------------
+// TABS
+// ----------------------
+function showTab(t){
+  document.getElementById("telaDashboard").style.display = t==="dash"?"block":"none";
+  document.getElementById("telaDividas").style.display = t==="div"?"block":"none";
+  document.getElementById("telaEventos").style.display = t==="eve"?"block":"none";
 
-function aplicarTemaInicial() {
-  document.documentElement.setAttribute(
-    "data-theme",
-    localStorage.getItem("tema") ||
-    (prefersDark.matches ? "dark" : "light")
-  );
+  document.getElementById("tabDashboard").classList.toggle("active", t==="dash");
+  document.getElementById("tabDividas").classList.toggle("active", t==="div");
+  document.getElementById("tabEventos").classList.toggle("active", t==="eve");
 }
 
-aplicarTemaInicial();
+document.getElementById("tabDashboard").onclick = ()=>showTab("dash");
+document.getElementById("tabDividas").onclick = ()=>showTab("div");
+document.getElementById("tabEventos").onclick = ()=>showTab("eve");
 
-prefersDark.addEventListener("change", e => {
-  if (!localStorage.getItem("tema")) {
-    document.documentElement.setAttribute("data-theme", e.matches ? "dark" : "light");
-  }
-});
-
-/* ============================================================
-   ALTERNAR CONTRASTE
-============================================================ */
-function alternarContraste() {
-  const temaAtual = document.documentElement.getAttribute("data-theme");
-  const novo = temaAtual === "light" ? "dark" : "light";
-  document.documentElement.setAttribute("data-theme", novo);
-  localStorage.setItem("tema", novo);
-}
-
-/* ============================================================
-   BANCO DE DADOS
-============================================================ */
-let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
-
-function salvar() {
-  localStorage.setItem("eventos", JSON.stringify(eventos));
-}
-
-/* ============================================================
-   DATA ATUAL
-============================================================ */
-let hoje = new Date();
-let mesAtual = hoje.getMonth();
-let anoAtual = hoje.getFullYear();
-
-const meses = [
-  "janeiro","fevereiro","março","abril","maio","junho",
-  "julho","agosto","setembro","outubro","novembro","dezembro"
-];
-
-/* ============================================================
-   ABAS
-============================================================ */
-function abrirAba(aba, botao) {
-  document.querySelectorAll(".aba").forEach(a => a.style.display = "none");
-  document.getElementById(aba).style.display = "block";
-
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  botao.classList.add("active");
-}
-
-/* ============================================================
-   CALENDÁRIO
-============================================================ */
-function renderCalendario() {
-  document.getElementById("mesTitulo").innerText =
-    `${meses[mesAtual]} de ${anoAtual}`;
-
-  const cal = document.getElementById("calendar");
-  cal.innerHTML = "";
-
-  const primeiro = new Date(anoAtual, mesAtual, 1).getDay();
-  const total = new Date(anoAtual, mesAtual + 1, 0).getDate();
-
-  for (let i = 0; i < primeiro; i++) {
-    const e = document.createElement("div");
-    e.className = "day empty";
-    cal.appendChild(e);
-  }
-
-  for (let d = 1; d <= total; d++) {
-    const box = document.createElement("div");
-    box.className = "day";
-    box.innerHTML = `<span>${d}</span>`;
-
-    const evs = eventos.filter(ev =>
-      ev.dia == d && ev.mes == mesAtual && ev.ano == anoAtual
-    );
-
-    evs.forEach(ev => {
-      const tag = document.createElement("div");
-      tag.className = "event-pill " + (
-        ev.pago ? "paid" : ev.recebido > 0 ? "partial" : "pending"
-      );
-      tag.innerText = ev.titulo.slice(0, 10);
-      box.appendChild(tag);
-    });
-
-    box.onclick = () => abrirModal(d);
-    cal.appendChild(box);
-  }
-}
-
-/* Trocar mês */
-document.getElementById("prevMonth").onclick = () => {
-  mesAtual--;
-  if (mesAtual < 0) { mesAtual = 11; anoAtual--; }
-  renderCompleto();
-};
-
-document.getElementById("nextMonth").onclick = () => {
-  mesAtual++;
-  if (mesAtual > 11) { mesAtual = 0; anoAtual++; }
-  renderCompleto();
-};
-
-/* ============================================================
-   MODAL
-============================================================ */
-let diaSelecionado = null;
-
-function abrirModal(dia) {
-  diaSelecionado = dia;
-  document.getElementById("modalDiaTitulo").innerText = "Adicionar evento no dia " + dia;
-  document.getElementById("eventoModal").classList.add("aberto");
-}
-
-function fecharModal() {
-  document.getElementById("eventoModal").classList.remove("aberto");
-}
-
-/* ============================================================
-   ADICIONAR EVENTO
-============================================================ */
-function adicionarEvento(dia) {
-  let titulo = tituloEvento.value;
-  let valor = Number(valorEvento.value);
-  let recebido = Number(recebidoEvento.value);
-  let pago = recebido >= valor;
-
-  eventos.push({
-    titulo,
-    valor,
-    recebido,
-    pago,
-    dia,
-    mes: mesAtual,
-    ano: anoAtual
-  });
-
-  salvar();
-  renderCompleto();
-  fecharModal();
-}
-
-/* ============================================================
-   REMOVER EVENTO
-============================================================ */
-function remover(i) {
-  eventos.splice(i, 1);
-  salvar();
-  renderCompleto();
-}
-
-/* ============================================================
-   LISTA DE EVENTOS
-============================================================ */
-function atualizarLista() {
-  const l = document.getElementById("listaEventos");
-  l.innerHTML = "";
-
-  eventos.forEach((ev, i) => {
-    const item = document.createElement("div");
-    item.className = "evento-item";
-
-    item.innerHTML = `
-      <div class="evento-top-info">
-        <strong>${ev.titulo}</strong>
-        <span>${ev.dia}/${ev.mes + 1}/${ev.ano}</span>
-      </div>
-      <p>Valor: R$ ${ev.valor.toFixed(2)}</p>
-      <p>Status: ${ev.pago ? "Pago" : ev.recebido > 0 ? "Recebido parcial" : "Em aberto"}</p>
-
-      <button class="btn-danger" onclick="remover(${i})">
-        Remover
-      </button>
-    `;
-
-    l.appendChild(item);
-  });
-}
-
-/* ============================================================
-   RESUMO FINANCEIRO
-============================================================ */
-function atualizarFinanceiro() {
-  let total = 0;
-  let recebido = 0;
-
-  eventos.forEach(e => {
-    total += e.valor;
-    recebido += e.recebido;
-  });
-
-  document.getElementById("totalMes").innerText = total.toFixed(2);
-  document.getElementById("totalRecebido").innerText = recebido.toFixed(2);
-  document.getElementById("totalFalta").innerText = (total - recebido).toFixed(2);
-}
-
-/* ============================================================
-   GRÁFICO DE PIZZA
-============================================================ */
-let pieChart = null;
-
-function renderPizza() {
-  const ctx = document.getElementById("pieChart");
-
-  if (pieChart) pieChart.destroy();
-
-  let total = eventos.reduce((s, e) => s + e.valor, 0);
-  let recebido = eventos.reduce((s, e) => s + e.recebido, 0);
+// ----------------------
+// DASHBOARD
+// ----------------------
+function renderDashboard(){
+  let total = dividas.reduce((s,x)=>s+Number(x.valor),0);
+  let recebido = dividas.reduce((s,x)=>s+Number(x.recebido||0),0);
   let falta = total - recebido;
 
-  pieChart = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels: ["Recebido", "Falta"],
-      datasets: [{
-        data: [recebido, falta],
-        backgroundColor: ["#4caf50", "#e8a24a"],
-      }]
-    }
-  });
+  document.getElementById("telaDashboard").innerHTML = `
+    <div class='card'>
+      <h2>Resumo Financeiro</h2>
+      <p>Total no mês: <b>R$ ${total.toFixed(2)}</b></p>
+      <p>Recebido: <b>R$ ${recebido.toFixed(2)}</b></p>
+      <p>Falta receber: <b>R$ ${falta.toFixed(2)}</b></p>
+      <button class='btn'>📄 Gerar PDF do mês</button>
+    </div>
+  `;
 }
 
-/* ============================================================
-   GRÁFICO DE BARRAS
-============================================================ */
-let barChart = null;
+// ----------------------
+// DÍVIDAS
+// ----------------------
+function renderDividas(){
+  document.getElementById("telaDividas").innerHTML = `
+    <div class='card'>
+      <h2>Adicionar dívida</h2>
+      <input id='dNome' placeholder='Nome da dívida'>
+      <input id='dDesc' placeholder='Descrição'>
+      <input id='dValor' placeholder='Valor (ex: 450)'>
+      <button class='btn' onclick='addDivida()'>Adicionar</button>
+    </div>
 
-function renderBar() {
-  const ctx = document.getElementById("barChart");
-
-  if (barChart) barChart.destroy();
-
-  const dados = new Array(12).fill(0);
-
-  eventos.forEach(ev => {
-    dados[ev.mes] += ev.recebido;
-  });
-
-  barChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: meses,
-      datasets: [{
-        label: "Recebido",
-        data: dados,
-        backgroundColor: "#c49c57"
-      }]
-    }
-  });
+    <div class='card'>
+      <h2>Minhas dívidas</h2>
+      <div class='lista'>
+        ${dividas.map(d=>`
+          <div class='item'>
+            <div class='itemHeader'>
+              <span>${d.nome}</span>
+              <b>R$ ${d.valor}</b>
+            </div>
+            <p>${d.descricao}</p>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
 }
 
-/* ============================================================
-   GERAR PDF
-============================================================ */
-function gerarPDF() {
-  alert("PDF gerado com sucesso! (mock). Versão real pode exportar via html2pdf.js)");
+function addDivida(){
+  const nome=document.getElementById("dNome").value;
+  const desc=document.getElementById("dDesc").value;
+  const valor=Number(document.getElementById("dValor").value);
+
+  if(!nome||!valor) return alert("Preencha nome e valor!");
+
+  dividas.push({nome,descricao:desc,valor,recebido:0});
+  localStorage.setItem("dividas",JSON.stringify(dividas));
+  renderDividas();
+  renderDashboard();
 }
 
-/* ============================================================
-   RENDER COMPLETO
-============================================================ */
-function renderCompleto() {
-  renderCalendario();
-  atualizarLista();
-  atualizarFinanceiro();
-  renderPizza();
-  renderBar();
+// ----------------------
+// EVENTOS
+// ----------------------
+let mesAtual = new Date().getMonth();
+let anoAtual = new Date().getFullYear();
+
+function renderEventos(){
+  const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+
+  let primeiro = new Date(anoAtual,mesAtual,1).getDay();
+  let dias = new Date(anoAtual,mesAtual+1,0).getDate();
+
+  let html = `
+    <div class='card'>
+      <div class='monthHeader'>
+        <button class='monthBtn' onclick='mesAtual--;renderEventos()'>&larr;</button>
+        ${meses[mesAtual]} ${anoAtual}
+        <button class='monthBtn' onclick='mesAtual++;renderEventos()'>&rarr;</button>
+      </div>
+
+      <div class='calendar'>
+        ${"<div></div>".repeat(primeiro)}
+        ${Array.from({length:dias},(_,i)=>`
+          <div class='day' onclick='addEvento(${i+1})'>
+            ${i+1}
+          </div>
+        `).join("")}
+      </div>
+    </div>
+
+    <div class='card'>
+      <h2>Eventos</h2>
+      <div class='lista'>
+        ${eventos.map(e=>`
+          <div class='item'>
+            <div class='itemHeader'>
+              <span>${e.data}</span>
+              <b>R$ ${e.recebido}</b>
+            </div>
+            <p>${e.descricao}</p>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+
+  document.getElementById("telaEventos").innerHTML = html;
 }
 
-/* Inicialização */
-renderCompleto();
+function addEvento(dia){
+  let descricao=prompt("Descrição:");
+  let valor = prompt("Valor recebido:");
+  if(!descricao||!valor) return;
+  eventos.push({data:dia+"/"+(mesAtual+1)+"/"+anoAtual,descricao,recebido:Number(valor)});
+  localStorage.setItem("eventos",JSON.stringify(eventos));
+  renderEventos();
+  renderDashboard();
+}
+// ----------------------
+// INICIALIZAÇÃO
+// ----------------------
+renderDashboard();
+renderDividas();
+renderEventos();
 
-/* PWA */
-if ("serviceWorker" in navigator) {
+// ----------------------
+// PWA
+// ----------------------
+if("serviceWorker" in navigator){
   navigator.serviceWorker.register("sw.js");
 }
-
 </script>
 
 </body>
