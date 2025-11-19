@@ -1,114 +1,163 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#d7b478">
-<link rel="manifest" href="manifest.webmanifest">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#d7b478" />
+
+<link rel="manifest" href="manifest.webmanifest" />
 
 <title>Painel Prestes</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial}
-body{
-  background:#1d1814;
-  color:#f3e7d6;
-  padding:16px;
+:root{
+  --gold:#d7b478;
+  --gold-light:#f3e7d6;
+  --bg:#1d1814;
+  --bg-card:#2b241e;
+  --bg-alt:#3a3028;
+  --border:#463a2e;
+  --text:#f5e9d5;
+  --text-dark:#1d1814;
+  --danger:#d96e6e;
 }
 
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Inter,Arial,sans-serif;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  padding:18px;
+}
+
+/* HEADER */
 header{
   display:flex;
   align-items:center;
-  gap:12px;
-  margin-bottom:20px;
+  gap:14px;
+  margin-bottom:22px;
 }
 
-.logo{
-  width:58px;
-  height:58px;
-  border-radius:16px;
+.logoCP{
+  width:62px;
+  height:62px;
   background:linear-gradient(145deg,#fdf7ec,#c6a87a);
+  border-radius:18px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:22px;
+  font-size:26px;
   font-weight:900;
   color:#1a1a1a;
+  box-shadow:0 4px 12px rgba(0,0,0,0.35);
 }
 
 h1{
-  font-size:26px;
+  font-size:28px;
   font-weight:800;
+  color:var(--gold-light);
 }
 
+/* TABS */
 .tabs{
   display:flex;
   gap:12px;
-  margin-bottom:22px;
+  margin-bottom:20px;
 }
 
 .tab{
   flex:1;
+  padding:12px;
+  background:var(--bg-card);
   text-align:center;
-  padding:10px 14px;
-  border-radius:12px;
-  background:#302820;
-  color:#e8d6b8;
-  font-size:17px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  font-size:16px;
   font-weight:600;
-  border:1px solid #473a2d;
+  cursor:pointer;
+  color:var(--gold-light);
 }
 
 .tab.active{
-  background:#d7b478;
-  color:#1d1814;
+  background:var(--gold);
+  color:var(--text-dark);
+  box-shadow:0 3px 12px rgba(215,180,120,0.45);
 }
 
-/* CONTAINER */
+/* CARDS */
 .card{
-  background:#2b241e;
-  border:1px solid #463a2e;
+  background:var(--bg-card);
+  border:1px solid var(--border);
   border-radius:18px;
   padding:18px;
-  margin-bottom:20px;
+  margin-bottom:22px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.25);
 }
 
-/* BOTÃO */
-.btn{
-  margin-top:14px;
-  background:#d7b478;
-  color:#1d1814;
-  font-weight:700;
-  padding:14px 20px;
-  border:none;
-  border-radius:14px;
-  font-size:16px;
+.card h2{
+  font-size:22px;
+  margin-bottom:12px;
+}
+
+/* INPUTS */
+.input{
   width:100%;
-}
-
-.calendar{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:10px;
-  margin-top:12px;
-}
-
-.day{
-  background:#3a3128;
-  padding:14px 0;
+  padding:14px;
   border-radius:14px;
-  text-align:center;
-  font-size:15px;
-  font-weight:600;
-  color:#f1e3c9;
+  border:1px solid var(--border);
+  background:var(--bg-alt);
+  margin-bottom:12px;
+  font-size:16px;
+  color:var(--text);
 }
 
-.day.has{
-  background:#d7b478;
-  color:#1d1a18;
-  font-weight:900;
+/* BUTTON */
+.btn{
+  width:100%;
+  background:var(--gold);
+  color:var(--text-dark);
+  border:none;
+  padding:14px;
+  margin-top:8px;
+  font-size:16px;
+  font-weight:800;
+  border-radius:14px;
+  cursor:pointer;
+  box-shadow:0 3px 10px rgba(215,180,120,0.4);
 }
 
+.btn-danger{
+  background:var(--danger);
+  color:white;
+}
+
+.lista{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.item{
+  background:var(--bg-alt);
+  border-radius:14px;
+  border:1px solid var(--border);
+  padding:14px;
+}
+
+.itemHeader{
+  display:flex;
+  justify-content:space-between;
+  font-size:17px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+/* CALENDÁRIO */
 .monthHeader{
   display:flex;
   justify-content:space-between;
@@ -116,46 +165,90 @@ h1{
   margin-bottom:12px;
   font-size:20px;
   font-weight:700;
+  color:var(--gold-light);
 }
 
 .monthBtn{
   background:none;
   border:none;
-  color:#d7b478;
-  font-size:26px;
-  padding:6px;
+  color:var(--gold);
+  font-size:28px;
+  cursor:pointer;
 }
 
-/* INPUTS */
-input, select{
-  width:100%;
-  margin-bottom:12px;
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:10px;
+}
+
+.day{
+  padding:14px 0;
+  background:var(--bg-alt);
+  border-radius:14px;
+  text-align:center;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.day.has{
+  background:var(--gold);
+  color:var(--text-dark);
+  font-weight:800;
+}
+/* ============================
+   TELAS
+============================ */
+
+#telaDashboard,
+#telaDividas,
+#telaEventos {
+  display:none;
+}
+
+#telaDashboard.active,
+#telaDividas.active,
+#telaEventos.active {
+  display:block;
+}
+
+/* ALERTAS DASHBOARD */
+.alerta{
+  background:#3a3028;
+  border-left:4px solid var(--gold);
   padding:12px;
-  background:#3a3128;
-  border:1px solid #574938;
   border-radius:12px;
-  color:#f1e3c9;
-  font-size:16px;
+  margin:8px 0;
+  font-size:15px;
+  opacity:0.9;
 }
 
-.lista{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin-top:12px;
+/* MODAL */
+#modalFundo{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.65);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:900;
 }
 
-.item{
-  background:#3b3229;
-  padding:14px;
-  border-radius:12px;
-  border:1px solid #4d4033;
+.modalBox{
+  background:var(--bg-card);
+  padding:20px;
+  width:100%;
+  max-width:380px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  animation:pop 0.3s ease;
 }
 
-.itemHeader{
-  display:flex;
-  justify-content:space-between;
-  font-weight:700;
+@keyframes pop{
+  0%{transform:scale(0.9);opacity:0;}
+  100%{transform:scale(1);opacity:1;}
 }
 
 </style>
@@ -164,86 +257,155 @@ input, select{
 <body>
 
 <header>
-  <div class="logo">CP</div>
+  <div class="logoCP">CP</div>
   <h1>Painel Prestes</h1>
 </header>
 
 <div class="tabs">
-  <div class="tab active" id="tabDashboard">Dashboard</div>
-  <div class="tab" id="tabDividas">Dívidas</div>
-  <div class="tab" id="tabEventos">Eventos</div>
+  <div class="tab active" id="tabDash">Dashboard</div>
+  <div class="tab" id="tabDiv">Dívidas</div>
+  <div class="tab" id="tabEve">Eventos</div>
 </div>
 
-<div id="telaDashboard"></div>
-<div id="telaDividas" style="display:none"></div>
-<div id="telaEventos" style="display:none"></div>
+<!-- TELAS -->
+<div id="telaDashboard" class="active"></div>
+<div id="telaDividas"></div>
+<div id="telaEventos"></div>
+
+<!-- MODAL GLOBAL -->
+<div id="modalFundo">
+  <div class="modalBox" id="modalConteudo"></div>
+</div>
 
 <script>
-   // ----------------------
-// DATA STORAGE
-// ----------------------
+
+/* ============================
+   STORAGE
+============================ */
 let dividas = JSON.parse(localStorage.getItem("dividas") || "[]");
 let eventos = JSON.parse(localStorage.getItem("eventos") || "[]");
 
-// ----------------------
-// TABS
-// ----------------------
-function showTab(t){
-  document.getElementById("telaDashboard").style.display = t==="dash"?"block":"none";
-  document.getElementById("telaDividas").style.display = t==="div"?"block":"none";
-  document.getElementById("telaEventos").style.display = t==="eve"?"block":"none";
-
-  document.getElementById("tabDashboard").classList.toggle("active", t==="dash");
-  document.getElementById("tabDividas").classList.toggle("active", t==="div");
-  document.getElementById("tabEventos").classList.toggle("active", t==="eve");
+function saveAll(){
+  localStorage.setItem("dividas", JSON.stringify(dividas));
+  localStorage.setItem("eventos", JSON.stringify(eventos));
 }
 
-document.getElementById("tabDashboard").onclick = ()=>showTab("dash");
-document.getElementById("tabDividas").onclick = ()=>showTab("div");
-document.getElementById("tabEventos").onclick = ()=>showTab("eve");
+/* ============================
+   CONTROLE DE ABAS
+============================ */
+function abrirAba(id){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll("#telaDashboard, #telaDividas, #telaEventos").forEach(t=>t.classList.remove("active"));
 
-// ----------------------
-// DASHBOARD
-// ----------------------
+  if(id==="dash"){
+    tabDash.classList.add("active");
+    telaDashboard.classList.add("active");
+    renderDashboard();
+  }
+  if(id==="div"){
+    tabDiv.classList.add("active");
+    telaDividas.classList.add("active");
+    renderDividas();
+  }
+  if(id==="eve"){
+    tabEve.classList.add("active");
+    telaEventos.classList.add("active");
+    renderEventos();
+  }
+}
+
+tabDash.onclick = ()=>abrirAba("dash");
+tabDiv.onclick = ()=>abrirAba("div");
+tabEve.onclick = ()=>abrirAba("eve");
+
+
+/* ============================================================
+   DASHBOARD HÍBRIDO (Resumo + gráficos + alertas)
+============================================================ */
 function renderDashboard(){
-  let total = dividas.reduce((s,x)=>s+Number(x.valor),0);
-  let recebido = dividas.reduce((s,x)=>s+Number(x.recebido||0),0);
+  let total = dividas.reduce((s,d)=>s+Number(d.valor),0);
+  let recebido = dividas.reduce((s,d)=>s+Number(d.recebido||0),0);
   let falta = total - recebido;
 
-  document.getElementById("telaDashboard").innerHTML = `
-    <div class='card'>
+  // ALERTAS inteligentes
+  const alertas = [];
+
+  for(const d of dividas){
+    if(d.tipo==="recorrente"){
+      alertas.push(`🔔 Dívida recorrente ativa: ${d.nome}`);
+    }
+    if(d.recebido < d.valor && d.recebido > 0){
+      alertas.push(`🟡 Pagamento parcial em ${d.nome}`);
+    }
+  }
+
+  for(const e of eventos){
+    if(e.recebido < e.valor){
+      alertas.push(`📷 Evento pendente: ${e.nome}`);
+    }
+  }
+
+  telaDashboard.innerHTML = `
+    <div class="card">
       <h2>Resumo Financeiro</h2>
-      <p>Total no mês: <b>R$ ${total.toFixed(2)}</b></p>
+      <p>Total: <b>R$ ${total.toFixed(2)}</b></p>
       <p>Recebido: <b>R$ ${recebido.toFixed(2)}</b></p>
-      <p>Falta receber: <b>R$ ${falta.toFixed(2)}</b></p>
-      <button class='btn'>📄 Gerar PDF do mês</button>
+      <p>Falta: <b>R$ ${falta.toFixed(2)}</b></p>
+    </div>
+
+    <div class="card">
+      <h2>Alertas</h2>
+      ${alertas.length === 0 
+        ? "<p>Nenhum alerta no momento.</p>" 
+        : alertas.map(a=>`<div class='alerta'>${a}</div>`).join("")}
+    </div>
+
+    <div class="card">
+      <h2>Gráfico (breve)</h2>
+      <p>O gráfico será carregado na parte 4.</p>
     </div>
   `;
 }
 
-// ----------------------
-// DÍVIDAS
-// ----------------------
+
+/* ============================================================
+   DÍVIDAS (COM PARCELAS + RECORRÊNCIA v3)
+============================================================ */
+
 function renderDividas(){
-  document.getElementById("telaDividas").innerHTML = `
-    <div class='card'>
+  telaDividas.innerHTML = `
+    <div class="card">
       <h2>Adicionar dívida</h2>
-      <input id='dNome' placeholder='Nome da dívida'>
-      <input id='dDesc' placeholder='Descrição'>
-      <input id='dValor' placeholder='Valor (ex: 450)'>
-      <button class='btn' onclick='addDivida()'>Adicionar</button>
+
+      <input class="input" id="dNome" placeholder="Nome">
+      <input class="input" id="dValor" placeholder="Valor total">
+      <input class="input" id="dReceb" placeholder="Recebido (opcional)">
+      
+      <select class="input" id="dTipo">
+        <option value="unica">Única</option>
+        <option value="recorrente">Recorrente todo mês</option>
+        <option value="parcelada">Parcelada (X vezes)</option>
+      </select>
+
+      <input class="input" id="dParcelas" placeholder="Parcelas (se parcelada)">
+      <input class="input" id="dFim" placeholder="Mês final (se recorrente)">
+      
+      <button class="btn" onclick="addDivida()">Adicionar</button>
     </div>
 
-    <div class='card'>
+    <div class="card">
       <h2>Minhas dívidas</h2>
-      <div class='lista'>
-        ${dividas.map(d=>`
-          <div class='item'>
-            <div class='itemHeader'>
+      <div class="lista">
+        ${dividas.map((d,i)=>`
+          <div class="item">
+            <div class="itemHeader">
               <span>${d.nome}</span>
               <b>R$ ${d.valor}</b>
             </div>
-            <p>${d.descricao}</p>
+            <p>Tipo: ${d.tipo}</p>
+            <p>Recebido: R$ ${d.recebido || 0}</p>
+
+            <button class="btn-danger" onclick="removerDivida(${i})">Remover</button>
           </div>
         `).join("")}
       </div>
@@ -251,91 +413,315 @@ function renderDividas(){
   `;
 }
 
+// ADICIONAR DÍVIDA
 function addDivida(){
-  const nome=document.getElementById("dNome").value;
-  const desc=document.getElementById("dDesc").value;
-  const valor=Number(document.getElementById("dValor").value);
+  const nome = dNome.value;
+  const valor = Number(dValor.value);
+  const recebido = Number(dReceb.value || 0);
+  const tipo = dTipo.value;
+  const parcelas = Number(dParcelas.value || 0);
+  const fim = dFim.value;
 
-  if(!nome||!valor) return alert("Preencha nome e valor!");
+  if(!nome || !valor){
+    alert("Nome e valor são obrigatórios");
+    return;
+  }
+  /* ============================================================
+   EVENTOS — SISTEMA COMPLETO (Aba + Modal + Calendário)
+============================================================ */
 
-  dividas.push({nome,descricao:desc,valor,recebido:0});
-  localStorage.setItem("dividas",JSON.stringify(dividas));
-  renderDividas();
-  renderDashboard();
-}
+let mesEve = new Date().getMonth();
+let anoEve = new Date().getFullYear();
 
-// ----------------------
-// EVENTOS
-// ----------------------
-let mesAtual = new Date().getMonth();
-let anoAtual = new Date().getFullYear();
+const mesesNomes = [
+  "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+  "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+];
 
+/* RENDERIZAR TELA DE EVENTOS */
 function renderEventos(){
-  const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  const primeiroDia = new Date(anoEve, mesEve, 1).getDay();
+  const diasNoMes = new Date(anoEve, mesEve+1, 0).getDate();
 
-  let primeiro = new Date(anoAtual,mesAtual,1).getDay();
-  let dias = new Date(anoAtual,mesAtual+1,0).getDate();
+  let calendario = "";
+  calendario += "<div class='monthHeader'>";
+  calendario += `<button class='monthBtn' onclick='mesEve--;renderEventos()'>&larr;</button>`;
+  calendario += `${mesesNomes[mesEve]} ${anoEve}`;
+  calendario += `<button class='monthBtn' onclick='mesEve++;renderEventos()'>&rarr;</button>`;
+  calendario += "</div>";
 
-  let html = `
-    <div class='card'>
-      <div class='monthHeader'>
-        <button class='monthBtn' onclick='mesAtual--;renderEventos()'>&larr;</button>
-        ${meses[mesAtual]} ${anoAtual}
-        <button class='monthBtn' onclick='mesAtual++;renderEventos()'>&rarr;</button>
-      </div>
+  // GRID DO CALENDÁRIO
+  calendario += "<div class='calendar'>";
+  calendario += "<div></div>".repeat(primeiroDia);
 
-      <div class='calendar'>
-        ${"<div></div>".repeat(primeiro)}
-        ${Array.from({length:dias},(_,i)=>`
-          <div class='day' onclick='addEvento(${i+1})'>
-            ${i+1}
-          </div>
-        `).join("")}
-      </div>
-    </div>
+  for(let d = 1; d <= diasNoMes; d++){
+    const temEvento = eventos.some(ev => ev.dia == d && ev.mes == mesEve && ev.ano == anoEve);
 
-    <div class='card'>
-      <h2>Eventos</h2>
-      <div class='lista'>
-        ${eventos.map(e=>`
-          <div class='item'>
-            <div class='itemHeader'>
-              <span>${e.data}</span>
-              <b>R$ ${e.recebido}</b>
+    calendario += `
+      <div class="day ${temEvento?"has":""}" onclick="abrirModalEvento(${d})">
+        ${d}
+      </div>`;
+  }
+  calendario += "</div>";
+
+  // LISTA DE EVENTOS
+  let listaE = `
+    <div class="card">
+      <h2>Todos os eventos</h2>
+      <div class="lista">
+        ${eventos.map(ev => `
+          <div class="item">
+            <div class="itemHeader">
+              <span>${ev.empresa}</span>
+              <b>R$ ${ev.recebido}/${ev.valor}</b>
             </div>
-            <p>${e.descricao}</p>
+            <p>${ev.servico}</p>
+            <p>${ev.dia}/${ev.mes+1}/${ev.ano}</p>
+            <button class="btn-danger" onclick="removerEvento(${eventos.indexOf(ev)})">
+              Remover
+            </button>
           </div>
         `).join("")}
       </div>
     </div>
   `;
 
-  document.getElementById("telaEventos").innerHTML = html;
+  telaEventos.innerHTML = `
+    <div class="card">
+      <h2>Calendário de eventos</h2>
+      ${calendario}
+    </div>
+
+    ${listaE}
+  `;
+}
+
+/* MODAL DE EVENTO */
+function abrirModalEvento(dia){
+  modalFundo.style.display = "flex";
+  modalConteudo.innerHTML = `
+    <h2>Novo Evento – Dia ${dia}</h2>
+
+    <input class="input" id="evEmpresa" placeholder="Empresa">
+    <input class="input" id="evServico" placeholder="Serviço / Tipo de evento">
+    <input class="input" id="evValor" placeholder="Valor total">
+    <input class="input" id="evRecebido" placeholder="Recebido / parcial (opcional)">
+    <textarea class="input" id="evObs" placeholder="Observações" style="height:90px"></textarea>
+
+    <button class="btn" onclick="addEvento(${dia})">Salvar evento</button>
+    <button class="btn-danger" onclick="fecharModal()">Cancelar</button>
+  `;
+}
+
+function fecharModal(){
+  modalFundo.style.display = "none";
 }
 
 function addEvento(dia){
-  let descricao=prompt("Descrição:");
-  let valor = prompt("Valor recebido:");
-  if(!descricao||!valor) return;
-  eventos.push({data:dia+"/"+(mesAtual+1)+"/"+anoAtual,descricao,recebido:Number(valor)});
-  localStorage.setItem("eventos",JSON.stringify(eventos));
+  const empresa = evEmpresa.value;
+  const servico = evServico.value;
+  const valor = Number(evValor.value);
+  const recebido = Number(evRecebido.value || 0);
+  const obs = evObs.value || "";
+
+  if(!empresa || !servico || !valor){
+    alert("Preencha empresa, serviço e valor!");
+    return;
+  }
+
+  eventos.push({
+    empresa,
+    servico,
+    valor,
+    recebido,
+    obs,
+    dia,
+    mes: mesEve,
+    ano: anoEve
+  });
+
+  saveAll();
+  fecharModal();
   renderEventos();
   renderDashboard();
 }
-// ----------------------
-// INICIALIZAÇÃO
-// ----------------------
-renderDashboard();
-renderDividas();
-renderEventos();
 
-// ----------------------
-// PWA
-// ----------------------
+function removerEvento(i){
+  eventos.splice(i,1);
+  saveAll();
+  renderEventos();
+  renderDashboard();
+}
+/* =========================================================================
+   PARTE 4 — JAVASCRIPT FINAL (GRÁFICOS + BACKUP + PDF + PWA)
+=========================================================================== */
+
+</style>
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+/* ==========================================================
+   GRÁFICOS
+========================================================== */
+
+let pizza = null;
+let barras = null;
+
+function atualizarGraficos(){
+  const ctx1 = document.getElementById("grafPizza");
+  const ctx2 = document.getElementById("grafBarras");
+
+  if(!ctx1 || !ctx2) return;
+
+  const total = dividas.reduce((s,d)=>s+d.valor,0);
+  const recebido = dividas.reduce((s,d)=>s+(d.recebido||0),0);
+  const falta = total - recebido;
+
+  // ------- PIZZA -------
+  if(pizza) pizza.destroy();
+
+  pizza = new Chart(ctx1,{
+    type:"pie",
+    data:{
+      labels:["Recebido","Falta"],
+      datasets:[{
+        data:[recebido,falta],
+        backgroundColor:["#d7b478","#9e8655"]
+      }]
+    }
+  });
+
+  // ------- BARRAS -------
+  if(barras) barras.destroy();
+
+  const porMes = Array(12).fill(0);
+  eventos.forEach(ev=>{
+    porMes[ev.mes] += ev.recebido;
+  });
+
+  barras = new Chart(ctx2,{
+    type:"bar",
+    data:{
+      labels:["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
+      datasets:[{
+        label:"Recebido por mês",
+        backgroundColor:"#d7b478",
+        data:porMes
+      }]
+    }
+  });
+}
+
+/* ==========================================================
+   SISTEMA DE BACKUP / RESTORE
+========================================================== */
+
+function gerarBackup(){
+  const data = {
+    dividas,
+    eventos
+  };
+
+  const blob = new Blob([JSON.stringify(data)],{type:"application/json"});
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "painel-prestes.cpbackup";
+  a.click();
+
+  URL.revokeObjectURL(url);
+  alert("Backup gerado!");
+}
+
+function restaurarBackup(){
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.accept = ".cpbackup,application/json";
+
+  inp.onchange = ()=> {
+    const file = inp.files[0];
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const data = JSON.parse(reader.result);
+        dividas = data.dividas || [];
+        eventos = data.eventos || [];
+        saveAll();
+        renderDashboard();
+        renderDividas();
+        renderEventos();
+        atualizarGraficos();
+        alert("Backup restaurado!");
+      }catch(e){
+        alert("Arquivo inválido!");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  inp.click();
+}
+
+/* ==========================================================
+   PDF REAL DO MÊS
+========================================================== */
+
+function gerarPDF(){
+  alert("Versão real do PDF ativada depois — estrutura pronta.");
+}
+
+/* ==========================================================
+   RENDERIZAÇÃO COMPLETA
+========================================================== */
+
+function renderCompleto(){
+  renderDashboard();
+  renderDividas();
+  renderEventos();
+  atualizarGraficos();
+}
+
+/* ==========================================================
+   INICIALIZAÇÃO DO APP
+========================================================== */
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+  // inserir os gráficos no Dashboard
+  telaDashboard.innerHTML += `
+    <div class="card">
+      <h2>Gráfico Financeiro</h2>
+      <canvas id="grafPizza"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Recebido por mês</h2>
+      <canvas id="grafBarras"></canvas>
+    </div>
+
+    <div class="card">
+      <button class="btn" onclick="gerarBackup()">📦 Backup</button>
+      <button class="btn" onclick="restaurarBackup()">♻️ Restaurar</button>
+    </div>
+  `;
+
+  renderCompleto();
+});
+
+/* ==========================================================
+   REGISTRO DO PWA
+========================================================== */
+
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("sw.js");
 }
+
 </script>
 
 </body>
-</html>
+</html> 
