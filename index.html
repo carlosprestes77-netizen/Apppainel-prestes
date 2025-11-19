@@ -19,9 +19,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       :root {
         --bg: #020617;
@@ -30,7 +28,6 @@
         --border: #1f2937;
         --text: #e5e7eb;
         --muted: #9ca3af;
-
         --accent: #8b5cf6;
         --accent-soft: #312e81;
         --danger: #ef4444;
@@ -40,8 +37,7 @@
 
       body {
         margin: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background: radial-gradient(circle at top, #1e293b 0, #020617 55%);
         color: var(--text);
       }
@@ -65,9 +61,7 @@
       }
 
       @media (max-width: 768px) {
-        .shell {
-          padding: 18px 14px 28px;
-        }
+        .shell { padding: 18px 14px 28px; }
       }
 
       .header {
@@ -79,9 +73,7 @@
       }
 
       @media (max-width: 640px) {
-        .header {
-          flex-direction: column;
-        }
+        .header { flex-direction: column; }
       }
 
       .pill {
@@ -170,9 +162,7 @@
       }
 
       @media (max-width: 880px) {
-        .grid {
-          grid-template-columns: 1fr;
-        }
+        .grid { grid-template-columns: 1fr; }
       }
 
       .card {
@@ -207,9 +197,7 @@
       }
 
       @media (max-width: 640px) {
-        .stat-row {
-          grid-template-columns: 1fr 1fr;
-        }
+        .stat-row { grid-template-columns: 1fr 1fr; }
       }
 
       .stat {
@@ -220,22 +208,15 @@
         font-size: 0.78rem;
       }
 
-      .stat-label {
-        color: var(--muted);
-      }
+      .stat-label { color: var(--muted); }
 
       .stat-value {
         margin-top: 4px;
         font-weight: 600;
       }
 
-      .positivo {
-        color: var(--success);
-      }
-
-      .negativo {
-        color: var(--danger);
-      }
+      .positivo { color: var(--success); }
+      .negativo { color: var(--danger); }
 
       .list {
         max-height: 260px;
@@ -255,10 +236,7 @@
         margin-bottom: 6px;
       }
 
-      .item-main {
-        flex: 1;
-        min-width: 0;
-      }
+      .item-main { flex: 1; min-width: 0; }
 
       .item-title {
         font-size: 0.86rem;
@@ -307,13 +285,8 @@
         font-weight: 600;
       }
 
-      .badge-valor.positivo {
-        color: var(--success);
-      }
-
-      .badge-valor.negativo {
-        color: var(--danger);
-      }
+      .badge-valor.positivo { color: var(--success); }
+      .badge-valor.negativo { color: var(--danger); }
 
       .btn-row {
         display: flex;
@@ -347,11 +320,7 @@
         color: var(--muted);
       }
 
-      /* Formulários */
-
-      form {
-        margin-top: 4px;
-      }
+      form { margin-top: 4px; }
 
       .form-grid {
         display: grid;
@@ -360,14 +329,10 @@
       }
 
       @media (max-width: 840px) {
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
+        .form-grid { grid-template-columns: 1fr; }
       }
 
-      .field {
-        margin-bottom: 8px;
-      }
+      .field { margin-bottom: 8px; }
 
       label {
         font-size: 0.78rem;
@@ -388,11 +353,7 @@
         font-size: 0.8rem;
       }
 
-      textarea {
-        resize: vertical;
-      }
-
-      /* Calendário */
+      textarea { resize: vertical; }
 
       .calendar-controls {
         display: flex;
@@ -446,9 +407,7 @@
         white-space: nowrap;
       }
 
-      .month-input {
-        max-width: 130px;
-      }
+      .month-input { max-width: 130px; }
     </style>
   </head>
 
@@ -495,10 +454,8 @@
         if (status === "parcial") return "pago";
         return "pendente";
       }
-
-      function App() {
+            function App() {
         const [view, setView] = useState("dashboard");
-
         const [events, setEvents] = useState([]);
         const [debts, setDebts] = useState([]);
 
@@ -549,7 +506,10 @@
               STORAGE_KEYS.EVENTS,
               JSON.stringify(events)
             );
-            localStorage.setItem(STORAGE_KEYS.DEBTS, JSON.stringify(debts));
+            localStorage.setItem(
+              STORAGE_KEYS.DEBTS,
+              JSON.stringify(debts)
+            );
           } catch (e) {
             console.error("Erro ao salvar dados", e);
           }
@@ -652,14 +612,8 @@
         }
 
         const eventosPagos = events.filter((e) => e.status === "pago");
-        const eventosParciais = events.filter(
-          (e) => e.status === "parcial"
-        );
-
-        const totalEventos = events.reduce(
-          (acc, e) => acc + e.valor,
-          0
-        );
+        const eventosParciais = events.filter((e) => e.status === "parcial");
+        const totalEventos = events.reduce((acc, e) => acc + e.valor, 0);
         const totalEventosPagos = eventosPagos.reduce(
           (acc, e) => acc + e.valor,
           0
@@ -671,11 +625,7 @@
 
         const debtsPagas = debts.filter((d) => d.status === "pago");
         const debtsParciais = debts.filter((d) => d.status === "parcial");
-
-        const totalDividas = debts.reduce(
-          (acc, d) => acc + d.valor,
-          0
-        );
+        const totalDividas = debts.reduce((acc, d) => acc + d.valor, 0);
         const totalDividasPagas = debtsPagas.reduce(
           (acc, d) => acc + d.valor,
           0
@@ -690,10 +640,7 @@
         const eventosDoMes = events.filter(
           (e) => e.data?.slice(0, 7) === eventsMonth
         );
-
-        const dividasDoMes = debts.filter(
-          (d) => d.mesRef === debtsMonth
-        );
+        const dividasDoMes = debts.filter((d) => d.mesRef === debtsMonth);
 
         function exportBackup() {
           const data = {
@@ -736,7 +683,7 @@
                   </div>
                   <div className="stat">
                     <div className="stat-label">
-                      Dívidas quitadas (somando parcelas pagas)
+                      Dívidas quitadas (parcelas pagas)
                     </div>
                     <div className="stat-value negativo">
                       {formatCurrency(totalDividasPagas)}
@@ -868,8 +815,7 @@
             </div>
           );
         }
-
-        function renderEventos() {
+               function renderEventos() {
           const monthDate = new Date(eventsMonth + "-01");
           const monthName = monthDate.toLocaleDateString("pt-BR", {
             month: "long",
@@ -877,7 +823,7 @@
           });
 
           const first = firstDayOfMonth(monthDate);
-          const firstWeekday = first.getDay(); // 0 domingo
+          const firstWeekday = first.getDay();
           const daysInMonth = new Date(
             first.getFullYear(),
             first.getMonth() + 1,
@@ -912,8 +858,7 @@
                   <div>
                     <div className="card-title">Eventos</div>
                     <div className="card-caption">
-                      Calendário mensal com eventos, empresas e status de
-                      pagamento.
+                      Calendário mensal com eventos, empresas e status.
                     </div>
                   </div>
                   <div className="calendar-controls">
@@ -948,8 +893,7 @@
                 </div>
 
                 <div className="mini" style={{ marginBottom: 4 }}>
-                  Toque no botão de status para alternar: pendente → parcial →
-                  pago.
+                  Botão de status: pendente → parcial → pago.
                 </div>
 
                 <div className="calendar-grid">
@@ -961,9 +905,7 @@
 
                   {weeks.map((week, wi) =>
                     week.map((day, di) => {
-                      if (!day) {
-                        return <div key={wi + "-" + di}></div>;
-                      }
+                      if (!day) return <div key={wi + "-" + di}></div>;
                       const evDay = eventsForDay(day);
                       return (
                         <div className="day-cell" key={wi + "-" + di}>
@@ -994,10 +936,10 @@
                 <div className="card-header">
                   <div>
                     <div className="card-title">
-                      Novo evento (com empresa & observação)
+                      Novo evento (empresa & observação)
                     </div>
                     <div className="card-caption">
-                      Campos: evento, empresa, valor, pago / parcial, observação.
+                      Evento, empresa, valor, pago / parcial, observação.
                     </div>
                   </div>
                 </div>
@@ -1164,7 +1106,7 @@
                   <div>
                     <div className="card-title">Dívidas / contas</div>
                     <div className="card-caption">
-                      Conta, valor, pago, pago parcial, parcelado por meses.
+                      Conta, valor, pago, parcial, parcelado por meses.
                     </div>
                   </div>
                   <div>
@@ -1182,17 +1124,13 @@
 
                 <div className="stat-row">
                   <div className="stat">
-                    <div className="stat-label">
-                      Total deste mês (todas parcelas)
-                    </div>
+                    <div className="stat-label">Total deste mês</div>
                     <div className="stat-value negativo">
                       {formatCurrency(totalMes)}
                     </div>
                   </div>
                   <div className="stat">
-                    <div className="stat-label">
-                      Já pago neste mês
-                    </div>
+                    <div className="stat-label">Já pago neste mês</div>
                     <div className="stat-value positivo">
                       {formatCurrency(totalMesPagas)}
                     </div>
@@ -1200,8 +1138,8 @@
                 </div>
 
                 <div className="mini" style={{ marginTop: 8 }}>
-                  Cada parcela criada já cai no mês correto. Clique no status
-                  para alternar entre pendente / parcial / pago.
+                  Cada parcela cai no mês correto. Clique no status para
+                  alternar.
                 </div>
 
                 <div className="list" style={{ marginTop: 6 }}>
@@ -1253,8 +1191,7 @@
                       Nova dívida / conta parcelada
                     </div>
                     <div className="card-caption">
-                      “Conta, valor, pago, pago parcial, parcelado” que se
-                      distribui nos próximos meses.
+                      Conta, valor total, nº de parcelas, parcelado.
                     </div>
                   </div>
                 </div>
@@ -1286,7 +1223,7 @@
                               conta: e.target.value,
                             })
                           }
-                          placeholder="Cartão Nubank, câmera, viagem..."
+                          placeholder="Cartão, câmera, viagem..."
                           required
                         />
                       </div>
@@ -1352,7 +1289,7 @@
                               obs: e.target.value,
                             })
                           }
-                          placeholder="Banco, juros, acordo, etc."
+                          placeholder="Banco, juros, acordo..."
                         ></textarea>
                       </div>
                     </div>
@@ -1381,7 +1318,7 @@
                   <h1>Eventos, dívidas e parcelas em modo profissional</h1>
                   <div className="subtitle">
                     Uma tela para cada lado da sua mente: dashboard,
-                    calendário de eventos e matriz de dívidas.
+                    calendário e matriz de dívidas.
                   </div>
                 </div>
 
@@ -1435,4 +1372,4 @@
       root.render(<App />);
     </script>
   </body>
-</html>
+</html>       
