@@ -3,275 +3,412 @@
   <head>
     <meta charset="UTF-8" />
     <title>Painel Financeiro – Prestes</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
 
     <!-- React e ReactDOM via CDN -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
 
-    <!-- Babel para permitir JSX direto no HTML -->
+    <!-- Babel para permitir JSX direto no browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Estilos do app -->
     <style>
       * {
         box-sizing: border-box;
+      }
+
+      :root {
+        --bg-light: #f2f2f7;
+        --bg-card-light: #ffffff;
+        --text-light: #111827;
+        --accent: #8b5cf6;
+        --accent-soft: #ede9fe;
+
+        --bg-dark: #020617;
+        --bg-card-dark: #0b1220;
+        --text-dark: #e5e7eb;
+        --border-dark: #1f2937;
+
+        --danger: #ef4444;
+        --success: #22c55e;
       }
 
       body {
         margin: 0;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
-        background: #f2f2f7;
-        color: #111827;
+        background: var(--bg-light);
+        color: var(--text-light);
       }
 
       body.dark {
-        background: #020617;
-        color: #e5e7eb;
+        background: radial-gradient(circle at top, #1e293b 0, #020617 55%);
+        color: var(--text-dark);
       }
 
       .app {
+        min-height: 100vh;
         display: flex;
-        height: 100vh;
+        justify-content: center;
+        padding: 32px 16px;
       }
 
-      .sidebar {
-        width: 240px;
-        padding: 16px;
-        background: #ffffff;
-        box-shadow: 2px 0 12px rgba(15, 23, 42, 0.12);
+      .shell {
+        width: 100%;
+        max-width: 1080px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+        backdrop-filter: blur(16px);
+      }
+
+      body.dark .shell {
+        background: rgba(15, 23, 42, 0.9);
+      }
+
+      .header {
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .title-block h1 {
+        margin: 0;
+        font-size: 1.4rem;
+      }
+
+      .title-block p {
+        margin: 4px 0 0;
+        font-size: 0.85rem;
+        opacity: 0.75;
+      }
+
+      .pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: #4c1d95;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      body.dark .pill {
+        background: rgba(88, 28, 135, 0.25);
+        color: #e9d5ff;
+      }
+
+      .pill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #22c55e;
+      }
+
+      .toggle-theme {
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        padding: 4px 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        background: transparent;
+        color: inherit;
+      }
+
+      .toggle-theme-knob {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1.4fr;
         gap: 16px;
       }
 
-      body.dark .sidebar {
-        background: #0f172a;
-        color: #e5e7eb;
-      }
+      @media (max-width: 850px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
 
-      .sidebar h2 {
-        margin: 0 0 8px 0;
-        font-size: 1.2rem;
-      }
-
-      .sidebar nav a {
-        display: block;
-        text-decoration: none;
-        color: inherit;
-        padding: 6px 0;
-        font-size: 0.95rem;
-      }
-
-      .sidebar nav a:hover {
-        text-decoration: underline;
-      }
-
-      .sidebar button,
-      .sidebar label {
-        border: none;
-        padding: 8px 12px;
-        background: #c4a5f5;
-        border-radius: 999px;
-        font-weight: 500;
-        cursor: pointer;
-        font-size: 0.9rem;
-        margin-bottom: 4px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-      }
-
-      body.dark .sidebar button,
-      body.dark .sidebar label {
-        background: #8b5cf6;
-        color: #f9fafb;
-      }
-
-      .sidebar label input {
-        display: none;
-      }
-
-      .main {
-        flex: 1;
-        overflow-y: auto;
-        padding: 24px;
-      }
-
-      h1 {
-        margin-top: 0;
-        margin-bottom: 16px;
-      }
-
-      .cards {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 20px;
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
       }
 
       .card {
-        padding: 16px;
-        background: #ffffff;
-        border-radius: 16px;
-        min-width: 220px;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        border-radius: 18px;
+        padding: 16px 18px 18px;
+        background: var(--bg-card-light);
+        border: 1px solid rgba(148, 163, 184, 0.35);
       }
 
       body.dark .card {
-        background: #020617;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        background: var(--bg-card-dark);
+        border-color: var(--border-dark);
       }
 
-      .card h3 {
-        margin-top: 0;
-        margin-bottom: 8px;
-      }
-
-      .form {
+      .card-header {
         display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 12px;
-        align-items: center;
       }
 
-      .form input[type="text"],
-      .form input[type="number"],
-      .form input[type="date"] {
-        padding: 7px 9px;
-        border-radius: 10px;
-        border: 1px solid #d1d5db;
-        font-size: 0.9rem;
-        background: #f9fafb;
+      .card-title {
+        font-size: 0.95rem;
+        font-weight: 600;
       }
 
-      body.dark .form input[type="text"],
-      body.dark .form input[type="number"],
-      body.dark .form input[type="date"] {
-        background: #020617;
-        border-color: #1f2937;
-        color: #e5e7eb;
-      }
-
-      .form label {
-        font-size: 0.85rem;
+      .tab-row {
         display: inline-flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .form button {
+        padding: 3px;
         border-radius: 999px;
+        background: rgba(148, 163, 184, 0.25);
+      }
+
+      body.dark .tab-row {
+        background: rgba(15, 23, 42, 0.9);
+      }
+
+      .tab-btn {
         border: none;
-        padding: 8px 12px;
-        cursor: pointer;
-        background: #8b5cf6;
-        color: #f9fafb;
-        font-weight: 500;
-        font-size: 0.9rem;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 8px;
-        font-size: 0.9rem;
-      }
-
-      table th,
-      table td {
-        border-bottom: 1px solid #e5e7eb;
-        padding: 6px 4px;
-      }
-
-      body.dark table th,
-      body.dark table td {
-        border-color: #1f2937;
-      }
-
-      table th {
-        text-align: left;
-        font-weight: 600;
-      }
-
-      table td button {
-        border-radius: 999px;
-        border: none;
+        background: transparent;
         padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.78rem;
         cursor: pointer;
-        background: rgba(139, 92, 246, 0.15);
+        color: inherit;
+        opacity: 0.7;
+      }
+
+      .tab-btn.active {
+        background: #ffffff;
+        opacity: 1;
+        font-weight: 600;
+      }
+
+      body.dark .tab-btn.active {
+        background: #020617;
+      }
+
+      .stat-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .stat-pill {
+        flex: 1;
+        border-radius: 14px;
+        padding: 8px 10px;
         font-size: 0.8rem;
-      }
-
-      body.dark table td button {
-        background: rgba(139, 92, 246, 0.35);
-        color: #f9fafb;
-      }
-
-      .status-paid {
-        color: #16a34a;
-        font-weight: 600;
-      }
-
-      .status-open {
-        color: #e11d48;
-        font-weight: 600;
-      }
-
-      .chart {
-        margin-top: 24px;
-        padding: 16px;
-        border-radius: 16px;
-        background: rgba(196, 165, 245, 0.16);
-      }
-
-      body.dark .chart {
         background: rgba(148, 163, 184, 0.18);
       }
 
-      .chart-row {
-        margin-bottom: 12px;
+      body.dark .stat-pill {
+        background: rgba(15, 23, 42, 0.9);
       }
 
-      .chart-label {
+      .stat-label {
+        opacity: 0.8;
+      }
+
+      .stat-value {
+        margin-top: 4px;
+        font-weight: 600;
+      }
+
+      .stat-value.positivo {
+        color: var(--success);
+      }
+
+      .stat-value.negativo {
+        color: var(--danger);
+      }
+
+      .list {
+        max-height: 260px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .item {
+        border-radius: 12px;
+        padding: 10px 10px;
+        margin-bottom: 8px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background: rgba(148, 163, 184, 0.12);
+      }
+
+      body.dark .item {
+        background: rgba(15, 23, 42, 0.9);
+      }
+
+      .item-main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .item-title {
+        font-size: 0.86rem;
+        font-weight: 500;
+      }
+
+      .item-sub {
+        font-size: 0.75rem;
+        opacity: 0.7;
+      }
+
+      .chip {
+        font-size: 0.7rem;
+        border-radius: 999px;
+        padding: 3px 8px;
+        background: rgba(148, 163, 184, 0.25);
+      }
+
+      .chip.pago {
+        background: rgba(34, 197, 94, 0.12);
+        color: #4ade80;
+      }
+
+      .chip.pendente {
+        background: rgba(248, 113, 113, 0.12);
+        color: #fb7185;
+      }
+
+      .toggle-paid {
+        cursor: pointer;
+        font-size: 0.75rem;
+        border-radius: 999px;
+        padding: 4px 10px;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        background: transparent;
+        color: inherit;
+      }
+
+      .toggle-paid.pago {
+        border-color: rgba(34, 197, 94, 0.6);
+      }
+
+      .toggle-paid.pendente {
+        border-color: rgba(248, 113, 113, 0.6);
+      }
+
+      .badge-valor {
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .badge-valor.positivo {
+        color: var(--success);
+      }
+
+      .badge-valor.negativo {
+        color: var(--danger);
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      @media (max-width: 850px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      @media (max-width: 600px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      label {
+        font-size: 0.78rem;
+        opacity: 0.75;
+        margin-bottom: 3px;
         display: block;
-        font-size: 0.85rem;
-        margin-bottom: 4px;
       }
 
-      .chart-track {
+      input,
+      textarea {
         width: 100%;
-        height: 10px;
+        border-radius: 10px;
+        padding: 7px 9px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        font-size: 0.8rem;
+        background: transparent;
+        color: inherit;
+      }
+
+      body.dark input,
+      body.dark textarea {
+        border-color: #1f2937;
+      }
+
+      .btn-primary {
         border-radius: 999px;
-        background: rgba(148, 163, 184, 0.4);
+        border: none;
+        padding: 7px 14px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        font-size: 0.8rem;
+        cursor: pointer;
       }
 
-      .chart-bar {
-        height: 10px;
+      .btn-ghost {
         border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        padding: 7px 12px;
+        background: transparent;
+        font-size: 0.78rem;
+        cursor: pointer;
+        color: inherit;
       }
 
-      .chart-bar.entradas {
-        background: #16a34a;
+      .btn-row {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 4px;
       }
 
-      .chart-bar.saidas {
-        background: #ef4444;
-      }
-
-      @media print {
-        .sidebar {
-          display: none;
-        }
-        .app {
-          display: block;
-        }
-        .main {
-          padding: 0 16px 16px 16px;
-        }
+      .mini-tag {
+        font-size: 0.7rem;
+        opacity: 0.7;
       }
     </style>
   </head>
@@ -282,444 +419,512 @@
     <script type="text/babel">
       const { useState, useEffect } = React;
 
+      const STORAGE_KEYS = {
+        EVENTS: "prestes_events",
+        DEBTS: "prestes_debts",
+        THEME: "prestes_theme",
+      };
+
+      function formatCurrency(valor) {
+        return valor.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+      }
+
       function App() {
-        // tema
-        const [theme, setTheme] = useState(
-          localStorage.getItem("theme") || "light"
-        );
+        const [theme, setTheme] = useState("light");
 
-        useEffect(() => {
-          document.body.className = theme === "dark" ? "dark" : "";
-        }, [theme]);
+        const [events, setEvents] = useState([]);
+        const [debts, setDebts] = useState([]);
 
-        const toggleTheme = () => {
-          const next = theme === "light" ? "dark" : "light";
-          setTheme(next);
-          localStorage.setItem("theme", next);
-        };
-
-        // eventos
-        const [events, setEvents] = useState(() => {
-          const stored = localStorage.getItem("events");
-          return stored ? JSON.parse(stored) : [];
-        });
-
-        // dívidas
-        const [debts, setDebts] = useState(() => {
-          const stored = localStorage.getItem("debts");
-          return stored ? JSON.parse(stored) : [];
-        });
-
-        // salvar no localStorage
-        useEffect(() => {
-          localStorage.setItem("events", JSON.stringify(events));
-        }, [events]);
-
-        useEffect(() => {
-          localStorage.setItem("debts", JSON.stringify(debts));
-        }, [debts]);
-
-        // navegação simples
-        const [page, setPage] = useState("dashboard");
-
-        // formulários
         const [eventForm, setEventForm] = useState({
           nome: "",
-          data: "",
+          dados: "",
           valor: "",
-          pago: false,
         });
 
         const [debtForm, setDebtForm] = useState({
           descricao: "",
-          vencimento: "",
+          detalhes: "",
           valor: "",
-          pago: false,
         });
 
-        const addEvent = (e) => {
+        const [tab, setTab] = useState("eventos");
+
+        useEffect(() => {
+          try {
+            const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
+            if (savedTheme === "dark") {
+              setTheme("dark");
+              document.body.classList.add("dark");
+            }
+
+            const savedEvents = JSON.parse(
+              localStorage.getItem(STORAGE_KEYS.EVENTS) || "[]"
+            );
+            const savedDebts = JSON.parse(
+              localStorage.getItem(STORAGE_KEYS.DEBTS) || "[]"
+            );
+
+            setEvents(savedEvents);
+            setDebts(savedDebts);
+          } catch (e) {
+            console.error("Erro ao carregar dados", e);
+          }
+        }, []);
+
+        useEffect(() => {
+          try {
+            localStorage.setItem(
+              STORAGE_KEYS.EVENTS,
+              JSON.stringify(events)
+            );
+            localStorage.setItem(STORAGE_KEYS.DEBTS, JSON.stringify(debts));
+          } catch (e) {
+            console.error("Erro ao salvar dados", e);
+          }
+        }, [events, debts]);
+
+        useEffect(() => {
+          document.body.classList.toggle("dark", theme === "dark");
+          localStorage.setItem(STORAGE_KEYS.THEME, theme);
+        }, [theme]);
+
+        function handleAddEvent(e) {
           e.preventDefault();
-          if (!eventForm.nome || !eventForm.data || !eventForm.valor) return;
+          const valor = parseFloat(
+            (eventForm.valor || "0").replace(",", ".")
+          );
+          if (!eventForm.nome || isNaN(valor)) return;
 
-          setEvents((prev) => [
-            ...prev,
-            {
-              id: Date.now(),
-              nome: eventForm.nome,
-              data: eventForm.data,
-              valor: Number(eventForm.valor),
-              pago: eventForm.pago,
-            },
-          ]);
-
-          setEventForm({ nome: "", data: "", valor: "", pago: false });
-        };
-
-        const addDebt = (e) => {
-          e.preventDefault();
-          if (!debtForm.descricao || !debtForm.vencimento || !debtForm.valor)
-            return;
-
-          setDebts((prev) => [
-            ...prev,
-            {
-              id: Date.now(),
-              descricao: debtForm.descricao,
-              vencimento: debtForm.vencimento,
-              valor: Number(debtForm.valor),
-              pago: debtForm.pago,
-            },
-          ]);
-
-          setDebtForm({
-            descricao: "",
-            vencimento: "",
-            valor: "",
+          const novo = {
+            id: Date.now(),
+            nome: eventForm.nome,
+            dados: eventForm.dados,
+            valor,
             pago: false,
-          });
-        };
+          };
 
-        const toggleEventPaid = (id) => {
+          setEvents((prev) => [novo, ...prev]);
+          setEventForm({ nome: "", dados: "", valor: "" });
+        }
+
+        function handleAddDebt(e) {
+          e.preventDefault();
+          const valor = parseFloat(
+            (debtForm.valor || "0").replace(",", ".")
+          );
+          if (!debtForm.descricao || isNaN(valor)) return;
+
+          const novo = {
+            id: Date.now(),
+            descricao: debtForm.descricao,
+            detalhes: debtForm.detalhes,
+            valor,
+            pago: false,
+          };
+
+          setDebts((prev) => [novo, ...prev]);
+          setDebtForm({ descricao: "", detalhes: "", valor: "" });
+        }
+
+        function toggleEventPaid(id) {
           setEvents((prev) =>
-            prev.map((e) =>
-              e.id === id ? { ...e, pago: !e.pago } : e
+            prev.map((ev) =>
+              ev.id === id ? { ...ev, pago: !ev.pago } : ev
             )
           );
-        };
+        }
 
-        const toggleDebtPaid = (id) => {
+        function toggleDebtPaid(id) {
           setDebts((prev) =>
             prev.map((d) =>
               d.id === id ? { ...d, pago: !d.pago } : d
             )
           );
-        };
+        }
 
-        // totais
-        const totalEventos = events.reduce((acc, e) => acc + e.valor, 0);
+        const totalEventos = events.reduce(
+          (acc, e) => acc + e.valor,
+          0
+        );
         const totalEventosPagos = events
           .filter((e) => e.pago)
           .reduce((acc, e) => acc + e.valor, 0);
-        const totalEventosPendentes = totalEventos - totalEventosPagos;
 
-        const totalDividas = debts.reduce((acc, d) => acc + d.valor, 0);
+        const totalDividas = debts.reduce(
+          (acc, d) => acc + d.valor,
+          0
+        );
         const totalDividasPagas = debts
           .filter((d) => d.pago)
           .reduce((acc, d) => acc + d.valor, 0);
-        const totalDividasAbertas = totalDividas - totalDividasPagas;
 
-        const entradas = totalEventosPagos;
-        const saidas = totalDividasPagas;
-        const maxVal = Math.max(entradas, saidas, 1);
-        const pctEntradas = (entradas / maxVal) * 100;
-        const pctSaidas = (saidas / maxVal) * 100;
+        const fluxoLiquido = totalEventosPagos - totalDividasPagas;
 
-        // backup
-        const handleBackup = () => {
+        function handleExportJSON() {
           const data = {
-            theme,
             events,
             debts,
+            generatedAt: new Date().toISOString(),
           };
-
           const blob = new Blob([JSON.stringify(data, null, 2)], {
             type: "application/json",
           });
-
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
-          a.download = "backup-painel-prestes.json";
+          a.download = "painel-prestes-backup.json";
           a.click();
           URL.revokeObjectURL(url);
-        };
-
-        const handleRestore = (e) => {
-          const file = e.target.files?.[0];
-          if (!file) return;
-
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            try {
-              const data = JSON.parse(ev.target.result);
-              if (data.theme) {
-                setTheme(data.theme);
-                document.body.className =
-                  data.theme === "dark" ? "dark" : "";
-              }
-              if (Array.isArray(data.events)) setEvents(data.events);
-              if (Array.isArray(data.debts)) setDebts(data.debts);
-            } catch (err) {
-              alert("Arquivo de backup inválido.");
-            }
-          };
-          reader.readAsText(file);
-        };
-
-        const handlePrint = () => {
-          window.print();
-        };
+        }
 
         return (
           <div className="app">
-            <aside className="sidebar">
-              <h2>Painel</h2>
-              <nav>
-                <a href="#" onClick={() => setPage("dashboard")}>
-                  Dashboard
-                </a>
-                <a href="#" onClick={() => setPage("eventos")}>
-                  Eventos
-                </a>
-                <a href="#" onClick={() => setPage("dividas")}>
-                  Dívidas
-                </a>
-              </nav>
+            <div className="shell">
+              <header className="header">
+                <div className="title-block">
+                  <span className="pill">
+                    <span className="pill-dot" />
+                    painel financeiro • prestes
+                  </span>
+                  <h1>Controle de Eventos & Dívidas</h1>
+                  <p>
+                    Seu painel pessoal para organizar o caos financeiro:
+                    eventos que entram, dívidas que saem, e você no
+                    comando.
+                  </p>
+                </div>
 
-              <button onClick={toggleTheme}>
-                {theme === "light" ? "🌙 Modo noite" : "☀️ Modo claro"}
-              </button>
+                <div>
+                  <button
+                    className="toggle-theme"
+                    onClick={() =>
+                      setTheme((t) => (t === "light" ? "dark" : "light"))
+                    }
+                  >
+                    <div className="toggle-theme-knob" />
+                    {theme === "light" ? "Modo escuro" : "Modo claro"}
+                  </button>
+                  <div style={{ marginTop: 8, fontSize: "0.7rem", opacity: 0.7 }}>
+                    Dados salvos no seu navegador (localStorage).
+                  </div>
+                </div>
+              </header>
 
-              <button onClick={handleBackup}>💾 Backup</button>
-
-              <label>
-                📂 Importar
-                <input type="file" accept="application/json" onChange={handleRestore} />
-              </label>
-
-              <button onClick={handlePrint}>🧾 PDF</button>
-            </aside>
-
-            <main className="main">
-              {page === "dashboard" && (
-                <>
-                  <h1>Dashboard</h1>
-                  <div className="cards">
-                    <div className="card">
-                      <h3>Eventos</h3>
-                      <p>Total: R$ {totalEventos.toFixed(2)}</p>
-                      <p>Pagos: R$ {totalEventosPagos.toFixed(2)}</p>
-                      <p>Pendentes: R$ {totalEventosPendentes.toFixed(2)}</p>
+              <div className="grid">
+                <section className="card">
+                  <div className="card-header">
+                    <div className="card-title">
+                      Dashboard rápido
+                      <div className="mini-tag">
+                        Eventos, dívidas e fluxo em tempo real.
+                      </div>
                     </div>
-                    <div className="card">
-                      <h3>Dívidas</h3>
-                      <p>Total: R$ {totalDividas.toFixed(2)}</p>
-                      <p>Pagas: R$ {totalDividasPagas.toFixed(2)}</p>
-                      <p>Abertas: R$ {totalDividasAbertas.toFixed(2)}</p>
+                    <div className="tab-row">
+                      <button
+                        className={
+                          "tab-btn " +
+                          (tab === "eventos" ? "active" : "")
+                        }
+                        onClick={() => setTab("eventos")}
+                      >
+                        Eventos
+                      </button>
+                      <button
+                        className={
+                          "tab-btn " + (tab === "dividas" ? "active" : "")
+                        }
+                        onClick={() => setTab("dividas")}
+                      >
+                        Dívidas
+                      </button>
                     </div>
                   </div>
 
-                  <div className="chart">
-                    <h2>Entradas x Saídas (valores pagos)</h2>
-
-                    <div className="chart-row">
-                      <span className="chart-label">
-                        Entradas (eventos pagos): R$ {entradas.toFixed(2)}
-                      </span>
-                      <div className="chart-track">
-                        <div
-                          className="chart-bar entradas"
-                          style={{ width: pctEntradas + "%" }}
-                        ></div>
+                  <div className="stat-row">
+                    <div className="stat-pill">
+                      <div className="stat-label">
+                        Eventos pagos / total
+                      </div>
+                      <div className="stat-value positivo">
+                        {events.filter((e) => e.pago).length} pagos ·{" "}
+                        {events.length} total
                       </div>
                     </div>
-
-                    <div className="chart-row">
-                      <span className="chart-label">
-                        Saídas (dívidas pagas): R$ {saidas.toFixed(2)}
-                      </span>
-                      <div className="chart-track">
-                        <div
-                          className="chart-bar saidas"
-                          style={{ width: pctSaidas + "%" }}
-                        ></div>
+                    <div className="stat-pill">
+                      <div className="stat-label">
+                        Dívidas pagas / total
+                      </div>
+                      <div className="stat-value negativo">
+                        {debts.filter((d) => d.pago).length} pagas ·{" "}
+                        {debts.length} total
                       </div>
                     </div>
                   </div>
-                </>
-              )}
 
-              {page === "eventos" && (
-                <>
-                  <h1>Eventos</h1>
+                  <div className="stat-row">
+                    <div className="stat-pill">
+                      <div className="stat-label">
+                        Receita confirmada (eventos pagos)
+                      </div>
+                      <div className="stat-value positivo">
+                        {formatCurrency(totalEventosPagos)}
+                      </div>
+                    </div>
+                    <div className="stat-pill">
+                      <div className="stat-label">
+                        Dívidas quitadas
+                      </div>
+                      <div className="stat-value negativo">
+                        {formatCurrency(totalDividasPagas)}
+                      </div>
+                    </div>
+                  </div>
 
-                  <form className="form" onSubmit={addEvent}>
-                    <input
-                      type="text"
-                      placeholder="Nome do evento"
-                      value={eventForm.nome}
-                      onChange={(e) =>
-                        setEventForm({ ...eventForm, nome: e.target.value })
-                      }
-                    />
-                    <input
-                      type="date"
-                      value={eventForm.data}
-                      onChange={(e) =>
-                        setEventForm({ ...eventForm, data: e.target.value })
-                      }
-                    />
-                    <input
-                      type="number"
-                      placeholder="Valor (R$)"
-                      value={eventForm.valor}
-                      onChange={(e) =>
-                        setEventForm({
-                          ...eventForm,
-                          valor: e.target.value,
-                        })
-                      }
-                    />
-                    <label>
-                      Pago?
-                      <input
-                        type="checkbox"
-                        checked={eventForm.pago}
+                  <div className="stat-row">
+                    <div className="stat-pill">
+                      <div className="stat-label">Fluxo líquido</div>
+                      <div
+                        className={
+                          "stat-value " +
+                          (fluxoLiquido >= 0 ? "positivo" : "negativo")
+                        }
+                      >
+                        {formatCurrency(fluxoLiquido)}
+                      </div>
+                    </div>
+                    <div className="stat-pill">
+                      <div className="stat-label">Total a receber / pagar</div>
+                      <div className="stat-value">
+                        {formatCurrency(totalEventos)} de eventos ·{" "}
+                        {formatCurrency(totalDividas)} de dívidas
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="btn-row">
+                    <button className="btn-ghost" onClick={handleExportJSON}>
+                      Exportar backup (.json)
+                    </button>
+                  </div>
+                </section>
+
+                <section className="card">
+                  <div className="card-header">
+                    <div className="card-title">Lista detalhada</div>
+                    <div className="mini-tag">
+                      Toque em “pago / pendente” para alternar.
+                    </div>
+                  </div>
+
+                  <div className="list">
+                    {tab === "eventos"
+                      ? events.map((ev) => (
+                          <div className="item" key={ev.id}>
+                            <div className="item-main">
+                              <div className="item-title">
+                                {ev.nome}{" "}
+                                <span className="badge-valor positivo">
+                                  {formatCurrency(ev.valor)}
+                                </span>
+                              </div>
+                              {ev.dados && (
+                                <div className="item-sub">{ev.dados}</div>
+                              )}
+                            </div>
+                            <span
+                              className={
+                                "chip " + (ev.pago ? "pago" : "pendente")
+                              }
+                            >
+                              {ev.pago ? "Pago" : "Pendente"}
+                            </span>
+                            <button
+                              className={
+                                "toggle-paid " +
+                                (ev.pago ? "pago" : "pendente")
+                              }
+                              onClick={() => toggleEventPaid(ev.id)}
+                            >
+                              {ev.pago ? "Marcar como pendente" : "Marcar como pago"}
+                            </button>
+                          </div>
+                        ))
+                      : debts.map((d) => (
+                          <div className="item" key={d.id}>
+                            <div className="item-main">
+                              <div className="item-title">
+                                {d.descricao}{" "}
+                                <span className="badge-valor negativo">
+                                  {formatCurrency(d.valor)}
+                                </span>
+                              </div>
+                              {d.detalhes && (
+                                <div className="item-sub">{d.detalhes}</div>
+                              )}
+                            </div>
+                            <span
+                              className={
+                                "chip " + (d.pago ? "pago" : "pendente")
+                              }
+                            >
+                              {d.pago ? "Paga" : "Pendente"}
+                            </span>
+                            <button
+                              className={
+                                "toggle-paid " +
+                                (d.pago ? "pago" : "pendente")
+                              }
+                              onClick={() => toggleDebtPaid(d.id)}
+                            >
+                              {d.pago ? "Marcar como pendente" : "Marcar como paga"}
+                            </button>
+                          </div>
+                        ))}
+                    {tab === "eventos" && events.length === 0 && (
+                      <div className="mini-tag">
+                        Nenhum evento ainda. Começa cadastrando na parte de
+                        baixo.
+                      </div>
+                    )}
+                    {tab === "dividas" && debts.length === 0 && (
+                      <div className="mini-tag">
+                        Nenhuma dívida cadastrada. Cruza os dedos pra
+                        continuar assim.
+                      </div>
+                    )}
+                  </div>
+                </section>
+              </div>
+
+              <div className="form-grid">
+                <section className="card">
+                  <div className="card-header">
+                    <div className="card-title">Novo evento</div>
+                  </div>
+
+                  <form onSubmit={handleAddEvent}>
+                    <div className="form-row">
+                      <div>
+                        <label>Nome do evento / cliente</label>
+                        <input
+                          value={eventForm.nome}
+                          onChange={(e) =>
+                            setEventForm({
+                              ...eventForm,
+                              nome: e.target.value,
+                            })
+                          }
+                          placeholder="Formatura, ensaio, casamento..."
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label>Valor (R$)</label>
+                        <input
+                          value={eventForm.valor}
+                          onChange={(e) =>
+                            setEventForm({
+                              ...eventForm,
+                              valor: e.target.value,
+                            })
+                          }
+                          placeholder="400, 800, 1200..."
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label>Detalhes</label>
+                      <textarea
+                        rows="2"
+                        value={eventForm.dados}
                         onChange={(e) =>
                           setEventForm({
                             ...eventForm,
-                            pago: e.target.checked,
+                            dados: e.target.value,
                           })
                         }
+                        placeholder="Local, horário, contato, observações..."
                       />
-                    </label>
-                    <button type="submit">Adicionar</button>
+                    </div>
+
+                    <div className="btn-row">
+                      <button type="submit" className="btn-primary">
+                        Salvar evento
+                      </button>
+                    </div>
                   </form>
+                </section>
 
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Data</th>
-                        <th>Nome</th>
-                        <th>Valor</th>
-                        <th>Status</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {events.map((ev) => (
-                        <tr key={ev.id}>
-                          <td>{ev.data}</td>
-                          <td>{ev.nome}</td>
-                          <td>R$ {ev.valor.toFixed(2)}</td>
-                          <td className={ev.pago ? "status-paid" : "status-open"}>
-                            {ev.pago ? "Pago" : "Pendente"}
-                          </td>
-                          <td>
-                            <button onClick={() => toggleEventPaid(ev.id)}>
-                              {ev.pago ? "Desmarcar" : "Pagar"}
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                      {events.length === 0 && (
-                        <tr>
-                          <td colSpan="5" style={{ opacity: 0.7, textAlign: "center" }}>
-                            Nenhum evento cadastrado.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </>
-              )}
+                <section className="card">
+                  <div className="card-header">
+                    <div className="card-title">Nova dívida</div>
+                  </div>
 
-              {page === "dividas" && (
-                <>
-                  <h1>Dívidas</h1>
-
-                  <form className="form" onSubmit={addDebt}>
-                    <input
-                      type="text"
-                      placeholder="Descrição"
-                      value={debtForm.descricao}
-                      onChange={(e) =>
-                        setDebtForm({
-                          ...debtForm,
-                          descricao: e.target.value,
-                        })
-                      }
-                    />
-                    <input
-                      type="date"
-                      value={debtForm.vencimento}
-                      onChange={(e) =>
-                        setDebtForm({
-                          ...debtForm,
-                          vencimento: e.target.value,
-                        })
-                      }
-                    />
-                    <input
-                      type="number"
-                      placeholder="Valor (R$)"
-                      value={debtForm.valor}
-                      onChange={(e) =>
-                        setDebtForm({
-                          ...debtForm,
-                          valor: e.target.value,
-                        })
-                      }
-                    />
-                    <label>
-                      Pago?
-                      <input
-                        type="checkbox"
-                        checked={debtForm.pago}
+                  <form onSubmit={handleAddDebt}>
+                    <div className="form-row">
+                      <div>
+                        <label>Descrição</label>
+                        <input
+                          value={debtForm.descricao}
+                          onChange={(e) =>
+                            setDebtForm({
+                              ...debtForm,
+                              descricao: e.target.value,
+                            })
+                          }
+                          placeholder="Cartão, câmera, lente, viagem..."
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label>Valor (R$)</label>
+                        <input
+                          value={debtForm.valor}
+                          onChange={(e) =>
+                            setDebtForm({
+                              ...debtForm,
+                              valor: e.target.value,
+                            })
+                          }
+                          placeholder="500, 1200, 3000..."
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label>Detalhes</label>
+                      <textarea
+                        rows="2"
+                        value={debtForm.detalhes}
                         onChange={(e) =>
                           setDebtForm({
                             ...debtForm,
-                            pago: e.target.checked,
+                            detalhes: e.target.value,
                           })
                         }
+                        placeholder="Parcelas, banco, vencimento..."
                       />
-                    </label>
-                    <button type="submit">Adicionar</button>
-                  </form>
+                    </div>
 
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Vencimento</th>
-                        <th>Descrição</th>
-                        <th>Valor</th>
-                        <th>Status</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {debts.map((d) => (
-                        <tr key={d.id}>
-                          <td>{d.vencimento}</td>
-                          <td>{d.descricao}</td>
-                          <td>R$ {d.valor.toFixed(2)}</td>
-                          <td className={d.pago ? "status-paid" : "status-open"}>
-                            {d.pago ? "Paga" : "Em aberto"}
-                          </td>
-                          <td>
-                            <button onClick={() => toggleDebtPaid(d.id)}>
-                              {d.pago ? "Desmarcar" : "Pagar"}
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                      {debts.length === 0 && (
-                        <tr>
-                          <td colSpan="5" style={{ opacity: 0.7, textAlign: "center" }}>
-                            Nenhuma dívida cadastrada.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </>
-              )}
-            </main>
+                    <div className="btn-row">
+                      <button type="submit" className="btn-primary">
+                        Salvar dívida
+                      </button>
+                    </div>
+                  </form>
+                </section>
+              </div>
+            </div>
           </div>
         );
       }
 
-      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
     </script>
   </body>
 </html>
