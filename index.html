@@ -7,389 +7,1959 @@
 
   <style>
     :root {
-      --radius: 14px;
-      --radius-lg: 22px;
-      --shadow: 0 12px 32px rgba(0,0,0,0.25);
-      --transition: .18s ease-out;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.35);
+      --shadow-subtle: 0 1px 4px rgba(15, 23, 42, 0.12);
+      --transition-fast: 0.18s ease-out;
     }
 
     body {
       margin: 0;
-      font-family: system-ui,-apple-system,"SF Pro Text",sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
       background: var(--bg);
-      color: var(--text);
-      transition: background .25s, color .25s;
+      color: var(--text-primary);
     }
 
     body.light {
-      --bg: #f4f5f7;
-      --bg-card: #ffffff;
-      --bg-soft: #e6e7eb;
-      --text: #0f172a;
+      --bg: #f3f4f6;
+      --bg-elevated: #ffffff;
+      --bg-soft: #e5e7eb;
+      --text-primary: #0f172a;
       --text-muted: #6b7280;
       --accent: #8b5cf6;
-      --accent-soft: rgba(139,92,246,.12);
+      --accent-soft: rgba(139, 92, 246, 0.12);
+      --accent-strong: #7c3aed;
+      --border-subtle: #e5e7eb;
+      --chip-bg: #111827;
     }
 
     body.dark {
       --bg: #0b1120;
-      --bg-card: #0f172a;
-      --bg-soft: #1a2333;
-      --text: #e5e7eb;
+      --bg-elevated: #020617;
+      --bg-soft: #111827;
+      --text-primary: #e5e7eb;
       --text-muted: #9ca3af;
       --accent: #c4b5fd;
-      --accent-soft: rgba(196,181,253,.14);
+      --accent-soft: rgba(196, 181, 253, 0.18);
+      --accent-strong: #a855f7;
+      --border-subtle: #1f2937;
+      --chip-bg: #111827;
     }
 
-    /* App structure */
     #root {
-      padding: 24px;
+      min-height: 100vh;
       display: flex;
+      align-items: stretch;
       justify-content: center;
+      padding: 32px 16px;
+      box-sizing: border-box;
     }
 
     .app-shell {
       width: 100%;
-      max-width: 1100px;
-      background: var(--bg-card);
-      border-radius: 26px;
-      padding: 22px;
-      box-shadow: var(--shadow);
+      max-width: 1120px;
+      background: radial-gradient(circle at top left,
+          rgba(139, 92, 246, 0.16),
+          transparent 52%),
+        radial-gradient(circle at bottom right,
+          rgba(56, 189, 248, 0.18),
+          transparent 55%),
+        var(--bg-elevated);
+      border-radius: 32px;
+      box-shadow: var(--shadow-soft);
+      padding: 24px;
+      box-sizing: border-box;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--text-primary);
+      position: relative;
     }
 
-    /* Header */
-    .header {
+    @media (max-width: 768px) {
+      #root {
+        padding: 16px 8px;
+      }
+      .app-shell {
+        padding: 20px 16px;
+        border-radius: 24px;
+      }
+    }
+
+    .app-header {
       display: flex;
+      gap: 16px;
       justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .app-title {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pill-badge {
+      display: inline-flex;
       align-items: center;
-      margin-bottom: 14px;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.55);
+      color: #e5e7eb;
+      font-size: 11px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
     }
 
-    .title {
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.4);
+    }
+
+    .app-title h1 {
       font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 2px;
+      margin: 0;
     }
 
-    .subtitle {
+    .app-title p {
+      margin: 0;
       font-size: 13px;
       color: var(--text-muted);
-      max-width: 480px;
+      max-width: 520px;
     }
 
-    /* Theme toggle – DISCRETO */
-    .theme-toggle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      cursor: pointer;
-      opacity: .65;
-      transition: var(--transition);
-      background: var(--bg-soft);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
     }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      font-size: 11px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 12px 24px rgba(15, 23, 42, 0.5);
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      opacity: 0.85;
+    }
+
     .theme-toggle:hover {
       opacity: 1;
     }
 
-    /* Tabs */
-    .tabs {
-      margin: 22px 0 14px;
-      display: flex;
-      gap: 8px;
-    }
-    .tab-btn {
-      padding: 8px 18px;
+    .theme-toggle-indicator {
+      width: 30px;
+      height: 16px;
       border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      background: var(--bg-soft);
-      color: var(--text);
-      font-size: 13px;
-      transition: var(--transition);
-    }
-    .tab-btn.active {
-      background: var(--accent);
-      color: white;
+      padding: 2px;
+      box-sizing: border-box;
+      background: radial-gradient(circle at 20% 0,
+          #f97316,
+          #a855f7 42%,
+          #0ea5e9 75%);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      transition: var(--transition-fast);
     }
 
-    /* Cards QUADRADINHOS (como você pediu!!) */
-    .grid {
+    .theme-toggle-indicator-inner {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #f9fafb;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.35),
+        0 4px 12px rgba(15, 23, 42, 0.65);
+    }
+
+    body.dark .theme-toggle-indicator {
+      justify-content: flex-end;
+    }
+
+    .storage-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .tabs-row {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 4px;
+      background: rgba(15, 23, 42, 0.8);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.95),
+        0 10px 32px rgba(15, 23, 42, 0.64);
+      color: #e5e7eb;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 13px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: radial-gradient(circle at top left,
+          #f97316,
+          #8b5cf6 55%,
+          #0ea5e9 100%);
+      opacity: 1;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.45);
+    }
+
+    .tab-btn:not(.active):hover {
+      opacity: 1;
+    }
+
+    .main-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-      gap: 14px;
-      margin-top: 12px;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.15fr);
+      gap: 16px;
     }
+
+    @media (max-width: 940px) {
+      .app-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .header-right {
+        align-items: flex-start;
+      }
+
+      .main-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
     .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.12);
+      background: rgba(15, 23, 42, 0.88);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-subtle);
+      color: #e5e7eb;
+    }
+
+    body.light .card {
+      background: #ffffff;
+      color: var(--text-primary);
+      border-color: var(--border-subtle);
+    }
+
+    .card-header-row {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 12px;
     }
+
     .card-title {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 6px;
     }
-    .value {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .muted {
+
+    .card-subtitle {
       font-size: 12px;
       color: var(--text-muted);
     }
 
-    /* Calendar */
-    .calendar {
-      border-radius: var(--radius);
-      background: var(--bg-card);
-      padding: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    .card-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
     }
-    .cal-header {
+
+    .kpi-card {
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 10px 12px;
+      font-size: 12px;
+      border: 1px solid rgba(30, 64, 175, 0.85);
+    }
+
+    body.light .kpi-card {
+      background: #f9fafb;
+      border-color: #e5e7eb;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .kpi-main {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .kpi-main.positive {
+      color: #22c55e;
+    }
+
+    .kpi-main.negative {
+      color: #ef4444;
+    }
+
+    .kpi-extra {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .btn-primary,
+    .btn-ghost,
+    .btn-chip,
+    .btn-outline {
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8b5cf6, #0ea5e9);
+      color: #f9fafb;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.6);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--accent-strong);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .btn-outline:hover {
+      background: rgba(148, 163, 184, 0.08);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.65);
+      color: #e5e7eb;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    body.light .btn-ghost {
+      background: #111827;
+      color: #e5e7eb;
+    }
+
+    .btn-chip {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text-muted);
+      padding-inline: 10px;
+      font-size: 11px;
+    }
+
+    .timeline {
+      margin-top: 10px;
+      border-radius: var(--radius-md);
+      padding: 10px 0 2px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+    }
+
+    body.light .timeline {
+      background: #f9fafb;
+      border-style: solid;
+    }
+
+    .timeline-item {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      align-items: center;
+      padding: 4px 12px;
+      font-size: 11px;
     }
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7,1fr);
+
+    .timeline-item + .timeline-item {
+      border-top: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .pill-status {
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 11px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .pill-status.pendente {
+      background: rgba(248, 250, 252, 0.02);
+      border-color: rgba(249, 115, 22, 0.55);
+      color: #fed7aa;
+    }
+
+    .pill-status.parcial {
+      background: rgba(254, 215, 170, 0.1);
+      border-color: rgba(249, 115, 22, 0.8);
+      color: #fdba74;
+    }
+
+    .pill-status.pago {
+      background: rgba(22, 163, 74, 0.2);
+      border-color: rgba(34, 197, 94, 0.85);
+      color: #bbf7d0;
+    }
+
+    body.light .pill-status.pendente {
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    body.light .pill-status.parcial {
+      color: #b45309;
+      background: #fef3c7;
+    }
+
+    body.light .pill-status.pago {
+      color: #166534;
+      background: #dcfce7;
+    }
+
+    .section {
+      margin-top: 4px;
+    }
+
+    .section + .section {
+      margin-top: 14px;
+    }
+
+    .section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .section-helper {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .calendar {
+      margin-top: 6px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 10px 10px 8px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    body.light .calendar {
+      background: #f9fafb;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 10px;
+    }
+
+    .calendar-month-label {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .calendar-nav {
+      display: flex;
       gap: 4px;
     }
-    .day {
-      min-height: 50px;
-      background: var(--bg-soft);
+
+    .icon-btn {
+      border-radius: 999px;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.7);
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: var(--transition-fast);
+    }
+
+    body.light .icon-btn {
+      background: #ffffff;
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.45);
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .calendar-weekday {
+      text-align: center;
+      color: var(--text-muted);
+      padding-bottom: 2px;
+    }
+
+    .calendar-day {
+      min-height: 52px;
       border-radius: 10px;
-      padding: 3px;
-      font-size: 10px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      padding: 2px 3px 3px;
+      box-sizing: border-box;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
-    .day:hover {
-      background: var(--accent-soft);
+
+    body.light .calendar-day {
+      background: #ffffff;
+      border-color: #e5e7eb;
     }
 
-    /* PDF beautification */
-    .pdf-title {
-      font-weight: bold;
-      font-size: 20px;
-      margin-bottom: 14px;
-    }
-    .pdf-section {
-      margin-bottom: 18px;
+    .calendar-day.outside {
+      opacity: 0.25;
     }
 
+    .calendar-day-number {
+      font-size: 10px;
+      opacity: 0.9;
+    }
+
+    .calendar-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 1px;
+    }
+
+    .calendar-chip {
+      border-radius: 999px;
+      background: rgba(129, 140, 248, 0.95);
+      font-size: 9px;
+      padding: 1px 4px;
+      color: #eef2ff;
+      max-width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .list-item {
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      padding: 8px 10px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    body.light .list-item {
+      background: #ffffff;
+      border-color: #e5e7eb;
+    }
+
+    .list-item-main-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .list-item-title {
+      font-weight: 600;
+    }
+
+    .list-item-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .chip-amount {
+      font-weight: 600;
+      font-size: 12px;
+      color: #22c55e;
+    }
+
+    .chip-amount-negative {
+      color: #f97316;
+    }
+
+    .list-item-actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .label-tag {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .form {
+      margin-top: 8px;
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    body.light .form {
+      background: #f9fafb;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.92);
+      color: #e5e7eb;
+      padding: 6px 8px;
+      font-size: 12px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: rgba(148, 163, 184, 0.8);
+    }
+
+    body.light .form-input,
+    body.light .form-select,
+    body.light .form-textarea {
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #d1d5db;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 52px;
+    }
+
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .small-hint {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 
 <body class="light">
-  <div class="theme-toggle" id="themeToggle">🌗</div>
   <div id="root"></div>
 
-  <!-- libs -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- React + Babel + libs -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
 
-// ===============================
-// 🔧 UTILITÁRIOS
-// ===============================
+    const STORAGE_KEY = "painel_prestes_v3";
 
-const { useState, useEffect, useMemo } = React;
+    const money = (n) =>
+      "R$ " +
+      (n || 0).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
-const STORAGE_KEY = "painel_prestes_upgrade_final";
+    const monthLabel = (year, monthIndex) =>
+      new Date(year, monthIndex, 1).toLocaleDateString("pt-BR", {
+        month: "long",
+        year: "numeric",
+      });
 
-// Formata número
-const money = (n) =>
-  "R$ " +
-  (n || 0).toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+    const pad2 = (n) => String(n).padStart(2, "0");
 
-// Formata mês "Março 2025"
-const monthLabel = (year, monthIndex) =>
-  new Date(year, monthIndex, 1).toLocaleDateString("pt-BR", {
-    month: "long",
-    year: "numeric",
-  });
+    const addMonths = (year, monthIndex, delta) => {
+      const d = new Date(year, monthIndex + delta, 1);
+      return { year: d.getFullYear(), month: d.getMonth() };
+    };
 
-// Coloca 0 na frente: 02, 07
-const pad2 = (n) => String(n).padStart(2, "0");
+    const cycleStatus = (status) => {
+      if (status === "pendente") return "parcial";
+      if (status === "parcial") return "pago";
+      return "pendente";
+    };
 
-// Avança meses
-const addMonths = (year, monthIndex, delta) => {
-  const d = new Date(year, monthIndex + delta, 1);
-  return { year: d.getFullYear(), month: d.getMonth() };
-};
+    const STATUS_ORDER = ["pendente", "parcial", "pago"];
 
-// Cicla status
-const cycleStatus = (s) => (s === "pendente" ? "parcial" : s === "parcial" ? "pago" : "pendente");
-
-// Cores do status no chip
-function StatusPill({ status }) {
-  const label =
-    status === "pendente"
-      ? "Pendente"
-      : status === "parcial"
-      ? "Parcial"
-      : "Pago";
-
-  return (
-    <span
-      style={{
-        padding: "2px 8px",
-        borderRadius: "999px",
-        fontSize: "10px",
-        background:
-          status === "pago"
-            ? "rgba(34,197,94,.25)"
+    function StatusPill({ status }) {
+      return (
+        <span className={`pill-status ${status}`}>
+          {status === "pendente"
+            ? "Pendente"
             : status === "parcial"
-            ? "rgba(250,204,21,.35)"
-            : "rgba(239,68,68,.30)",
-        color:
-          status === "pago"
-            ? "#22c55e"
-            : status === "parcial"
-            ? "#eab308"
-            : "#ef4444",
-      }}
-    >
-      {label}
-    </span>
-  );
-}
-
-// ===============================
-// 🎨 TEMA (CLARO/ESCURO)
-// ===============================
-
-document.getElementById("themeToggle").onclick = () => {
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
-
-  const newTheme = document.body.classList.contains("dark") ? "dark" : "light";
-  localStorage.setItem(STORAGE_KEY + "_theme", newTheme);
-};
-
-// Carrega tema salvo
-const savedTheme = localStorage.getItem(STORAGE_KEY + "_theme");
-if (savedTheme) {
-  document.body.classList.remove("light", "dark");
-  document.body.classList.add(savedTheme);
-}
-
-// ===============================
-// 💾 PERSISTÊNCIA
-// ===============================
-
-function usePersistentState(key, defaultValue) {
-  const saved = useMemo(() => {
-    try {
-      const raw = localStorage.getItem(key);
-      if (!raw) return null;
-      return JSON.parse(raw);
-    } catch {
-      return null;
+            ? "Pago parcial"
+            : "Pago"}
+        </span>
+      );
     }
-  }, [key]);
 
-  const [value, setValue] = useState(saved || defaultValue);
+    // -------- PDF bonito e organizado --------
+    function gerarPDFBonito(events, debts) {
+      try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch {}
-  }, [key, value]);
+        let y = 16;
 
-  return [value, setValue];
-}
+        const addTitle = (text) => {
+          pdf.setFont("Helvetica", "bold");
+          pdf.setFontSize(18);
+          pdf.text(text, pageWidth / 2, y, { align: "center" });
+          y += 10;
+        };
 
-// ===============================
-// 📄 PDF LINDO, ORGANIZADO, COM CORES
-// ===============================
+        const addSection = (text) => {
+          y += 4;
+          if (y > pageHeight - 20) {
+            pdf.addPage();
+            y = 16;
+          }
+          pdf.setFont("Helvetica", "bold");
+          pdf.setFontSize(14);
+          pdf.text(text, 12, y);
+          y += 6;
+        };
 
-async function gerarPDFBonito({ events, debts }) {
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("p", "mm", "a4");
+        const addLine = (text) => {
+          const maxWidth = pageWidth - 24;
+          pdf.setFont("Helvetica", "normal");
+          pdf.setFontSize(11);
+          const lines = pdf.splitTextToSize(text, maxWidth);
+          lines.forEach((line) => {
+            if (y > pageHeight - 15) {
+              pdf.addPage();
+              y = 16;
+            }
+            pdf.text(line, 12, y);
+            y += 5;
+          });
+        };
 
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  let y = 14;
+        // --- resumo geral ---
+        let totalEventos = 0;
+        let receitaConfirmada = 0;
+        events.forEach((ev) => {
+          const v = ev.valor || 0;
+          totalEventos += v;
+          if (ev.status === "pago") receitaConfirmada += v;
+        });
 
-  const titulo = (t) => {
-    pdf.setFont("Helvetica", "bold");
-    pdf.setFontSize(18);
-    pdf.text(t, pageWidth / 2, y, { align: "center" });
-    y += 10;
-  };
+        let totalDividas = 0;
+        let dividasPagas = 0;
+        debts.forEach((d) => {
+          const v = d.valorParcela || 0;
+          totalDividas += v;
+          if (d.status === "pago") dividasPagas += v;
+        });
 
-  const secao = (nome) => {
-    y += 6;
-    pdf.setFont("Helvetica", "bold");
-    pdf.setFontSize(14);
-    pdf.text(nome, 12, y);
-    y += 4;
-  };
+        const fluxoLiquido = receitaConfirmada - dividasPagas;
 
-  const linha = (txt) => {
-    pdf.setFont("Helvetica", "normal");
-    pdf.setFontSize(11);
-    const lines = pdf.splitTextToSize(txt, pageWidth - 24);
-    pdf.text(lines, 12, y);
-    y += 6 * lines.length;
-  };
+        addTitle("Painel Financeiro – Prestes");
 
-  titulo("Painel Financeiro – Prestes");
+        addSection("RESUMO GERAL");
+        addLine(`Eventos – total geral: ${money(totalEventos)}`);
+        addLine(`Eventos – receita confirmada (pagos): ${money(receitaConfirmada)}`);
+        addLine(`Dívidas – total geral: ${money(totalDividas)}`);
+        addLine(`Dívidas já pagas: ${money(dividasPagas)}`);
+        addLine(`Fluxo líquido (receita confirmada – dívidas pagas): ${money(fluxoLiquido)}`);
 
-  // ============ EVENTOS ============
-  secao("EVENTOS");
-  if (events.length === 0) {
-    linha("Nenhum evento cadastrado.");
-  } else {
-    events
-      .slice()
-      .sort((a, b) => (a.data || "").localeCompare(b.data || ""))
-      .forEach((ev) => {
-        linha(
-          `• ${ev.data} – ${ev.titulo} (${ev.empresa || "Sem empresa"}) — ` +
-            `${money(ev.valor)} — Status: ${ev.status}`
-        );
-        if (ev.observacao) linha("  Obs: " + ev.observacao);
+        // --- eventos ---
+        addSection("EVENTOS");
+        if (!events.length) {
+          addLine("Nenhum evento cadastrado.");
+        } else {
+          events
+            .slice()
+            .sort((a, b) => (a.data || "").localeCompare(b.data || ""))
+            .forEach((ev) => {
+              addLine(
+                `• ${ev.data || "s/ data"} – ${ev.titulo || "Evento"} (${ev.empresa || "sem empresa"}) – ${money(ev.valor || 0)} – Status: ${ev.status}`
+              );
+              if (ev.valorPagoParcial) {
+                addLine(`   Valor já recebido (parcial): ${money(ev.valorPagoParcial)}`);
+              }
+              if (ev.forma) {
+                addLine(`   Forma de pagamento: ${ev.forma}`);
+              }
+              if (ev.observacao) {
+                addLine(`   Obs: ${ev.observacao}`);
+              }
+            });
+        }
+
+        // --- dívidas ---
+        addSection("DÍVIDAS / PARCELAS");
+        if (!debts.length) {
+          addLine("Nenhuma dívida cadastrada.");
+        } else {
+          debts
+            .slice()
+            .sort((a, b) =>
+              (a.mesReferencia || "").localeCompare(b.mesReferencia || "")
+            )
+            .forEach((d) => {
+              addLine(
+                `• ${d.mesReferencia || "s/ mês"} – ${d.conta || "Conta"} – Parcela ${money(d.valorParcela || 0)} – Status: ${d.status}`
+              );
+              if (d.valorPagoParcial) {
+                addLine(`   Valor já pago (parcial): ${money(d.valorPagoParcial)}`);
+              }
+              if (d.observacao) {
+                addLine(`   Obs: ${d.observacao}`);
+              }
+            });
+        }
+
+        pdf.save("painel-financeiro-prestes.pdf");
+      } catch (err) {
+        console.error(err);
+        alert("Não consegui gerar o PDF agora. Tenta recarregar a página ou usar outro navegador.");
+      }
+    }
+
+    function Dashboard({ events, debts, onExportPDF }) {
+      const summary = useMemo(() => {
+        let receitaConfirmada = 0;
+        let eventosParciaisQtd = 0;
+        let eventosParciaisValor = 0;
+        let totalEventos = 0;
+
+        events.forEach((ev) => {
+          totalEventos += ev.valor || 0;
+          if (ev.status === "pago") receitaConfirmada += ev.valor || 0;
+          if (ev.status === "parcial") {
+            eventosParciaisQtd += 1;
+            eventosParciaisValor += ev.valorPagoParcial || 0;
+          }
+        });
+
+        let dividasQuitadas = 0;
+        let dividasParciaisQtd = 0;
+        let dividasParciaisValor = 0;
+        let totalDividas = 0;
+
+        debts.forEach((d) => {
+          totalDividas += d.valorParcela || 0;
+          if (d.status === "pago") dividasQuitadas += d.valorParcela || 0;
+          if (d.status === "parcial") {
+            dividasParciaisQtd += 1;
+            dividasParciaisValor += d.valorPagoParcial || 0;
+          }
+        });
+
+        const fluxoLiquido = receitaConfirmada - dividasQuitadas;
+
+        const timeline = [
+          ...events.map((ev) => ({
+            id: `ev-${ev.id}`,
+            tipo: "Evento",
+            createdAt: ev.createdAt || 0,
+            titulo: ev.titulo,
+            valor: ev.valor,
+            status: ev.status,
+            data: ev.data,
+          })),
+          ...debts.map((d) => ({
+            id: `dv-${d.id}`,
+            tipo: "Dívida",
+            createdAt: d.createdAt || 0,
+            titulo: d.conta,
+            valor: d.valorParcela,
+            status: d.status,
+            data: d.mesReferencia + "-01",
+          })),
+        ]
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .slice(0, 6);
+
+        return {
+          receitaConfirmada,
+          eventosParciaisQtd,
+          eventosParciaisValor,
+          totalEventos,
+          dividasQuitadas,
+          dividasParciaisQtd,
+          dividasParciaisValor,
+          totalDividas,
+          fluxoLiquido,
+          timeline,
+        };
+      }, [events, debts]);
+
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Visão geral</div>
+              <div className="card-subtitle">
+                Eventos fechados, dívidas e fluxo confirmado.
+              </div>
+            </div>
+            <button className="btn-outline" onClick={onExportPDF}>
+              Exportar PDF
+            </button>
+          </div>
+
+          <div className="card-kpi-row">
+            <div className="kpi-card">
+              <div className="kpi-label">
+                Eventos – total geral
+              </div>
+              <div className="kpi-main">
+                {money(summary.totalEventos)}
+              </div>
+              <div className="kpi-extra">
+                Soma de todos os eventos cadastrados.
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-label">
+                Eventos – receita confirmada (pagos)
+              </div>
+              <div className="kpi-main positive">
+                {money(summary.receitaConfirmada)}
+              </div>
+              <div className="kpi-extra">
+                Apenas eventos marcados como pagos.
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-label">Dívidas – total geral</div>
+              <div className="kpi-main negative">
+                {money(summary.totalDividas)}
+              </div>
+              <div className="kpi-extra">
+                Todas as parcelas (fixas e parceladas).
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-label">Fluxo líquido</div>
+              <div
+                className={
+                  "kpi-main " +
+                  (summary.fluxoLiquido >= 0 ? "positive" : "negative")
+                }
+              >
+                {money(summary.fluxoLiquido)}
+              </div>
+              <div className="kpi-extra">
+                Receita confirmada – dívidas pagas.
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">Eventos em parcial</div>
+              <div className="section-helper">
+                Quantidade e valor já recebido.
+              </div>
+            </div>
+            <div className="card-kpi-row">
+              <div className="kpi-card">
+                <div className="kpi-label">Eventos com pagamento parcial</div>
+                <div className="kpi-main">
+                  {summary.eventosParciaisQtd} evento(s)
+                </div>
+                <div className="kpi-extra">
+                  Já recebido: {money(summary.eventosParciaisValor)}
+                </div>
+              </div>
+              <div className="kpi-card">
+                <div className="kpi-label">Dívidas em pagamento parcial</div>
+                <div className="kpi-main">
+                  {summary.dividasParciaisQtd} conta(s)
+                </div>
+                <div className="kpi-extra">
+                  Já pago: {money(summary.dividasParciaisValor)}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">Linha do tempo rápida</div>
+              <div className="section-helper">
+                Últimos eventos e dívidas cadastrados.
+              </div>
+            </div>
+            <div className="timeline">
+              {summary.timeline.length === 0 && (
+                <div
+                  className="timeline-item"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  Ainda não há registros. Comece pelo painel de eventos ou
+                  dívidas.
+                </div>
+              )}
+              {summary.timeline.map((item) => (
+                <div key={item.id} className="timeline-item">
+                  <div>
+                    <div>
+                      <strong>{item.titulo || "Sem título"}</strong>{" "}
+                      <span style={{ fontSize: 10, opacity: 0.7 }}>
+                        · {item.tipo}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      {item.data}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div
+                      className={
+                        item.tipo === "Evento"
+                          ? "chip-amount"
+                          : "chip-amount-negative"
+                      }
+                    >
+                      {money(item.valor)}
+                    </div>
+                    <StatusPill status={item.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function EventosSection({
+      events,
+      setEvents,
+      eventMonth,
+      setEventMonth,
+      onPickDate,
+    }) {
+      const [form, setForm] = useState(() => {
+        const today = new Date();
+        return {
+          data: today.toISOString().slice(0, 10),
+          titulo: "",
+          empresa: "",
+          valor: "",
+          forma: "Pix",
+          observacao: "",
+        };
       });
-  }
 
-  // ============ DÍVIDAS ============
-  secao("DÍVIDAS / PARCELAS");
-  if (debts.length === 0) {
-    linha("Nenhuma conta cadastrada.");
-  } else {
-    debts
-      .slice()
-      .sort((a, b) => a.mesReferencia.localeCompare(b.mesReferencia))
-      .forEach((d) => {
-        linha(
-          `• ${d.mesReferencia} – ${d.conta} — Parcela ${money(
-            d.valorParcela
-          )} — Status: ${d.status}`
+      const handleChange = (field, value) => {
+        setForm((f) => ({ ...f, [field]: value }));
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const valor = parseFloat(form.valor.replace(",", ".")) || 0;
+        if (!form.data || !form.titulo || valor <= 0) return;
+
+        const createdAt = Date.now();
+        const novo = {
+          id: createdAt.toString(),
+          createdAt,
+          data: form.data,
+          titulo: form.titulo,
+          empresa: form.empresa || "",
+          valor,
+          status: "pendente",
+          valorPagoParcial: 0,
+          forma: form.forma,
+          observacao: form.observacao || "",
+        };
+        setEvents((prev) => [...prev, novo]);
+        setForm((f) => ({ ...f, titulo: "", empresa: "", valor: "", observacao: "" }));
+      };
+
+      const handleToggleStatus = (id) => {
+        setEvents((prev) =>
+          prev.map((ev) =>
+            ev.id === id ? { ...ev, status: cycleStatus(ev.status) } : ev
+          )
         );
-        if (d.observacao) linha("  Obs: " + d.observacao);
+      };
+
+      const handlePartialValueChange = (id, value) => {
+        const n = parseFloat(value.replace(",", ".")) || 0;
+        setEvents((prev) =>
+          prev.map((ev) =>
+            ev.id === id ? { ...ev, valorPagoParcial: n } : ev
+          )
+        );
+      };
+
+      const monthKey =
+        eventMonth.year + "-" + pad2(eventMonth.month + 1);
+
+      const eventsThisMonth = events.filter(
+        (ev) => ev.data && ev.data.slice(0, 7) === monthKey
+      );
+
+      const weeks = useMemo(() => {
+        const { year, month } = eventMonth;
+        const first = new Date(year, month, 1);
+        const firstWeekday = first.getDay(); // 0–6
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const cells = [];
+        for (let i = 0; i < 42; i++) {
+          const dayNum = i - firstWeekday + 1;
+          if (dayNum < 1 || dayNum > daysInMonth) {
+            cells.push({ key: `x-${i}`, outside: true });
+          } else {
+            const dateObj = new Date(year, month, dayNum);
+            const iso = dateObj.toISOString().slice(0, 10);
+            const items = events.filter((ev) => ev.data === iso);
+            cells.push({
+              key: iso,
+              outside: false,
+              day: dayNum,
+              items,
+            });
+          }
+        }
+        return cells;
+      }, [eventMonth, events]);
+
+      const handleDayClick = (cell) => {
+        if (!cell.day || cell.outside) return;
+        const { year, month } = eventMonth;
+        const dateObj = new Date(year, month, cell.day);
+        const iso = dateObj.toISOString().slice(0, 10);
+        setForm((f) => ({ ...f, data: iso }));
+        if (typeof onPickDate === "function") onPickDate(iso);
+      };
+
+      const handlePrevMonth = () =>
+        setEventMonth((m) => addMonths(m.year, m.month, -1));
+      const handleNextMonth = () =>
+        setEventMonth((m) => addMonths(m.year, m.month, 1));
+
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Eventos</div>
+              <div className="card-subtitle">
+                Calendário mensal com eventos, empresas e status de pagamento.
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">Calendário</div>
+              <div className="section-helper">
+                Toque no dia para preencher o formulário.
+              </div>
+            </div>
+            <div className="calendar">
+              <div className="calendar-header">
+                <div className="calendar-month-label">
+                  {monthLabel(eventMonth.year, eventMonth.month)}
+                </div>
+                <div className="calendar-nav">
+                  <button className="icon-btn" onClick={handlePrevMonth}>
+                    ‹
+                  </button>
+                  <button className="icon-btn" onClick={handleNextMonth}>
+                    ›
+                  </button>
+                </div>
+              </div>
+              <div className="calendar-grid">
+                {["D", "S", "T", "Q", "Q", "S", "S"].map((d) => (
+                  <div key={d} className="calendar-weekday">
+                    {d}
+                  </div>
+                ))}
+                {weeks.map((cell) => (
+                  <div
+                    key={cell.key}
+                    className={
+                      "calendar-day" + (cell.outside ? " outside" : "")
+                    }
+                    onClick={() => handleDayClick(cell)}
+                  >
+                    {!cell.outside && (
+                      <>
+                        <div className="calendar-day-number">
+                          {cell.day}
+                        </div>
+                        <div className="calendar-chips">
+                          {cell.items &&
+                            cell.items.slice(0, 3).map((ev) => (
+                              <div
+                                key={ev.id}
+                                className="calendar-chip"
+                                title={ev.titulo}
+                              >
+                                {ev.titulo || "Evento"}
+                              </div>
+                            ))}
+                          {cell.items && cell.items.length > 3 && (
+                            <div
+                              className="calendar-chip"
+                              style={{ opacity: 0.75 }}
+                            >
+                              +{cell.items.length - 3}
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Eventos deste mês ({eventsThisMonth.length})
+              </div>
+              <div className="section-helper">
+                Clique em “girar status” e preencha o valor parcial quando
+                precisar.
+              </div>
+            </div>
+            <div className="list">
+              {eventsThisMonth.length === 0 && (
+                <div
+                  className="small-hint"
+                  style={{ paddingInline: 4, color: "var(--text-muted)" }}
+                >
+                  Nenhum evento neste mês ainda.
+                </div>
+              )}
+              {eventsThisMonth
+                .slice()
+                .sort((a, b) => (a.data || "").localeCompare(b.data || ""))
+                .map((ev) => (
+                  <div key={ev.id} className="list-item">
+                    <div className="list-item-main-row">
+                      <div>
+                        <div className="list-item-title">
+                          {ev.titulo || "Evento"}
+                        </div>
+                        <div className="list-item-sub">
+                          {ev.empresa || "Sem empresa"} · {ev.data} ·{" "}
+                          {ev.forma || "Pix"}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div className="chip-amount">
+                          {money(ev.valor || 0)}
+                        </div>
+                        <StatusPill status={ev.status} />
+                      </div>
+                    </div>
+                    <div className="list-item-actions-row">
+                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                        <span className="label-tag">Valor já pago (R$)</span>
+                        <input
+                          className="form-input"
+                          style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={
+                            ev.valorPagoParcial === 0 || ev.valorPagoParcial
+                              ? ev.valorPagoParcial
+                              : ""
+                          }
+                          onChange={(e) =>
+                            handlePartialValueChange(ev.id, e.target.value)
+                          }
+                        />
+                      </div>
+                      <button
+                        className="btn-ghost"
+                        onClick={() => handleToggleStatus(ev.id)}
+                      >
+                        Girar status
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Novo evento (com empresa & observação)
+              </div>
+              <div className="section-helper">
+                Campos mínimos: data, título, valor.
+              </div>
+            </div>
+            <form className="form" onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Data</label>
+                  <input
+                    type="date"
+                    className="form-input"
+                    value={form.data}
+                    onChange={(e) => handleChange("data", e.target.value)}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Título do evento</label>
+                  <input
+                    className="form-input"
+                    placeholder="Pré evento, formatura..."
+                    value={form.titulo}
+                    onChange={(e) => handleChange("titulo", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Empresa / cliente</label>
+                  <input
+                    className="form-input"
+                    placeholder="Euphoria, escola, família..."
+                    value={form.empresa}
+                    onChange={(e) => handleChange("empresa", e.target.value)}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Valor total (R$)</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.valor}
+                    onChange={(e) => handleChange("valor", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Forma de pagamento</label>
+                  <select
+                    className="form-select"
+                    value={form.forma}
+                    onChange={(e) => handleChange("forma", e.target.value)}
+                  >
+                    <option>Pix</option>
+                    <option>Crédito</option>
+                    <option>Débito</option>
+                    <option>Dinheiro</option>
+                    <option>Outro</option>
+                  </select>
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Observação</label>
+                  <input
+                    className="form-input"
+                    placeholder="Entrada, restante na data, etc."
+                    value={form.observacao}
+                    onChange={(e) =>
+                      handleChange("observacao", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-footer">
+                <div className="small-hint">
+                  Depois de salvo, use o status + valor parcial para controlar a
+                  evolução do pagamento.
+                </div>
+                <button type="submit" className="btn-primary">
+                  Salvar evento
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    function DividasSection({
+      debts,
+      setDebts,
+      debtMonth,
+      setDebtMonth,
+    }) {
+      const [form, setForm] = useState(() => {
+        const today = new Date();
+        const ym = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}`;
+        return {
+          mesInicial: ym,
+          conta: "",
+          valorTotal: "",
+          parcelas: "1",
+          observacao: "",
+        };
       });
-  }
 
-  pdf.save("painel-prestes.pdf");
-}
+      const monthKey =
+        debtMonth.year + "-" + pad2(debtMonth.month + 1);
 
-// ===============================
-// 🚀 EXPORTAÇÃO PARA O RESTO DO APP
+      const debtsThisMonth = debts.filter(
+        (d) => d.mesReferencia === monthKey
+      );
+
+      const totals = useMemo(() => {
+        let total = 0;
+        let pago = 0;
+        debtsThisMonth.forEach((d) => {
+          total += d.valorParcela || 0;
+          if (d.status === "pago") pago += d.valorParcela || 0;
+          if (d.status === "parcial") pago += d.valorPagoParcial || 0;
+        });
+        return { total, pago };
+      }, [debtsThisMonth]);
+
+      const handleChange = (field, value) => {
+        setForm((f) => ({ ...f, [field]: value }));
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const valorTotal = parseFloat(
+          form.valorTotal.replace(",", ".")
+        );
+        const parcelas = parseInt(form.parcelas, 10) || 1;
+        if (!form.mesInicial || !form.conta || !(valorTotal > 0)) return;
+
+        const [y, m] = form.mesInicial.split("-");
+        const startYear = parseInt(y, 10);
+        const startMonth = parseInt(m, 10) - 1;
+        const isParcelado = parcelas > 1;
+        const valorParcela = isParcelado
+          ? valorTotal / parcelas
+          : valorTotal;
+
+        const createdAt = Date.now();
+        const grupoId = "g-" + createdAt.toString();
+
+        const novos = [];
+        for (let i = 0; i < parcelas; i++) {
+          const { year, month } = addMonths(
+            startYear,
+            startMonth,
+            i
+          );
+          const mesReferencia =
+            year + "-" + pad2(month + 1);
+
+          novos.push({
+            id: `${grupoId}-${i}`,
+            createdAt: createdAt + i,
+            grupoId,
+            conta: form.conta,
+            mesReferencia,
+            valorParcela,
+            status: "pendente",
+            valorPagoParcial: 0,
+            observacao: form.observacao || "",
+          });
+        }
+
+        setDebts((prev) => [...prev, ...novos]);
+        setForm((f) => ({
+          ...f,
+          conta: "",
+          valorTotal: "",
+          parcelas: "1",
+          observacao: "",
+        }));
+      };
+
+      const handleToggleStatus = (id) => {
+        setDebts((prev) =>
+          prev.map((d) =>
+            d.id === id ? { ...d, status: cycleStatus(d.status) } : d
+          )
+        );
+      };
+
+      const handlePartialChange = (id, value) => {
+        const n = parseFloat(value.replace(",", ".")) || 0;
+        setDebts((prev) =>
+          prev.map((d) =>
+            d.id === id ? { ...d, valorPagoParcial: n } : d
+          )
+        );
+      };
+
+      const handlePrevMonth = () =>
+        setDebtMonth((m) => addMonths(m.year, m.month, -1));
+      const handleNextMonth = () =>
+        setDebtMonth((m) => addMonths(m.year, m.month, 1));
+
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Dívidas / contas</div>
+              <div className="card-subtitle">
+                Conta, valor, pago parcial e parcelas distribuídas por meses.
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Mês de referência – {monthLabel(debtMonth.year, debtMonth.month)}
+              </div>
+              <div className="calendar-nav">
+                <button className="icon-btn" onClick={handlePrevMonth}>
+                  ‹
+                </button>
+                <button className="icon-btn" onClick={handleNextMonth}>
+                  ›
+                </button>
+              </div>
+            </div>
+
+            <div className="card-kpi-row" style={{ marginBottom: 8 }}>
+              <div className="kpi-card">
+                <div className="kpi-label">
+                  Total deste mês (todas parcelas)
+                </div>
+                <div className="kpi-main negative">
+                  {money(totals.total)}
+                </div>
+              </div>
+              <div className="kpi-card">
+                <div className="kpi-label">Já pago neste mês</div>
+                <div className="kpi-main positive">
+                  {money(totals.pago)}
+                </div>
+              </div>
+            </div>
+
+            <div className="list">
+              {debtsThisMonth.length === 0 && (
+                <div
+                  className="small-hint"
+                  style={{ paddingInline: 4, color: "var(--text-muted)" }}
+                >
+                  Nenhuma conta cadastrada para este mês.
+                </div>
+              )}
+              {debtsThisMonth
+                .slice()
+                .sort((a, b) =>
+                  (a.createdAt || 0) - (b.createdAt || 0)
+                )
+                .map((d) => (
+                  <div key={d.id} className="list-item">
+                    <div className="list-item-main-row">
+                      <div>
+                        <div className="list-item-title">
+                          {d.conta || "Conta"}
+                        </div>
+                        <div className="list-item-sub">
+                          Parcela de {money(d.valorParcela)} ·{" "}
+                          {d.mesReferencia}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div className="chip-amount-negative">
+                          {money(d.valorParcela)}
+                        </div>
+                        <StatusPill status={d.status} />
+                      </div>
+                    </div>
+                    <div className="list-item-actions-row">
+                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                        <span className="label-tag">Valor já pago (R$)</span>
+                        <input
+                          className="form-input"
+                          style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={
+                            d.valorPagoParcial === 0 || d.valorPagoParcial
+                              ? d.valorPagoParcial
+                              : ""
+                          }
+                          onChange={(e) =>
+                            handlePartialChange(d.id, e.target.value)
+                          }
+                        />
+                      </div>
+                      <button
+                        className="btn-ghost"
+                        onClick={() => handleToggleStatus(d.id)}
+                      >
+                        Girar status
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Nova dívida / conta parcelada
+              </div>
+              <div className="section-helper">
+                “Conta, valor, pago, pago parcial, parcelado” distribuído nos
+                próximos meses.
+              </div>
+            </div>
+            <form className="form" onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Mês inicial</label>
+                  <input
+                    type="month"
+                    className="form-input"
+                    value={form.mesInicial}
+                    onChange={(e) =>
+                      handleChange("mesInicial", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Conta / descrição</label>
+                  <input
+                    className="form-input"
+                    placeholder="Cartão Nubank, câmera, viagem..."
+                    value={form.conta}
+                    onChange={(e) =>
+                      handleChange("conta", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Valor total (R$)</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.valorTotal}
+                    onChange={(e) =>
+                      handleChange("valorTotal", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Nº de parcelas</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={form.parcelas}
+                    onChange={(e) =>
+                      handleChange("parcelas", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Observação</label>
+                  <textarea
+                    className="form-textarea"
+                    placeholder="Banco tal, juros, acordo..."
+                    value={form.observacao}
+                    onChange={(e) =>
+                      handleChange("observacao", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-footer">
+                <div className="small-hint">
+                  Se você colocar 6 parcelas, cada uma cai no mês correto
+                  automaticamente.
+                </div>
+                <button type="submit" className="btn-primary">
+                  Salvar dívida / parcelas
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const saved = useMemo(() => {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch {
+          return null;
+        }
+      }, []);
+
+      const today = new Date();
+      const [events, setEvents] = useState(() => saved?.events || []);
+      const [debts, setDebts] = useState(() => saved?.debts || []);
+      const [theme, setTheme] = useState(() => saved?.theme || "light");
+
+      const [activeTab, setActiveTab] = useState("dashboard");
+
+      const [eventMonth, setEventMonth] = useState(() => ({
+        year: today.getFullYear(),
+        month: today.getMonth(),
+      }));
+      const [debtMonth, setDebtMonth] = useState(() => ({
+        year: today.getFullYear(),
+        month: today.getMonth(),
+      }));
+
+      useEffect(() => {
+        document.body.classList.remove("light", "dark");
+        document.body.classList.add(theme);
+      }, [theme]);
+
+      useEffect(() => {
+        try {
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({ events, debts, theme })
+          );
+        } catch {}
+      }, [events, debts, theme]);
+
+      const handleToggleTheme = () => {
+        setTheme((t) => (t === "light" ? "dark" : "light"));
+      };
+
+      const handleExportPDF = () => {
+        gerarPDFBonito(events, debts);
+      };
+
+      return (
+        <div className="app-shell">
+          <div
+            className="theme-toggle"
+            onClick={handleToggleTheme}
+          >
+            <div className="theme-toggle-indicator">
+              <div className="theme-toggle-indicator-inner" />
+            </div>
+            <span>
+              {theme === "dark"
+                ? "Escuro"
+                : "Claro"}
+            </span>
+          </div>
+
+          <header className="app-header">
+            <div className="app-title">
+              <div className="pill-badge">
+                <span className="pill-dot" />
+                painel financeiro · prestes
+              </div>
+              <h1>Eventos, dívidas e parcelas em modo profissional</h1>
+              <p>
+                Uma tela para cada lado da sua mente: dashboard, calendário de
+                eventos e matriz de dívidas. Tudo salvo no seu navegador.
+              </p>
+            </div>
+            <div className="header-right">
+              <div className="storage-note">
+                Dados guardados no seu navegador (localStorage).
+              </div>
+            </div>
+          </header>
+
+          <div className="tabs-row">
+            <button
+              className={
+                "tab-btn" + (activeTab === "dashboard" ? " active" : "")
+              }
+              onClick={() => setActiveTab("dashboard")}
+            >
+              Dashboard
+            </button>
+            <button
+              className={
+                "tab-btn" + (activeTab === "eventos" ? " active" : "")
+              }
+              onClick={() => setActiveTab("eventos")}
+            >
+              Eventos
+            </button>
+            <button
+              className={
+                "tab-btn" + (activeTab === "dividas" ? " active" : "")
+              }
+              onClick={() => setActiveTab("dividas")}
+            >
+              Dívidas
+            </button>
+          </div>
+
+          {activeTab === "dashboard" && (
+            <Dashboard
+              events={events}
+              debts={debts}
+              onExportPDF={handleExportPDF}
+            />
+          )}
+
+          {activeTab === "eventos" && (
+            <EventosSection
+              events={events}
+              setEvents={setEvents}
+              eventMonth={eventMonth}
+              setEventMonth={setEventMonth}
+            />
+          )}
+
+          {activeTab === "dividas" && (
+            <DividasSection
+              debts={debts}
+              setDebts={setDebts}
+              debtMonth={debtMonth}
+              setDebtMonth={setDebtMonth}
+            />
+          )}
+        </div>
+      );
+    }
+
+    const rootEl = document.getElementById("root");
+    ReactDOM.createRoot(rootEl).render(<App />);
+  </script>
+</body>
+</html>
