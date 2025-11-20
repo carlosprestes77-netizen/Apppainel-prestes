@@ -712,96 +712,1257 @@
 
     const money = (n) =>
       "R$ " +
-      (n || 0).toLocaleString("
-         function Dashboard({ events, debts, onExportPDF }) {
-  const summary = useMemo(() => {
-    let totalEventos = 0;
-    let receitaConfirmada = 0;
+      (n || 0).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
-    events.forEach((ev) => {
-      totalEventos += ev.valor || 0;
-      if (ev.status === "pago") receitaConfirmada += ev.valor || 0;
-    });
+    const monthLabel = (year, monthIndex) =>
+      new Date(year, monthIndex, 1).toLocaleDateString("pt-BR", {
+        month: "long",
+        year: "numeric",
+      });
 
-    let totalDividasGeral = 0;
-    let totalDividasPagas = 0;
+    const pad2 = (n) => String(n).padStart(2, "0");
 
-    debts.forEach((d) => {
-      totalDividasGeral += d.valorParcela || 0;
-      if (d.status === "pago") totalDividasPagas += d.valorParcela || 0;
-    });
-
-    const fluxoLiquido = receitaConfirmada - totalDividasPagas;
-
-    return {
-      totalEventos,
-      receitaConfirmada,
-      totalDividasGeral,
-      totalDividasPagas,
-      fluxoLiquido,
+    const addMonths = (year, monthIndex, delta) => {
+      const d = new Date(year, monthIndex + delta, 1);
+      return { year: d.getFullYear(), month: d.getMonth() };
     };
-  }, [events, debts]);
 
-  return (
-    <div className="card">
-      <div className="card-header-row">
-        <div>
-          <div className="card-title">Visão geral</div>
-          <div className="card-subtitle">
-            Um resumo simples do mês: eventos, dívidas e fluxo.
+    const cycleStatus = (status) => {
+      if (status === "pendente") return "parcial";
+      if (status === "parcial") return "pago";
+      return "pendente";
+    };
+
+    function StatusPill({ status }) {
+      return (
+        <span className={`pill-status ${status}`}>
+          {status === "pendente"
+            ? "Pendente"
+            : status === "parcial"
+            ? "Pago parcial"
+            : "Pago"}
+        </span>
+      );
+    }
+        function Dashboard({ events, debts, onExportPDF }) {
+      const summary = useMemo(() => {
+        let totalEventos = 0;
+        let receitaConfirmada = 0;
+
+        events.forEach((ev) => {
+          totalEventos += ev.valor || 0;
+          if (ev.status === "pago") receitaConfirmada += ev.valor || 0;
+        });
+
+        let totalDividasGeral = 0;
+        let totalDividasPagas = 0;
+
+        debts.forEach((d) => {
+          totalDividasGeral += d.valorParcela || 0;
+          if (d.status === "pago") totalDividasPagas += d.valorParcela || 0;
+        });
+
+        const fluxoLiquido = receitaConfirmada - totalDividasPagas;
+
+        return {
+          totalEventos,
+          receitaConfirmada,
+          totalDividasGeral,
+          totalDividasPagas,
+          fluxoLiquido,
+        };
+      }, [events, debts]);
+
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Visão geral</div>
+              <div className="card-subtitle">
+                Um resumo simples do mês: eventos, dívidas e fluxo.
+              </div>
+            </div>
+            <button className="btn-outline" onClick={onExportPDF}>
+              Exportar PDF
+            </button>
+          </div>
+
+          <div className="card-kpi-row">
+            <div className="kpi-card">
+              <div className="kpi-label">Eventos – total geral</div>
+              <div className="kpi-main positive">
+                {money(summary.totalEventos)}
+              </div>
+              <div className="kpi-extra">
+                Soma de todos os eventos cadastrados.
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-label">Eventos – receita confirmada</div>
+              <div className="kpi-main positive">
+                {money(summary.receitaConfirmada)}
+              </div>
+              <div className="kpi-extra">
+                Apenas eventos marcados como “pago”.
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-label">Dívidas – total geral</div>
+              <div className="kpi-main negative">
+                {money(summary.totalDividasGeral)}
+              </div>
+              <div className="kpi-extra">
+                Soma de todas as parcelas de todas as dívidas.
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-label">Fluxo líquido simples</div>
+              <div
+                className={
+                  "kpi-main " +
+                  (summary.fluxoLiquido >= 0 ? "positive" : "negative")
+                }
+              >
+                {money(summary.fluxoLiquido)}
+              </div>
+              <div className="kpi-extra">
+                Receita confirmada – dívidas já pagas.
+              </div>
+            </div>
           </div>
         </div>
-        <button className="btn-outline" onClick={onExportPDF}>
-          Exportar PDF
-        </button>
-      </div>
+      );
+    }
 
-      <div className="card-kpi-row">
-        <div className="kpi-card">
-          <div className="kpi-label">Eventos – total geral</div>
-          <div className="kpi-main positive">
-            {money(summary.totalEventos)}
+    function EventosSection({
+      events,
+      setEvents,
+      eventMonth,
+      setEventMonth,
+      onPickDate,
+    }) {
+      const [form, setForm] = useState(() => {
+        const today = new Date();
+        return {
+          data: today.toISOString().slice(0, 10),
+          titulo: "",
+          empresa: "",
+          valor: "",
+          forma: "Pix",
+          observacao: "",
+        };
+      });
+
+      const handleChange = (field, value) => {
+        setForm((f) => ({ ...f, [field]: value }));
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const valor = parseFloat(form.valor.replace(",", ".")) || 0;
+        if (!form.data || !form.titulo || valor <= 0) return;
+
+        const createdAt = Date.now();
+        const novo = {
+          id: createdAt.toString(),
+          createdAt,
+          data: form.data,
+          titulo: form.titulo,
+          empresa: form.empresa || "",
+          valor,
+          status: "pendente",
+          valorPagoParcial: 0,
+          forma: form.forma,
+          observacao: form.observacao || "",
+        };
+        setEvents((prev) => [...prev, novo]);
+        setForm((f) => ({
+          ...f,
+          titulo: "",
+          empresa: "",
+          valor: "",
+          observacao: "",
+        }));
+      };
+
+      const handleToggleStatus = (id) => {
+        setEvents((prev) =>
+          prev.map((ev) =>
+            ev.id === id ? { ...ev, status: cycleStatus(ev.status) } : ev
+          )
+        );
+      };
+
+      const handlePartialValueChange = (id, value) => {
+        const n = parseFloat(value.replace(",", ".")) || 0;
+        setEvents((prev) =>
+          prev.map((ev) =>
+            ev.id === id ? { ...ev, valorPagoParcial: n } : ev
+          )
+        );
+      };
+
+      const monthKey =
+        eventMonth.year + "-" + pad2(eventMonth.month + 1);
+
+      const eventsThisMonth = events.filter(
+        (ev) => ev.data && ev.data.slice(0, 7) === monthKey
+      );
+
+      const weeks = useMemo(() => {
+        const { year, month } = eventMonth;
+        const first = new Date(year, month, 1);
+        const firstWeekday = first.getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const cells = [];
+        for (let i = 0; i < 42; i++) {
+          const dayNum = i - firstWeekday + 1;
+          if (dayNum < 1 || dayNum > daysInMonth) {
+            cells.push({ key: `x-${i}`, outside: true });
+          } else {
+            const dateObj = new Date(year, month, dayNum);
+            const iso = dateObj.toISOString().slice(0, 10);
+            const items = events.filter((ev) => ev.data === iso);
+            cells.push({
+              key: iso,
+              outside: false,
+              day: dayNum,
+              items,
+            });
+          }
+        }
+        return cells;
+      }, [eventMonth, events]);
+
+      const handleDayClick = (cell) => {
+        if (!cell.day || cell.outside) return;
+        const { year, month } = eventMonth;
+        const dateObj = new Date(year, month, cell.day);
+        const iso = dateObj.toISOString().slice(0, 10);
+        setForm((f) => ({ ...f, data: iso }));
+        if (typeof onPickDate === "function") onPickDate(iso);
+      };
+
+      const handlePrevMonth = () =>
+        setEventMonth((m) => addMonths(m.year, m.month, -1));
+      const handleNextMonth = () =>
+        setEventMonth((m) => addMonths(m.year, m.month, 1));
+
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Eventos</div>
+              <div className="card-subtitle">
+                Calendário mensal com eventos, empresas e status de pagamento.
+              </div>
+            </div>
           </div>
-          <div className="kpi-extra">
-            Soma de todos os eventos cadastrados.
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">Calendário</div>
+              <div className="section-helper">
+                Toque no dia para preencher o formulário.
+              </div>
+            </div>
+            <div className="calendar">
+              <div className="calendar-header">
+                <div className="calendar-month-label">
+                  {monthLabel(eventMonth.year, eventMonth.month)}
+                </div>
+                <div className="calendar-nav">
+                  <button className="icon-btn" onClick={handlePrevMonth}>
+                    ‹
+                  </button>
+                  <button className="icon-btn" onClick={handleNextMonth}>
+                    ›
+                  </button>
+                </div>
+              </div>
+              <div className="calendar-grid">
+                {["D", "S", "T", "Q", "Q", "S", "S"].map((d) => (
+                  <div key={d} className="calendar-weekday">
+                    {d}
+                  </div>
+                ))}
+                {weeks.map((cell) => (
+                  <div
+                    key={cell.key}
+                    className={
+                      "calendar-day" + (cell.outside ? " outside" : "")
+                    }
+                    onClick={() => handleDayClick(cell)}
+                  >
+                    {!cell.outside && (
+                      <>
+                        <div className="calendar-day-number">
+                          {cell.day}
+                        </div>
+                        <div className="calendar-chips">
+                          {cell.items &&
+                            cell.items.slice(0, 3).map((ev) => (
+                              <div
+                                key={ev.id}
+                                className="calendar-chip"
+                                title={ev.titulo}
+                              >
+                                {ev.titulo || "Evento"}
+                              </div>
+                            ))}
+                          {cell.items && cell.items.length > 3 && (
+                            <div
+                              className="calendar-chip"
+                              style={{ opacity: 0.75 }}
+                            >
+                              +{cell.items.length - 3}
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Eventos deste mês ({eventsThisMonth.length})
+              </div>
+              <div className="section-helper">
+                Clique em “girar status” e preencha o valor parcial quando
+                precisar.
+              </div>
+            </div>
+            <div className="list">
+              {eventsThisMonth.length === 0 && (
+                <div
+                  className="small-hint"
+                  style={{ paddingInline: 4, color: "var(--text-muted)" }}
+                >
+                  Nenhum evento neste mês ainda.
+                </div>
+              )}
+              {eventsThisMonth
+                .slice()
+                .sort((a, b) => (a.data || "").localeCompare(b.data || ""))
+                .map((ev) => (
+                  <div key={ev.id} className="list-item">
+                    <div className="list-item-main-row">
+                      <div>
+                        <div className="list-item-title">
+                          {ev.titulo || "Evento"}
+                        </div>
+                        <div className="list-item-sub">
+                          {ev.empresa || "Sem empresa"} · {ev.data} ·{" "}
+                          {ev.forma || "Pix"}
+                        </div>
+                        {ev.observacao && (
+                          <div className="list-item-sub">
+                            Obs: {ev.observacao}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div className="chip-amount">
+                          {money(ev.valor || 0)}
+                        </div>
+                        <StatusPill status={ev.status} />
+                      </div>
+                    </div>
+                    <div className="list-item-actions-row">
+                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                        <span className="label-tag">Valor já pago (R$)</span>
+                        <input
+                          className="form-input"
+                          style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={
+                            ev.valorPagoParcial === 0 || ev.valorPagoParcial
+                              ? ev.valorPagoParcial
+                              : ""
+                          }
+                          onChange={(e) =>
+                            handlePartialValueChange(ev.id, e.target.value)
+                          }
+                        />
+                      </div>
+                      <button
+                        className="btn-ghost"
+                        onClick={() => handleToggleStatus(ev.id)}
+                      >
+                        Girar status
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Novo evento (com empresa & observação)
+              </div>
+              <div className="section-helper">
+                Campos mínimos: data, título, valor.
+              </div>
+            </div>
+            <form className="form" onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Data</label>
+                  <input
+                    type="date"
+                    className="form-input"
+                    value={form.data}
+                    onChange={(e) => handleChange("data", e.target.value)}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Título do evento</label>
+                  <input
+                    className="form-input"
+                    placeholder="Pré evento, formatura..."
+                    value={form.titulo}
+                    onChange={(e) => handleChange("titulo", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Empresa / cliente</label>
+                  <input
+                    className="form-input"
+                    placeholder="Euphoria, escola, família..."
+                    value={form.empresa}
+                    onChange={(e) => handleChange("empresa", e.target.value)}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Valor total (R$)</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.valor}
+                    onChange={(e) => handleChange("valor", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Forma de pagamento</label>
+                  <select
+                    className="form-select"
+                    value={form.forma}
+                    onChange={(e) => handleChange("forma", e.target.value)}
+                  >
+                    <option>Pix</option>
+                    <option>Crédito</option>
+                    <option>Débito</option>
+                    <option>Dinheiro</option>
+                    <option>Outro</option>
+                  </select>
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Observação</label>
+                  <input
+                    className="form-input"
+                    placeholder="Entrada, restante na data, etc."
+                    value={form.observacao}
+                    onChange={(e) =>
+                      handleChange("observacao", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-footer">
+                <div className="small-hint">
+                  Depois de salvo, use o status + valor parcial para controlar a
+                  evolução do pagamento.
+                </div>
+                <button type="submit" className="btn-primary">
+                  Salvar evento
+                </button>
+              </div>
+            </form>
           </div>
         </div>
+      );
+    }
+        function DividasSection({
+      debts,
+      setDebts,
+      debtMonth,
+      setDebtMonth,
+    }) {
+      const [form, setForm] = useState(() => {
+        const today = new Date();
+        const ym = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}`;
+        return {
+          mesInicial: ym,
+          conta: "",
+          valorTotal: "",
+          parcelas: "1",
+          observacao: "",
+        };
+      });
 
-        <div className="kpi-card">
-          <div className="kpi-label">Eventos – receita confirmada</div>
-          <div className="kpi-main positive">
-            {money(summary.receitaConfirmada)}
+      const monthKey =
+        debtMonth.year + "-" + pad2(debtMonth.month + 1);
+
+      const debtsThisMonth = debts.filter(
+        (d) => d.mesReferencia === monthKey
+      );
+
+      const totals = useMemo(() => {
+        let total = 0;
+        let pago = 0;
+        debtsThisMonth.forEach((d) => {
+          total += d.valorParcela || 0;
+          if (d.status === "pago") pago += d.valorParcela || 0;
+          if (d.status === "parcial") pago += d.valorPagoParcial || 0;
+        });
+        return { total, pago };
+      }, [debtsThisMonth]);
+
+      const totalGeral = useMemo(
+        () => debts.reduce((acc, d) => acc + (d.valorParcela || 0), 0),
+        [debts]
+      );
+
+      const saldoMes = totals.total - totals.pago;
+
+      const handleChange = (field, value) => {
+        setForm((f) => ({ ...f, [field]: value }));
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const valorTotal = parseFloat(
+          form.valorTotal.replace(",", ".")
+        );
+        const parcelas = parseInt(form.parcelas, 10) || 1;
+        if (!form.mesInicial || !form.conta || !(valorTotal > 0)) return;
+
+        const [y, m] = form.mesInicial.split("-");
+        const startYear = parseInt(y, 10);
+        const startMonth = parseInt(m, 10) - 1;
+        const isParcelado = parcelas > 1;
+        const valorParcela = isParcelado
+          ? valorTotal / parcelas
+          : valorTotal;
+
+        const createdAt = Date.now();
+        const grupoId = "g-" + createdAt.toString();
+
+        const novos = [];
+        for (let i = 0; i < parcelas; i++) {
+          const { year, month } = addMonths(
+            startYear,
+            startMonth,
+            i
+          );
+          const mesReferencia =
+            year + "-" + pad2(month + 1);
+
+          novos.push({
+            id: `${grupoId}-${i}`,
+            createdAt: createdAt + i,
+            grupoId,
+            conta: form.conta,
+            mesReferencia,
+            valorParcela,
+            valorTotal,
+            parcelas,
+            parcelaNumero: i + 1,
+            status: "pendente",
+            valorPagoParcial: 0,
+            observacao: form.observacao || "",
+          });
+        }
+
+        setDebts((prev) => [...prev, ...novos]);
+        setForm((f) => ({
+          ...f,
+          conta: "",
+          valorTotal: "",
+          parcelas: "1",
+          observacao: "",
+        }));
+      };
+
+      const handleToggleStatus = (id) => {
+        setDebts((prev) =>
+          prev.map((d) =>
+            d.id === id ? { ...d, status: cycleStatus(d.status) } : d
+          )
+        );
+      };
+
+      const handlePartialChange = (id, value) => {
+        const n = parseFloat(value.replace(",", ".")) || 0;
+        setDebts((prev) =>
+          prev.map((d) =>
+            d.id === id ? { ...d, valorPagoParcial: n } : d
+          )
+        );
+      };
+
+      const handlePrevMonth = () =>
+        setDebtMonth((m) => addMonths(m.year, m.month, -1));
+      const handleNextMonth = () =>
+        setDebtMonth((m) => addMonths(m.year, m.month, 1));
+
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Dívidas / contas</div>
+              <div className="card-subtitle">
+                Conta, valor, pago parcial e parcelas distribuídas por meses.
+              </div>
+            </div>
           </div>
-          <div className="kpi-extra">
-            Apenas eventos marcados como “pago”.
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Mês de referência – {monthLabel(debtMonth.year, debtMonth.month)}
+              </div>
+              <div className="calendar-nav">
+                <button className="icon-btn" onClick={handlePrevMonth}>
+                  ‹
+                </button>
+                <button className="icon-btn" onClick={handleNextMonth}>
+                  ›
+                </button>
+              </div>
+            </div>
+
+            <div className="card-kpi-row" style={{ marginBottom: 8 }}>
+              <div className="kpi-card">
+                <div className="kpi-label">
+                  Total deste mês (todas parcelas)
+                </div>
+                <div className="kpi-main negative">
+                  {money(totals.total)}
+                </div>
+                <div className="kpi-extra">
+                  Soma das parcelas deste mês.
+                </div>
+              </div>
+              <div className="kpi-card">
+                <div className="kpi-label">Já pago neste mês</div>
+                <div className="kpi-main positive">
+                  {money(totals.pago)}
+                </div>
+                <div className="kpi-extra">
+                  Considera parcelas pagas e valores parciais.
+                </div>
+              </div>
+              <div className="kpi-card">
+                <div className="kpi-label">Saldo do mês & total geral</div>
+                <div className="kpi-main negative">
+                  {money(saldoMes)}
+                </div>
+                <div className="kpi-extra">
+                  Total geral de todas as dívidas: {money(totalGeral)}
+                </div>
+              </div>
+            </div>
+
+            <div className="list">
+              {debtsThisMonth.length === 0 && (
+                <div
+                  className="small-hint"
+                  style={{ paddingInline: 4, color: "var(--text-muted)" }}
+                >
+                  Nenhuma conta cadastrada para este mês.
+                </div>
+              )}
+              {debtsThisMonth
+                .slice()
+                .sort((a, b) =>
+                  (a.createdAt || 0) - (b.createdAt || 0)
+                )
+                .map((d) => {
+                  const total =
+                    d.valorTotal ||
+                    (d.parcelas ? d.valorParcela * d.parcelas : d.valorParcela);
+                  const nParc = d.parcelas || 1;
+                  const num = d.parcelaNumero || 1;
+                  return (
+                    <div key={d.id} className="list-item">
+                      <div className="list-item-main-row">
+                        <div>
+                          <div className="list-item-title">
+                            {d.conta || "Conta"}
+                          </div>
+                          <div className="list-item-sub">
+                            {nParc > 1
+                              ? `Parcela ${num}/${nParc} de ${money(
+                                  d.valorParcela
+                                )} · Total ${money(total)} · ${d.mesReferencia}`
+                              : `Parcela única de ${money(
+                                  d.valorParcela
+                                )} · Total ${money(total)} · ${
+                                  d.mesReferencia
+                                }`}
+                          </div>
+                          {d.observacao && (
+                            <div className="list-item-sub">
+                              Obs: {d.observacao}
+                            </div>
+                          )}
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <div className="chip-amount-negative">
+                            {money(d.valorParcela)}
+                          </div>
+                          <StatusPill status={d.status} />
+                        </div>
+                      </div>
+                      <div className="list-item-actions-row">
+                        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                          <span className="label-tag">Valor já pago (R$)</span>
+                          <input
+                            className="form-input"
+                            style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={
+                              d.valorPagoParcial === 0 || d.valorPagoParcial
+                                ? d.valorPagoParcial
+                                : ""
+                            }
+                            onChange={(e) =>
+                              handlePartialChange(d.id, e.target.value)
+                            }
+                          />
+                        </div>
+                        <button
+                          className="btn-ghost"
+                          onClick={() => handleToggleStatus(d.id)}
+                        >
+                          Girar status
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Nova dívida / conta parcelada
+              </div>
+              <div className="section-helper">
+                “Conta, valor, pago, pago parcial, parcelado” distribuído nos
+                próximos meses.
+              </div>
+            </div>
+            <form className="form" onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Mês inicial</label>
+                  <input
+                    type="month"
+                    className="form-input"
+                    value={form.mesInicial}
+                    onChange={(e) =>
+                      handleChange("mesInicial", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Conta / descrição</label>
+                  <input
+                    className="form-input"
+                    placeholder="Cartão Nubank, câmera, viagem..."
+                    value={form.conta}
+                    onChange={(e) =>
+                      handleChange("conta", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Valor total (R$)</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.valorTotal}
+                    onChange={(e) =>
+                      handleChange("valorTotal", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Nº de parcelas</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={form.parcelas}
+                    onChange={(e) =>
+                      handleChange("parcelas", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Observação</label>
+                  <textarea
+                    className="form-textarea"
+                    placeholder="Banco tal, juros, acordo..."
+                    value={form.observacao}
+                    onChange={(e) =>
+                      handleChange("observacao", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-footer">
+                <div className="small-hint">
+                  Se você colocar 6 parcelas, cada uma cai no mês correto
+                  automaticamente.
+                </div>
+                <button type="submit" className="btn-primary">
+                  Salvar dívida / parcelas
+                </button>
+              </div>
+            </form>
           </div>
         </div>
+      );
+    }
 
-        <div className="kpi-card">
-          <div className="kpi-label">Dívidas – total geral</div>
-          <div className="kpi-main negative">
-            {money(summary.totalDividasGeral)}
-          </div>
-          <div className="kpi-extra">
-            Soma de todas as parcelas de todas as dívidas.
-          </div>
-        </div>
+    function App() {
+      const saved = useMemo(() => {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch {
+          return null;
+        }
+      }, []);
 
-        <div className="kpi-card">
-          <div className="kpi-label">Fluxo líquido simples</div>
-          <div
-            className={
-              "kpi-main " +
-              (summary.fluxoLiquido >= 0 ? "positive" : "negative")
-            }
-          >
-            {money(summary.fluxoLiquido)}
+      const today = new Date();
+      const [events, setEvents] = useState(() => saved?.events || []);
+      const [debts, setDebts] = useState(() => saved?.debts || []);
+      const [theme, setTheme] = useState(() => saved?.theme || "light");
+
+      const [activeTab, setActiveTab] = useState("dashboard");
+
+      const [eventMonth, setEventMonth] = useState(() => ({
+        year: today.getFullYear(),
+        month: today.getMonth(),
+      }));
+      const [debtMonth, setDebtMonth] = useState(() => ({
+        year: today.getFullYear(),
+        month: today.getMonth(),
+      }));
+
+      useEffect(() => {
+        document.body.classList.remove("light", "dark");
+        document.body.classList.add(theme);
+      }, [theme]);
+
+      useEffect(() => {
+        try {
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({ events, debts, theme })
+          );
+        } catch {}
+      }, [events, debts, theme]);
+
+      const handleToggleTheme = () => {
+        setTheme((t) => (t === "light" ? "dark" : "light"));
+      };
+
+      const handleExportPDF = () => {
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          let y = 16;
+
+          const linha = (
+            txt,
+            size = 11,
+            color = [15, 23, 42],
+            indent = 12,
+            bold = false
+          ) => {
+            doc.setFont("helvetica", bold ? "bold" : "normal");
+            doc.setFontSize(size);
+            doc.setTextColor(...color);
+            const linhas = doc.splitTextToSize(txt, 190 - indent);
+            linhas.forEach((t) => {
+              if (y > 280) {
+                doc.addPage();
+                y = 16;
+              }
+              doc.text(t, indent, y);
+              y += 5;
+            });
+          };
+
+          // Título
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(18);
+          doc.setTextColor(79, 70, 229);
+          const titulo = "Relatório financeiro • Prestes";
+          const tw = doc.getTextWidth(titulo);
+          doc.text(titulo, (210 - tw) / 2, y);
+          y += 8;
+          doc.setDrawColor(236, 72, 153);
+          doc.setLineWidth(0.8);
+          doc.line(20, y, 190, y);
+          y += 10;
+
+          // Resumo geral
+          const totalEventos = events.reduce(
+            (acc, e) => acc + (e.valor || 0),
+            0
+          );
+          const eventosPagos = events.filter((e) => e.status === "pago");
+          const receitaConfirmada = eventosPagos.reduce(
+            (acc, e) => acc + (e.valor || 0),
+            0
+          );
+          const eventosParciais = events.filter((e) => e.status === "parcial");
+          const recebidoParcial = eventosParciais.reduce(
+            (acc, e) => acc + (e.valorPagoParcial || 0),
+            0
+          );
+
+          const totalDividasGeral = debts.reduce(
+            (acc, d) => acc + (d.valorParcela || 0),
+            0
+          );
+          const dividasPagas = debts.filter((d) => d.status === "pago");
+          const totalDividasPagas = dividasPagas.reduce(
+            (acc, d) => acc + (d.valorParcela || 0),
+            0
+          );
+
+          linha("Resumo geral", 13, [31, 41, 55], 10, true);
+          linha(
+            "• Receita confirmada em eventos: " + money(receitaConfirmada),
+            11,
+            [22, 163, 74],
+            14
+          );
+          linha(
+            "• Total em eventos cadastrados: " + money(totalEventos),
+            11,
+            [15, 23, 42],
+            14
+          );
+          linha(
+            "• Valor já recebido em pagamentos parciais de eventos: " +
+              money(recebidoParcial),
+            11,
+            [30, 64, 175],
+            14
+          );
+          linha(
+            "• Total geral de todas as dívidas (todas as parcelas): " +
+              money(totalDividasGeral),
+            11,
+            [178, 34, 34],
+            14
+          );
+          linha(
+            "• Total de dívidas já quitadas (parcelas marcadas como pagas): " +
+              money(totalDividasPagas),
+            11,
+            [22, 163, 74],
+            14
+          );
+
+          y += 6;
+
+          // Seção eventos
+          linha("EVENTOS", 13, [79, 70, 229], 10, true);
+          doc.setDrawColor(79, 70, 229);
+          doc.setLineWidth(0.4);
+          doc.line(10, y, 70, y);
+          y += 6;
+
+          if (events.length === 0) {
+            linha("Nenhum evento cadastrado.", 11, [107, 114, 128], 12);
+          } else {
+            const ordenadosEv = [...events].sort((a, b) =>
+              (a.data || "").localeCompare(b.data || "")
+            );
+            ordenadosEv.forEach((ev) => {
+              linha(
+                `${ev.data || "--/--/----"} · ${ev.titulo || "Evento"}`,
+                11,
+                [15, 23, 42],
+                12,
+                true
+              );
+              if (ev.empresa) {
+                linha(
+                  `Empresa / cliente: ${ev.empresa}`,
+                  10,
+                  [75, 85, 99],
+                  16
+                );
+              }
+              linha(
+                `Valor: ${money(ev.valor || 0)} · Status: ${(
+                  ev.status || "pendente"
+                ).toUpperCase()}`,
+                10,
+                [55, 65, 81],
+                16
+              );
+              if (ev.valorPagoParcial) {
+                linha(
+                  `Valor já pago (parcial): ${money(ev.valorPagoParcial)}`,
+                  10,
+                  [30, 64, 175],
+                  16
+                );
+              }
+              if (ev.forma) {
+                linha(
+                  `Forma de pagamento: ${ev.forma}`,
+                  10,
+                  [107, 114, 128],
+                  16
+                );
+              }
+              if (ev.observacao) {
+                linha(
+                  `Obs: ${ev.observacao}`,
+                  10,
+                  [107, 114, 128],
+                  16
+                );
+              }
+              y += 2;
+            });
+          }
+
+          y += 6;
+
+          // Seção dívidas
+          linha("DÍVIDAS / PARCELADOS", 13, [236, 72, 153], 10, true);
+          doc.setDrawColor(236, 72, 153);
+          doc.setLineWidth(0.4);
+          doc.line(10, y, 90, y);
+          y += 6;
+
+          if (debts.length === 0) {
+            linha("Nenhuma dívida cadastrada.", 11, [107, 114, 128], 12);
+          } else {
+            const ordenadasDiv = [...debts].sort((a, b) => {
+              if ((a.grupoId || "") !== (b.grupoId || "")) {
+                return (a.grupoId || "").localeCompare(b.grupoId || "");
+              }
+              if ((a.parcelaNumero || 0) !== (b.parcelaNumero || 0)) {
+                return (a.parcelaNumero || 0) - (b.parcelaNumero || 0);
+              }
+              return (a.mesReferencia || "").localeCompare(
+                b.mesReferencia || ""
+              );
+            });
+
+            ordenadasDiv.forEach((d) => {
+              const total =
+                d.valorTotal ||
+                (d.parcelas ? d.valorParcela * d.parcelas : d.valorParcela);
+              const nParc = d.parcelas || 1;
+              const num = d.parcelaNumero || 1;
+
+              linha(
+                `${d.conta || "Conta"} · ${d.mesReferencia || "mês não informado"}`,
+                11,
+                [15, 23, 42],
+                12,
+                true
+              );
+
+              if (nParc > 1) {
+                linha(
+                  `Parcela ${num}/${nParc} • Valor da parcela: ${money(
+                    d.valorParcela || 0
+                  )} • Valor total da dívida: ${money(total)}`,
+                  10,
+                  [55, 65, 81],
+                  16
+                );
+              } else {
+                linha(
+                  `Parcela única • Valor: ${money(
+                    d.valorParcela || 0
+                  )} • Valor total da dívida: ${money(total)}`,
+                  10,
+                  [55, 65, 81],
+                  16
+                );
+              }
+
+              linha(
+                `Status: ${(d.status || "pendente").toUpperCase()}${
+                  d.valorPagoParcial
+                    ? " • Valor já pago: " + money(d.valorPagoParcial)
+                    : ""
+                }`,
+                10,
+                d.status === "pago"
+                  ? [22, 163, 74]
+                  : d.status === "parcial"
+                  ? [234, 88, 12]
+                  : [178, 34, 34],
+                16
+              );
+
+              if (d.observacao) {
+                linha(
+                  `Obs: ${d.observacao}`,
+                  10,
+                  [107, 114, 128],
+                  16
+                );
+              }
+              y += 2;
+            });
+          }
+
+          doc.save("relatorio-financeiro-prestes.pdf");
+        } catch (err) {
+          console.error(err);
+          alert("Não consegui gerar o PDF agora. Tenta recarregar a página.");
+        }
+      };
+
+      return (
+        <div className="app-shell">
+          <header className="app-header">
+            <div className="app-title">
+              <div className="pill-badge">
+                <span className="pill-dot" />
+                painel financeiro · prestes
+              </div>
+              <h1>Eventos, dívidas e parcelas em modo profissional</h1>
+              <p>
+                Uma tela para cada lado da sua mente: dashboard, calendário de
+                eventos e matriz de dívidas. Tudo salvo no seu navegador.
+              </p>
+            </div>
+            <div className="header-right">
+              <div
+                className="theme-toggle"
+                onClick={handleToggleTheme}
+              >
+                <div className="theme-toggle-indicator">
+                  <div className="theme-toggle-indicator-inner" />
+                </div>
+                <span>
+                  {theme === "dark"
+                    ? "Modo escuro ativo"
+                    : "Modo claro ativo"}
+                </span>
+              </div>
+              <div className="storage-note">
+                Dados guardados no seu navegador (localStorage).
+              </div>
+            </div>
+          </header>
+
+          <div className="tabs-row">
+            <button
+              className={
+                "tab-btn" + (activeTab === "dashboard" ? " active" : "")
+              }
+              onClick={() => setActiveTab("dashboard")}
+            >
+              Dashboard
+            </button>
+            <button
+              className={
+                "tab-btn" + (activeTab === "eventos" ? " active" : "")
+              }
+              onClick={() => setActiveTab("eventos")}
+            >
+              Eventos
+            </button>
+            <button
+              className={
+                "tab-btn" + (activeTab === "dividas" ? " active" : "")
+              }
+              onClick={() => setActiveTab("dividas")}
+            >
+              Dívidas
+            </button>
           </div>
-          <div className="kpi-extra">
-            Receita confirmada – dívidas já pagas.
-          </div>
+
+          {activeTab === "dashboard" && (
+            <Dashboard
+              events={events}
+              debts={debts}
+              onExportPDF={handleExportPDF}
+            />
+          )}
+
+          {activeTab === "eventos" && (
+            <EventosSection
+              events={events}
+              setEvents={setEvents}
+              eventMonth={eventMonth}
+              setEventMonth={setEventMonth}
+            />
+          )}
+
+          {activeTab === "dividas" && (
+            <DividasSection
+              debts={debts}
+              setDebts={setDebts}
+              debtMonth={debtMonth}
+              setDebtMonth={setDebtMonth}
+            />
+          )}
         </div>
-      </div>
-    </div>
-  );
-}                     
+      );
+    }
+
+    const rootEl = document.getElementById("root");
+    ReactDOM.createRoot(rootEl).render(<App />);
+  </script>
+</body>
+</html>
