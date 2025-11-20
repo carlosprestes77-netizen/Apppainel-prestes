@@ -103,6 +103,7 @@
       border-radius: 999px;
       background: linear-gradient(120deg, #4f46e5, #ec4899);
       box-shadow: 0 12px 30px rgba(79,70,229,0.35);
+      cursor: pointer;
     }
 
     .toggle-tema span {
@@ -119,7 +120,6 @@
       height: 22px;
       border-radius: 999px;
       background: rgba(15,23,42,0.8);
-      cursor: pointer;
       padding: 3px;
     }
 
@@ -662,19 +662,18 @@
       color: #e5e7eb;
       border-color: rgba(148,163,184,0.7);
     }
-
   </style>
 </head>
 <body data-theme="claro">
   <div class="app-shell">
     <div class="badge-top">
       <span class="dot-ok"></span>
-      <span>painel financeiro • prestes</span>
+      <span>PAINEL FINANCEIRO • PRESTES</span>
     </div>
 
     <h1>Eventos, dívidas e parcelas em modo profissional</h1>
     <p class="subtitulo">
-      Uma tela pra cada lado da sua mente: dashboard, calendário de eventos e matriz de dívidas. Tudo salvo no seu navegador.
+      Uma tela para cada lado da sua mente: dashboard, calendário de eventos e matriz de dívidas. Tudo salvo no seu navegador.
     </p>
 
     <div class="top-row">
@@ -686,12 +685,12 @@
       </div>
 
       <button class="btn-pdf" onclick="exportarPDFCompleto()">
-        Exportar PDF do mês
+        Exportar PDF
       </button>
     </div>
 
     <p class="hint-storage">
-      Dados guardados apenas no seu navegador (localStorage). Se limpar o histórico, adeus tudo.
+      Dados guardados no seu navegador (localStorage).
     </p>
 
     <div class="tabs">
@@ -722,6 +721,9 @@
             <p id="dash-dividas-mes-total" class="valor-bad">R$ 0,00</p>
             <p id="dash-dividas-mes-quitadas" class="texto-menor">
               Quitadas neste mês: R$ 0,00
+            </p>
+            <p id="dash-dividas-geral-total" class="texto-menor">
+              Total geral (todas dívidas): R$ 0,00
             </p>
           </div>
 
@@ -765,7 +767,9 @@
           <div class="month-header">
             <div>
               <h3 id="titulo-mes-eventos">Mês de referência</h3>
-              <small class="texto-menor">Toque no status do evento pra girar entre pendente / parcial / pago.</small>
+              <small class="texto-menor">
+                Toque no chip do evento para girar o status: pendente → parcial → pago.
+              </small>
             </div>
             <div>
               <button class="month-nav-btn" onclick="mudarMesEventos(-1)">‹</button>
@@ -779,7 +783,7 @@
         <div class="form-shell">
           <div class="sec-title-row">
             <h3>Novo evento</h3>
-            <small>Campos básicos pra você lembrar o que fez e quanto cobrou.</small>
+            <small>Campos básicos: evento, empresa, valor, forma, observação.</small>
           </div>
 
           <div class="form-grid">
@@ -863,7 +867,7 @@
           <div class="sec-title-row">
             <h3>Nova dívida / conta parcelada</h3>
             <small>
-              "Parcelado" cria as parcelas automáticas pros próximos meses. Valor mensal = valor total / nº de parcelas.
+              O valor mensal é calculado automaticamente: valor total ÷ número de parcelas.
             </small>
           </div>
 
@@ -898,7 +902,6 @@
         </div>
       </section>
     </div> <!-- card-main -->
-
   </div> <!-- app-shell -->
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -928,10 +931,7 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           const salvo = JSON.parse(raw);
-          state = {
-            ...state,
-            ...salvo,
-          };
+          state = { ...state, ...salvo };
         }
       } catch (e) {
         console.error("Erro ao carregar state", e);
@@ -987,10 +987,6 @@
       return `${MESES[m.mes]} de ${m.ano}`;
     }
 
-    function cloneMesObj(m) {
-      return { ano: m.ano, mes: m.mes };
-    }
-
     function adicionarMes(m, delta) {
       let ano = m.ano;
       let mes = m.mes + delta;
@@ -1008,7 +1004,14 @@
       return "R$ " + Number(n || 0).toFixed(2);
     }
 
-    // =====================
+    // parse seguro pra não dar problema de fuso
+    function parseDateStr(str) {
+      if (!str || typeof str !== "string" || str.length < 10) return null;
+      const [ano, mes, dia] = str.split("-").map(Number);
+      if (!ano || !mes || !dia) return null;
+      return { ano, mes: mes - 1, dia };
+    }
+        // =====================
     // EVENTOS
     // =====================
 
@@ -1029,7 +1032,7 @@
         id: Date.now(),
         nome,
         empresa,
-        data,
+        data, // yyyy-mm-dd direto
         valor,
         forma,
         status: "pendente",
@@ -1059,9 +1062,9 @@
       const mes = mesObj.mes;
       const ano = mesObj.ano;
       return state.eventos.filter((ev) => {
-        if (!ev.data) return false;
-        const d = new Date(ev.data);
-        return d.getMonth() === mes && d.getFullYear() === ano;
+        const parsed = parseDateStr(ev.data);
+        if (!parsed) return false;
+        return parsed.mes === mes && parsed.ano === ano;
       });
     }
 
@@ -1138,7 +1141,8 @@
         grid.appendChild(cell);
       }
     }
-        // =====================
+
+    // =====================
     // DÍVIDAS / PARCELAS
     // =====================
 
@@ -1234,6 +1238,14 @@
       return { totalMes, totalQuitado, totalParcial };
     }
 
+    // total geral = soma de TODAS as parcelas (fixas + parceladas)
+    function calcularTotalDividasGeral() {
+      return state.dividas.reduce(
+        (acc, d) => acc + (d.valorMensal || d.valorTotal || 0),
+        0
+      );
+    }
+
     function renderDividasMesCompleto() {
       const titulo = document.getElementById("titulo-mes-dividas");
       if (titulo) titulo.textContent = mesObjToTitulo(state.mesDividas);
@@ -1273,9 +1285,7 @@
               ? `Parcela ${d.parcelaIndex}/${d.parcelas} • total ${formatarMoeda(
                   d.valorTotal
                 )}`
-              : `Dívida única (sem parcelas) • total ${formatarMoeda(
-                  d.valorTotal
-                )}`;
+              : `Dívida única • total ${formatarMoeda(d.valorTotal)}`;
           main.appendChild(spanParcela);
 
           if (d.obs) {
@@ -1312,9 +1322,7 @@
         });
       }
 
-      // resumo do mês
-      const { totalMes, totalQuitado, totalParcial } =
-        calcularTotaisDividasMes(state.mesDividas);
+      const { totalMes, totalQuitado } = calcularTotaisDividasMes(state.mesDividas);
 
       const elTotal = document.getElementById("resumo-dividas-total-mes");
       const elQuit = document.getElementById("resumo-dividas-quitado-mes");
@@ -1323,11 +1331,8 @@
       if (elTotal) elTotal.textContent = formatarMoeda(totalMes);
       if (elQuit) elQuit.textContent = formatarMoeda(totalQuitado);
       if (elAberto) elAberto.textContent = formatarMoeda(totalMes - totalQuitado);
-
-      // isso alimenta também o dashboard
     }
-
-    // =====================
+        // =====================
     // DASHBOARD
     // =====================
 
@@ -1353,6 +1358,8 @@
       const { totalMes, totalQuitado, totalParcial } =
         calcularTotaisDividasMes(state.mesDividas);
 
+      const totalGeralDividas = calcularTotalDividasGeral();
+
       const elRecConf = document.getElementById("dash-receita-confirmada");
       const elTotEv = document.getElementById("dash-total-eventos");
       const elEvParc = document.getElementById("dash-eventos-parciais");
@@ -1362,6 +1369,9 @@
       const elDivMesTot = document.getElementById("dash-dividas-mes-total");
       const elDivMesQuit = document.getElementById(
         "dash-dividas-mes-quitadas"
+      );
+      const elDivGeralTot = document.getElementById(
+        "dash-dividas-geral-total"
       );
       const elDivParc = document.getElementById("dash-dividas-parciais");
       const elDivParcVal = document.getElementById(
@@ -1385,6 +1395,10 @@
       if (elDivMesQuit)
         elDivMesQuit.textContent = `Quitadas neste mês: ${formatarMoeda(
           totalQuitado
+        )}`;
+      if (elDivGeralTot)
+        elDivGeralTot.textContent = `Total geral (todas dívidas): ${formatarMoeda(
+          totalGeralDividas
         )}`;
 
       const divParciaisMes = dividasDoMes(state.mesDividas).filter(
@@ -1422,7 +1436,6 @@
       });
 
       state.dividas.forEach((d) => {
-        // usar o mês de referência como data fake (dia 01)
         const data = d.mesReferencia ? d.mesReferencia + "-01" : "";
         itens.push({
           tipo: "divida",
@@ -1443,7 +1456,7 @@
       if (recorte.length === 0) {
         const vazio = document.createElement("p");
         vazio.className = "texto-menor";
-        vazio.textContent = "Nada cadastrado ainda. Bora colocar dinheiro e contas aqui.";
+        vazio.textContent = "Nada cadastrado ainda.";
         cont.appendChild(vazio);
         return;
       }
@@ -1487,110 +1500,137 @@
     }
 
     // =====================
-    // PDF
+    // PDF – versão mais organizada
     // =====================
 
     function exportarPDFCompleto() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      let y = 12;
+      let y = 18;
 
-      function addTitulo(txt) {
-        doc.setFontSize(16);
-        doc.text(txt, 10, y);
-        y += 8;
-      }
-      function addSub(txt) {
-        doc.setFontSize(13);
-        doc.text(txt, 10, y);
-        y += 7;
-      }
-      function addLinha(txt, indent = 0) {
-        doc.setFontSize(11);
-        doc.text(txt, 10 + indent, y);
-        y += 5;
-        if (y > 280) {
+      function novaPaginaSePreciso(extra = 6) {
+        if (y + extra > 280) {
           doc.addPage();
-          y = 12;
+          y = 18;
         }
       }
 
-      addTitulo("Relatório financeiro • Prestes");
+      function tituloCentral(txt) {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        const w = doc.getTextWidth(txt);
+        doc.text(txt, (210 - w) / 2, y);
+        y += 8;
+        doc.setLineWidth(0.3);
+        doc.line(10, y, 200, y);
+        y += 6;
+      }
 
-      const totDiv = calcularTotaisDividasMes(state.mesDividas);
-      addSub("Resumo de dívidas do mês");
-      addLinha(
-        `Total em dívidas do mês: ${formatarMoeda(totDiv.totalMes)}`,
+      function subtitulo(txt) {
+        novaPaginaSePreciso();
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(13);
+        doc.text(txt, 10, y);
+        y += 6;
+      }
+
+      function linha(txt, indent = 0) {
+        novaPaginaSePreciso();
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.text(txt, 10 + indent, y);
+        y += 5;
+      }
+
+      // Cabeçalho
+      tituloCentral("Relatório financeiro • Prestes");
+
+      const mesTitulo = mesObjToTitulo(state.mesDividas);
+      linha("Mês de referência para dívidas: " + mesTitulo);
+
+      const totMes = calcularTotaisDividasMes(state.mesDividas);
+      const totalGeralDividas = calcularTotalDividasGeral();
+
+      linha(
+        "Total de dívidas do mês: " + formatarMoeda(totMes.totalMes),
         2
       );
-      addLinha(
-        `Quitadas neste mês: ${formatarMoeda(totDiv.totalQuitado)}`,
+      linha(
+        "Quitadas neste mês: " + formatarMoeda(totMes.totalQuitado),
         2
       );
-      addLinha(
-        `Em aberto neste mês: ${formatarMoeda(
-          totDiv.totalMes - totDiv.totalQuitado
-        )}`,
+      linha(
+        "Em aberto neste mês: " +
+          formatarMoeda(totMes.totalMes - totMes.totalQuitado),
+        2
+      );
+      linha(
+        "Total geral de todas as dívidas (todas parcelas): " +
+          formatarMoeda(totalGeralDividas),
         2
       );
 
       y += 4;
-      addSub("EVENTOS");
+
+      // EVENTOS
+      subtitulo("Eventos");
 
       if (state.eventos.length === 0) {
-        addLinha("Nenhum evento cadastrado.", 2);
+        linha("Nenhum evento cadastrado.", 2);
       } else {
-        state.eventos
+        const eventosOrdenados = state.eventos
           .slice()
-          .sort((a, b) => (a.data > b.data ? 1 : -1))
-          .forEach((ev) => {
-            addLinha(
-              `• ${ev.nome || "Evento"} — ${formatarMoeda(ev.valor)} [${
-                ev.status || "pendente"
-              }]`,
-              2
-            );
-            if (ev.empresa)
-              addLinha(`Empresa: ${ev.empresa}`, 6);
-            if (ev.data)
-              addLinha(`Data: ${ev.data}`, 6);
-            if (ev.forma)
-              addLinha(`Forma de pagamento: ${ev.forma}`, 6);
-            if (ev.obs)
-              addLinha(`Obs: ${ev.obs}`, 6);
-            y += 2;
-          });
+          .sort((a, b) => (a.data > b.data ? 1 : -1));
+
+        eventosOrdenados.forEach((ev) => {
+          novaPaginaSePreciso(12);
+          linha(
+            `• ${ev.nome || "Evento"}  •  ${formatarMoeda(
+              ev.valor
+            )}  •  status: ${(ev.status || "pendente").toUpperCase()}`,
+            2
+          );
+          if (ev.data) linha(`Data: ${ev.data}`, 6);
+          if (ev.empresa) linha(`Empresa / cliente: ${ev.empresa}`, 6);
+          if (ev.forma) linha(`Forma de pagamento: ${ev.forma}`, 6);
+          if (ev.obs) linha(`Obs: ${ev.obs}`, 6);
+          y += 2;
+        });
       }
 
       y += 4;
-      addSub("DÍVIDAS / CONTAS (todas parcelas)");
+
+      // DÍVIDAS
+      subtitulo("Dívidas / contas (todas parcelas)");
 
       if (state.dividas.length === 0) {
-        addLinha("Nenhuma dívida cadastrada.", 2);
+        linha("Nenhuma dívida cadastrada.", 2);
       } else {
-        state.dividas
+        const divsOrdenadas = state.dividas
           .slice()
           .sort((a, b) =>
             a.mesReferencia > b.mesReferencia ? 1 : -1
-          )
-          .forEach((d) => {
-            const vMes = d.valorMensal || d.valorTotal;
-            addLinha(
-              `• ${d.conta || "Conta"} — mês ${
-                d.mesReferencia || "-"
-              } — ${formatarMoeda(vMes)} (de ${formatarMoeda(
-                d.valorTotal
-              )}) [${d.status || "pendente"}]`,
-              2
+          );
+
+        divsOrdenadas.forEach((d) => {
+          novaPaginaSePreciso(12);
+          const vMes = d.valorMensal || d.valorTotal;
+          linha(
+            `• ${d.conta || "Conta"}  •  mês: ${
+              d.mesReferencia || "-"
+            }  •  ${formatarMoeda(vMes)} (de ${formatarMoeda(
+              d.valorTotal
+            )})  •  status: ${(d.status || "pendente").toUpperCase()}`,
+            2
+          );
+          if (d.parcelas > 1)
+            linha(
+              `Parcela ${d.parcelaIndex}/${d.parcelas}`,
+              6
             );
-            if (d.parcelas > 1)
-              addLinha(
-                `Parcela ${d.parcelaIndex}/${d.parcelas}`,
-                6
-              );
-            if (d.obs) addLinha(`Obs: ${d.obs}`, 6);
-            y += 2;
-          });
+          if (d.obs) linha(`Obs: ${d.obs}`, 6);
+          y += 2;
+        });
       }
 
       doc.save("relatorio-financeiro-prestes.pdf");
