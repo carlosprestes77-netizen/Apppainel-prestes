@@ -1,1375 +1,1838 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Painel Financeiro – Prestes</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel Financeiro – Prestes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- React 18 + ReactDOM via CDN -->
-    <script
-      src="https://unpkg.com/react@18/umd/react.development.js"
-      crossorigin
-    ></script>
-    <script
-      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
-      crossorigin
-    ></script>
+  <style>
+    :root {
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
 
-    <!-- Babel para permitir JSX direto no browser -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.35);
+      --shadow-subtle: 0 1px 4px rgba(15, 23, 42, 0.12);
+      --transition-fast: 0.18s ease-out;
+    }
 
-    <style>
-      * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: var(--bg);
+      color: var(--text-primary);
+    }
 
-      :root {
-        --bg: #020617;
-        --bg-soft: #0b1220;
-        --card: #020617;
-        --border: #1f2937;
-        --text: #e5e7eb;
-        --muted: #9ca3af;
-        --accent: #8b5cf6;
-        --accent-soft: #312e81;
-        --danger: #ef4444;
-        --warning: #f97316;
-        --success: #22c55e;
+    body.light {
+      --bg: #f3f4f6;
+      --bg-elevated: #ffffff;
+      --bg-soft: #e5e7eb;
+      --text-primary: #0f172a;
+      --text-muted: #6b7280;
+      --accent: #8b5cf6;
+      --accent-soft: rgba(139, 92, 246, 0.12);
+      --accent-strong: #7c3aed;
+      --border-subtle: #e5e7eb;
+      --chip-bg: #111827;
+    }
+
+    body.dark {
+      --bg: #0b1120;
+      --bg-elevated: #020617;
+      --bg-soft: #111827;
+      --text-primary: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #c4b5fd;
+      --accent-soft: rgba(196, 181, 253, 0.18);
+      --accent-strong: #a855f7;
+      --border-subtle: #1f2937;
+      --chip-bg: #111827;
+    }
+
+    #root {
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 32px 16px;
+      box-sizing: border-box;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1120px;
+      background: radial-gradient(circle at top left,
+          rgba(139, 92, 246, 0.16),
+          transparent 52%),
+        radial-gradient(circle at bottom right,
+          rgba(56, 189, 248, 0.18),
+          transparent 55%),
+        var(--bg-elevated);
+      border-radius: 32px;
+      box-shadow: var(--shadow-soft);
+      padding: 24px;
+      box-sizing: border-box;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 768px) {
+      #root {
+        padding: 16px 8px;
       }
-
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: radial-gradient(circle at top, #1e293b 0, #020617 55%);
-        color: var(--text);
-      }
-
-      .app {
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        padding: 24px 12px 40px;
-      }
-
-      .shell {
-        width: 100%;
-        max-width: 1120px;
-        background: rgba(15, 23, 42, 0.92);
+      .app-shell {
+        padding: 20px 16px;
         border-radius: 24px;
-        padding: 20px 18px 22px;
-        box-shadow: 0 22px 50px rgba(15, 23, 42, 0.7);
-        backdrop-filter: blur(18px);
-        border: 1px solid rgba(148, 163, 184, 0.35);
       }
+    }
 
-      @media (max-width: 768px) {
-        .shell { padding: 18px 14px 28px; }
-      }
+    .app-header {
+      display: flex;
+      gap: 16px;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
 
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 16px;
-        margin-bottom: 20px;
-      }
+    .app-title {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-      @media (max-width: 640px) {
-        .header { flex-direction: column; }
-      }
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.55);
+      color: #e5e7eb;
+      font-size: 11px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
 
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 10px;
-        border-radius: 999px;
-        font-size: 0.72rem;
-        background: rgba(79, 70, 229, 0.18);
-        color: #c7d2fe;
-      }
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.4);
+    }
 
-      .pill-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 999px;
-        background: #22c55e;
-      }
+    .app-title h1 {
+      font-size: 22px;
+      margin: 0;
+    }
 
-      h1 {
-        margin: 8px 0 4px;
-        font-size: 1.35rem;
-      }
+    .app-title p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 520px;
+    }
 
-      .subtitle {
-        font-size: 0.85rem;
-        color: var(--muted);
-      }
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
 
-      .header-right {
-        text-align: right;
-        font-size: 0.75rem;
-        color: var(--muted);
-      }
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      font-size: 11px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 12px 24px rgba(15, 23, 42, 0.5);
+    }
 
-      .btn-theme {
-        border-radius: 999px;
-        padding: 5px 11px;
-        border: 1px solid rgba(148, 163, 184, 0.6);
-        background: transparent;
-        color: var(--text);
-        font-size: 0.78rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-      }
+    .theme-toggle-indicator {
+      width: 32px;
+      height: 18px;
+      border-radius: 999px;
+      padding: 2px;
+      box-sizing: border-box;
+      background: radial-gradient(circle at 20% 0,
+          #f97316,
+          #a855f7 42%,
+          #0ea5e9 75%);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      transition: var(--transition-fast);
+    }
 
-      .knob {
-        width: 18px;
-        height: 18px;
-        border-radius: 999px;
-        background: linear-gradient(135deg, #6366f1, #ec4899);
-      }
+    .theme-toggle-indicator-inner {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: #f9fafb;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.35),
+        0 4px 12px rgba(15, 23, 42, 0.65);
+    }
 
-      .nav {
-        display: inline-flex;
-        padding: 4px;
-        border-radius: 999px;
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid rgba(148, 163, 184, 0.4);
-        margin-bottom: 14px;
-      }
+    body.dark .theme-toggle-indicator {
+      justify-content: flex-end;
+    }
 
-      .nav-btn {
-        border-radius: 999px;
-        border: none;
-        background: transparent;
-        padding: 6px 14px;
-        font-size: 0.8rem;
-        cursor: pointer;
-        color: var(--muted);
-      }
+    .storage-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+    }
 
-      .nav-btn.active {
-        background: #0f172a;
-        color: #e5e7eb;
-        font-weight: 600;
-      }
+    .tabs-row {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 4px;
+      background: rgba(15, 23, 42, 0.8);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.95),
+        0 10px 32px rgba(15, 23, 42, 0.64);
+      color: #e5e7eb;
+      margin-bottom: 20px;
+    }
 
-      .grid {
-        display: grid;
-        grid-template-columns: 1.6fr 1.2fr;
-        gap: 14px;
-      }
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 13px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
 
-      @media (max-width: 880px) {
-        .grid { grid-template-columns: 1fr; }
-      }
+    .tab-btn.active {
+      background: radial-gradient(circle at top left,
+          #f97316,
+          #8b5cf6 55%,
+          #0ea5e9 100%);
+      opacity: 1;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.45);
+    }
 
-      .card {
-        background: #020617;
-        border-radius: 18px;
-        padding: 15px 14px 16px;
-        border: 1px solid rgba(148, 163, 184, 0.35);
-      }
+    .tab-btn:not(.active):hover {
+      opacity: 1;
+    }
 
-      .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.15fr);
+      gap: 16px;
+    }
 
-      .card-title {
-        font-size: 0.95rem;
-        font-weight: 600;
-      }
-
-      .card-caption {
-        font-size: 0.75rem;
-        color: var(--muted);
-      }
-
-      .stat-row {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 4px;
-      }
-
-      @media (max-width: 640px) {
-        .stat-row { grid-template-columns: 1fr 1fr; }
-      }
-
-      .stat {
-        padding: 8px 10px;
-        border-radius: 12px;
-        background: #020617;
-        border: 1px solid rgba(31, 41, 55, 0.9);
-        font-size: 0.78rem;
-      }
-
-      .stat-label { color: var(--muted); }
-
-      .stat-value {
-        margin-top: 4px;
-        font-weight: 600;
-      }
-
-      .positivo { color: var(--success); }
-      .negativo { color: var(--danger); }
-
-      .list {
-        max-height: 260px;
-        overflow-y: auto;
-        padding-right: 4px;
-        margin-top: 8px;
-      }
-
-      .item {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 9px 9px;
-        border-radius: 11px;
-        background: #020617;
-        border: 1px solid rgba(31, 41, 55, 0.9);
-        margin-bottom: 6px;
-      }
-
-      .item-main { flex: 1; min-width: 0; }
-
-      .item-title {
-        font-size: 0.86rem;
-        font-weight: 500;
-      }
-
-      .item-sub {
-        font-size: 0.75rem;
-        color: var(--muted);
-      }
-
-      .chip {
-        font-size: 0.7rem;
-        border-radius: 999px;
-        padding: 3px 7px;
-        border: 1px solid rgba(148, 163, 184, 0.6);
-      }
-
-      .chip.pendente {
-        border-color: rgba(248, 113, 113, 0.7);
-        color: #fecaca;
-      }
-
-      .chip.parcial {
-        border-color: rgba(249, 115, 22, 0.9);
-        color: #fed7aa;
-      }
-
-      .chip.pago {
-        border-color: rgba(34, 197, 94, 0.9);
-        color: #bbf7d0;
-      }
-
-      .btn-status {
-        border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.6);
-        padding: 4px 9px;
-        background: transparent;
-        color: var(--text);
-        font-size: 0.72rem;
-        cursor: pointer;
-      }
-
-      .badge-valor {
-        font-size: 0.86rem;
-        font-weight: 600;
-      }
-
-      .badge-valor.positivo { color: var(--success); }
-      .badge-valor.negativo { color: var(--danger); }
-
-      .btn-row {
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-        margin-top: 10px;
-      }
-
-      .btn-primary {
-        border-radius: 999px;
-        border: none;
-        padding: 7px 14px;
-        background: linear-gradient(135deg, #6366f1, #a855f7);
-        color: white;
-        font-size: 0.8rem;
-        cursor: pointer;
-      }
-
-      .btn-ghost {
-        border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.7);
-        padding: 7px 12px;
-        background: transparent;
-        color: var(--text);
-        font-size: 0.78rem;
-        cursor: pointer;
-      }
-
-      .mini {
-        font-size: 0.72rem;
-        color: var(--muted);
-      }
-
-      form { margin-top: 4px; }
-
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    @media (max-width: 940px) {
+      .app-header {
+        flex-direction: column;
         gap: 12px;
       }
 
-      @media (max-width: 840px) {
-        .form-grid { grid-template-columns: 1fr; }
+      .header-right {
+        align-items: flex-start;
       }
 
-      .field { margin-bottom: 8px; }
-
-      label {
-        font-size: 0.78rem;
-        color: var(--muted);
-        display: block;
-        margin-bottom: 3px;
+      .main-grid {
+        grid-template-columns: minmax(0, 1fr);
       }
+    }
 
-      input,
-      textarea,
-      select {
-        width: 100%;
-        border-radius: 10px;
-        padding: 7px 9px;
-        border: 1px solid rgba(31, 41, 55, 0.9);
-        background: #020617;
-        color: var(--text);
-        font-size: 0.8rem;
+    .card {
+      background: rgba(15, 23, 42, 0.88);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-subtle);
+      color: #e5e7eb;
+    }
+
+    body.light .card {
+      background: #ffffff;
+      color: var(--text-primary);
+      border-color: var(--border-subtle);
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .card-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .kpi-card {
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 10px 12px;
+      font-size: 12px;
+      border: 1px solid rgba(30, 64, 175, 0.85);
+    }
+
+    body.light .kpi-card {
+      background: #f9fafb;
+      border-color: #e5e7eb;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .kpi-main {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .kpi-main.positive {
+      color: #22c55e;
+    }
+
+    .kpi-main.negative {
+      color: #ef4444;
+    }
+
+    .kpi-extra {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .btn-primary,
+    .btn-ghost,
+    .btn-chip,
+    .btn-outline {
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8b5cf6, #0ea5e9);
+      color: #f9fafb;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.6);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--accent-strong);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .btn-outline:hover {
+      background: rgba(148, 163, 184, 0.08);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.65);
+      color: #e5e7eb;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    body.light .btn-ghost {
+      background: #111827;
+      color: #e5e7eb;
+    }
+
+    .btn-chip {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text-muted);
+      padding-inline: 10px;
+      font-size: 11px;
+    }
+
+    .timeline {
+      margin-top: 10px;
+      border-radius: var(--radius-md);
+      padding: 10px 0 2px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+    }
+
+    body.light .timeline {
+      background: #f9fafb;
+      border-style: solid;
+    }
+
+    .timeline-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 12px;
+      font-size: 11px;
+    }
+
+    .timeline-item + .timeline-item {
+      border-top: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .pill-status {
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 11px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .pill-status.pendente {
+      background: rgba(248, 250, 252, 0.02);
+      border-color: rgba(249, 115, 22, 0.55);
+      color: #fed7aa;
+    }
+
+    .pill-status.parcial {
+      background: rgba(254, 215, 170, 0.1);
+      border-color: rgba(249, 115, 22, 0.8);
+      color: #fdba74;
+    }
+
+    .pill-status.pago {
+      background: rgba(22, 163, 74, 0.2);
+      border-color: rgba(34, 197, 94, 0.85);
+      color: #bbf7d0;
+    }
+
+    body.light .pill-status.pendente {
+      color: #b45309;
+      background: #fffbeb;
+    }
+
+    body.light .pill-status.parcial {
+      color: #b45309;
+      background: #fef3c7;
+    }
+
+    body.light .pill-status.pago {
+      color: #166534;
+      background: #dcfce7;
+    }
+
+    .section {
+      margin-top: 4px;
+    }
+
+    .section + .section {
+      margin-top: 14px;
+    }
+
+    .section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .section-helper {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .calendar {
+      margin-top: 6px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 10px 10px 8px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    body.light .calendar {
+      background: #f9fafb;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 10px;
+    }
+
+    .calendar-month-label {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      border-radius: 999px;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.7);
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: var(--transition-fast);
+    }
+
+    body.light .icon-btn {
+      background: #ffffff;
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.45);
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .calendar-weekday {
+      text-align: center;
+      color: var(--text-muted);
+      padding-bottom: 2px;
+    }
+
+    .calendar-day {
+      min-height: 52px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      padding: 2px 3px 3px;
+      box-sizing: border-box;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    body.light .calendar-day {
+      background: #ffffff;
+      border-color: #e5e7eb;
+    }
+
+    .calendar-day.outside {
+      opacity: 0.25;
+    }
+
+    .calendar-day-number {
+      font-size: 10px;
+      opacity: 0.9;
+    }
+
+    .calendar-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 1px;
+    }
+
+    .calendar-chip {
+      border-radius: 999px;
+      background: rgba(129, 140, 248, 0.95);
+      font-size: 9px;
+      padding: 1px 4px;
+      color: #eef2ff;
+      max-width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .list-item {
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      padding: 8px 10px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    body.light .list-item {
+      background: #ffffff;
+      border-color: #e5e7eb;
+    }
+
+    .list-item-main-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .list-item-title {
+      font-weight: 600;
+    }
+
+    .list-item-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .chip-amount {
+      font-weight: 600;
+      font-size: 12px;
+      color: #22c55e;
+    }
+
+    .chip-amount-negative {
+      color: #f97316;
+    }
+
+    .list-item-actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .label-tag {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .form {
+      margin-top: 8px;
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    body.light .form {
+      background: #f9fafb;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: minmax(0, 1fr);
       }
+    }
 
-      textarea { resize: vertical; }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
 
-      .calendar-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-        gap: 8px;
-      }
+    .form-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
 
-      .calendar-title {
-        font-size: 0.86rem;
-        font-weight: 500;
-      }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.92);
+      color: #e5e7eb;
+      padding: 6px 8px;
+      font-size: 12px;
+      outline: none;
+      box-sizing: border-box;
+    }
 
-      .calendar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 4px;
-        font-size: 0.7rem;
-      }
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: rgba(148, 163, 184, 0.8);
+    }
 
-      .calendar-header {
-        text-align: center;
-        color: var(--muted);
-        margin-bottom: 4px;
-      }
+    body.light .form-input,
+    body.light .form-select,
+    body.light .form-textarea {
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #d1d5db;
+    }
 
-      .day-cell {
-        min-height: 70px;
-        border-radius: 9px;
-        border: 1px solid rgba(31, 41, 55, 0.9);
-        padding: 4px 4px 4px;
-        background: #020617;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-      }
+    .form-textarea {
+      resize: vertical;
+      min-height: 52px;
+    }
 
-      .day-number {
-        font-size: 0.7rem;
-        color: var(--muted);
-      }
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
 
-      .event-pill {
-        border-radius: 8px;
-        padding: 2px 4px;
-        background: rgba(79, 70, 229, 0.3);
-        font-size: 0.68rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
+    .small-hint {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
 
-      .month-input { max-width: 130px; }
-    </style>
-  </head>
+<body class="light">
+  <div id="root"></div>
 
-  <body>
-    <div id="root"></div>
+  <!-- React + Babel + libs -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <script type="text/babel">
-      const { useState, useEffect } = React;
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
 
-      const STORAGE_KEYS = {
-        EVENTS: "prestes_events_v2",
-        DEBTS: "prestes_debts_v2",
-      };
+    const STORAGE_KEY = "painel_prestes_v3";
 
-      function formatCurrency(v) {
-        return v.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
+    const money = (n) =>
+      "R$ " +
+      (n || 0).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
+    const monthLabel = (year, monthIndex) =>
+      new Date(year, monthIndex, 1).toLocaleDateString("pt-BR", {
+        month: "long",
+        year: "numeric",
+      });
+
+    const pad2 = (n) => String(n).padStart(2, "0");
+
+    const addMonths = (year, monthIndex, delta) => {
+      const d = new Date(year, monthIndex + delta, 1);
+      return { year: d.getFullYear(), month: d.getMonth() };
+    };
+
+    const cycleStatus = (status) => {
+      if (status === "pendente") return "parcial";
+      if (status === "parcial") return "pago";
+      return "pendente";
+    };
+
+    const STATUS_ORDER = ["pendente", "parcial", "pago"];
+        function StatusPill({ status }) {
+      return (
+        <span className={`pill-status ${status}`}>
+          {status === "pendente"
+            ? "Pendente"
+            : status === "parcial"
+            ? "Pago parcial"
+            : "Pago"}
+        </span>
+      );
+    }
+
+    function Dashboard({ events, debts, onExportPDF }) {
+      const summary = useMemo(() => {
+        let receitaConfirmada = 0;
+        let eventosParciaisQtd = 0;
+        let eventosParciaisValor = 0;
+        let totalEventos = 0;
+
+        events.forEach((ev) => {
+          totalEventos += ev.valor || 0;
+          if (ev.status === "pago") receitaConfirmada += ev.valor || 0;
+          if (ev.status === "parcial") {
+            eventosParciaisQtd += 1;
+            eventosParciaisValor += ev.valorPagoParcial || 0;
+          }
         });
-      }
 
-      function firstDayOfMonth(date) {
-        const d = new Date(date);
-        d.setDate(1);
-        d.setHours(0, 0, 0, 0);
-        return d;
-      }
+        let dividasQuitadas = 0;
+        let dividasParciaisQtd = 0;
+        let dividasParciaisValor = 0;
+        let totalDividas = 0;
 
-      function addMonths(date, months) {
-        const d = new Date(date);
-        d.setMonth(d.getMonth() + months);
-        return d;
-      }
+        debts.forEach((d) => {
+          totalDividas += d.valorParcela || 0;
+          if (d.status === "pago") dividasQuitadas += d.valorParcela || 0;
+          if (d.status === "parcial") {
+            dividasParciaisQtd += 1;
+            dividasParciaisValor += d.valorPagoParcial || 0;
+          }
+        });
 
-      function formatMonthYYYYMM(date) {
-        const d = new Date(date);
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, "0");
-        return `${y}-${m}`;
-      }
+        const fluxoLiquido = receitaConfirmada - dividasQuitadas;
 
-      function cycleStatus(status) {
-        if (status === "pendente") return "parcial";
-        if (status === "parcial") return "pago";
-        return "pendente";
-      }
-            function App() {
-        const [view, setView] = useState("dashboard");
-        const [events, setEvents] = useState([]);
-        const [debts, setDebts] = useState([]);
+        const timeline = [
+          ...events.map((ev) => ({
+            id: `ev-${ev.id}`,
+            tipo: "Evento",
+            createdAt: ev.createdAt || 0,
+            titulo: ev.titulo,
+            valor: ev.valor,
+            status: ev.status,
+            data: ev.data,
+          })),
+          ...debts.map((d) => ({
+            id: `dv-${d.id}`,
+            tipo: "Dívida",
+            createdAt: d.createdAt || 0,
+            titulo: d.conta,
+            valor: d.valorParcela,
+            status: d.status,
+            data: d.mesReferencia + "-01",
+          })),
+        ]
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .slice(0, 6);
 
+        return {
+          receitaConfirmada,
+          eventosParciaisQtd,
+          eventosParciaisValor,
+          totalEventos,
+          dividasQuitadas,
+          dividasParciaisQtd,
+          dividasParciaisValor,
+          totalDividas,
+          fluxoLiquido,
+          timeline,
+        };
+      }, [events, debts]);
+
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Visão geral</div>
+              <div className="card-subtitle">
+                Eventos fechados, dívidas e fluxo confirmado.
+              </div>
+            </div>
+            <button className="btn-outline" onClick={onExportPDF}>
+              Exportar PDF
+            </button>
+          </div>
+
+          <div className="card-kpi-row">
+            <div className="kpi-card">
+              <div className="kpi-label">
+                Receita confirmada (eventos pagos)
+              </div>
+              <div className="kpi-main positive">
+                {money(summary.receitaConfirmada)}
+              </div>
+              <div className="kpi-extra">
+                Total em eventos: {money(summary.totalEventos)}
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-label">Dívidas quitadas</div>
+              <div className="kpi-main negative">
+                {money(summary.dividasQuitadas)}
+              </div>
+              <div className="kpi-extra">
+                Total em dívidas: {money(summary.totalDividas)}
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-label">Eventos com pagamento parcial</div>
+              <div className="kpi-main">
+                {summary.eventosParciaisQtd} evento(s)
+              </div>
+              <div className="kpi-extra">
+                Já recebido: {money(summary.eventosParciaisValor)}
+              </div>
+            </div>
+
+            <div className="kpi-card">
+              <div className="kpi-label">Dívidas em pagamento parcial</div>
+              <div className="kpi-main">
+                {summary.dividasParciaisQtd} conta(s)
+              </div>
+              <div className="kpi-extra">
+                Já pago: {money(summary.dividasParciaisValor)}
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">Fluxo líquido</div>
+              <div className="section-helper">
+                Receita confirmada – dívidas quitadas
+              </div>
+            </div>
+            <div className="kpi-card" style={{ marginBottom: 6 }}>
+              <div className="kpi-main positive">
+                {money(summary.fluxoLiquido)}
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">Linha do tempo rápida</div>
+              <div className="section-helper">
+                Últimos eventos e dívidas cadastrados.
+              </div>
+            </div>
+            <div className="timeline">
+              {summary.timeline.length === 0 && (
+                <div
+                  className="timeline-item"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  Ainda não há registros. Comece pelo painel de eventos ou
+                  dívidas.
+                </div>
+              )}
+              {summary.timeline.map((item) => (
+                <div key={item.id} className="timeline-item">
+                  <div>
+                    <div>
+                      <strong>{item.titulo || "Sem título"}</strong>{" "}
+                      <span style={{ fontSize: 10, opacity: 0.7 }}>
+                        · {item.tipo}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      {item.data}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div
+                      className={
+                        item.tipo === "Evento"
+                          ? "chip-amount"
+                          : "chip-amount-negative"
+                      }
+                    >
+                      {money(item.valor)}
+                    </div>
+                    <StatusPill status={item.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function EventosSection({
+      events,
+      setEvents,
+      eventMonth,
+      setEventMonth,
+      onPickDate,
+    }) {
+      const [form, setForm] = useState(() => {
         const today = new Date();
-        const [eventsMonth, setEventsMonth] = useState(
-          formatMonthYYYYMM(today)
-        );
-        const [debtsMonth, setDebtsMonth] = useState(
-          formatMonthYYYYMM(today)
-        );
-
-        const [eventForm, setEventForm] = useState({
-          data: new Date().toISOString().slice(0, 10),
-          evento: "",
+        return {
+          data: today.toISOString().slice(0, 10),
+          titulo: "",
           empresa: "",
           valor: "",
-          status: "pendente",
-          obs: "",
-        });
+          forma: "Pix",
+          observacao: "",
+        };
+      });
 
-        const [debtForm, setDebtForm] = useState({
-          mesRef: formatMonthYYYYMM(today),
+      const handleChange = (field, value) => {
+        setForm((f) => ({ ...f, [field]: value }));
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const valor = parseFloat(form.valor.replace(",", ".")) || 0;
+        if (!form.data || !form.titulo || valor <= 0) return;
+
+        const createdAt = Date.now();
+        const novo = {
+          id: createdAt.toString(),
+          createdAt,
+          data: form.data,
+          titulo: form.titulo,
+          empresa: form.empresa || "",
+          valor,
+          status: "pendente",
+          valorPagoParcial: 0,
+          forma: form.forma,
+          observacao: form.observacao || "",
+        };
+        setEvents((prev) => [...prev, novo]);
+        setForm((f) => ({ ...f, titulo: "", empresa: "", valor: "", observacao: "" }));
+      };
+
+      const handleToggleStatus = (id) => {
+        setEvents((prev) =>
+          prev.map((ev) =>
+            ev.id === id ? { ...ev, status: cycleStatus(ev.status) } : ev
+          )
+        );
+      };
+
+      const handlePartialValueChange = (id, value) => {
+        const n = parseFloat(value.replace(",", ".")) || 0;
+        setEvents((prev) =>
+          prev.map((ev) =>
+            ev.id === id ? { ...ev, valorPagoParcial: n } : ev
+          )
+        );
+      };
+
+      const monthKey =
+        eventMonth.year + "-" + pad2(eventMonth.month + 1);
+
+      const eventsThisMonth = events.filter(
+        (ev) => ev.data && ev.data.slice(0, 7) === monthKey
+      );
+
+      const weeks = useMemo(() => {
+        const { year, month } = eventMonth;
+        const first = new Date(year, month, 1);
+        const firstWeekday = first.getDay(); // 0–6
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const cells = [];
+        for (let i = 0; i < 42; i++) {
+          const dayNum = i - firstWeekday + 1;
+          if (dayNum < 1 || dayNum > daysInMonth) {
+            cells.push({ key: `x-${i}`, outside: true });
+          } else {
+            const dateObj = new Date(year, month, dayNum);
+            const iso = dateObj.toISOString().slice(0, 10);
+            const items = events.filter((ev) => ev.data === iso);
+            cells.push({
+              key: iso,
+              outside: false,
+              day: dayNum,
+              items,
+            });
+          }
+        }
+        return cells;
+      }, [eventMonth, events]);
+
+      const handleDayClick = (cell) => {
+        if (!cell.day || cell.outside) return;
+        const { year, month } = eventMonth;
+        const dateObj = new Date(year, month, cell.day);
+        const iso = dateObj.toISOString().slice(0, 10);
+        setForm((f) => ({ ...f, data: iso }));
+        if (typeof onPickDate === "function") onPickDate(iso);
+      };
+
+      const handlePrevMonth = () =>
+        setEventMonth((m) => addMonths(m.year, m.month, -1));
+      const handleNextMonth = () =>
+        setEventMonth((m) => addMonths(m.year, m.month, 1));
+
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Eventos</div>
+              <div className="card-subtitle">
+                Calendário mensal com eventos, empresas e status de pagamento.
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">Calendário</div>
+              <div className="section-helper">
+                Toque no dia para preencher o formulário.
+              </div>
+            </div>
+            <div className="calendar">
+              <div className="calendar-header">
+                <div className="calendar-month-label">
+                  {monthLabel(eventMonth.year, eventMonth.month)}
+                </div>
+                <div className="calendar-nav">
+                  <button className="icon-btn" onClick={handlePrevMonth}>
+                    ‹
+                  </button>
+                  <button className="icon-btn" onClick={handleNextMonth}>
+                    ›
+                  </button>
+                </div>
+              </div>
+              <div className="calendar-grid">
+                {["D", "S", "T", "Q", "Q", "S", "S"].map((d) => (
+                  <div key={d} className="calendar-weekday">
+                    {d}
+                  </div>
+                ))}
+                {weeks.map((cell) => (
+                  <div
+                    key={cell.key}
+                    className={
+                      "calendar-day" + (cell.outside ? " outside" : "")
+                    }
+                    onClick={() => handleDayClick(cell)}
+                  >
+                    {!cell.outside && (
+                      <>
+                        <div className="calendar-day-number">
+                          {cell.day}
+                        </div>
+                        <div className="calendar-chips">
+                          {cell.items &&
+                            cell.items.slice(0, 3).map((ev) => (
+                              <div
+                                key={ev.id}
+                                className="calendar-chip"
+                                title={ev.titulo}
+                              >
+                                {ev.titulo || "Evento"}
+                              </div>
+                            ))}
+                          {cell.items && cell.items.length > 3 && (
+                            <div
+                              className="calendar-chip"
+                              style={{ opacity: 0.75 }}
+                            >
+                              +{cell.items.length - 3}
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Eventos deste mês ({eventsThisMonth.length})
+              </div>
+              <div className="section-helper">
+                Clique em “girar status” e preencha o valor parcial quando
+                precisar.
+              </div>
+            </div>
+            <div className="list">
+              {eventsThisMonth.length === 0 && (
+                <div
+                  className="small-hint"
+                  style={{ paddingInline: 4, color: "var(--text-muted)" }}
+                >
+                  Nenhum evento neste mês ainda.
+                </div>
+              )}
+              {eventsThisMonth
+                .slice()
+                .sort((a, b) => (a.data || "").localeCompare(b.data || ""))
+                .map((ev) => (
+                  <div key={ev.id} className="list-item">
+                    <div className="list-item-main-row">
+                      <div>
+                        <div className="list-item-title">
+                          {ev.titulo || "Evento"}
+                        </div>
+                        <div className="list-item-sub">
+                          {ev.empresa || "Sem empresa"} · {ev.data} ·{" "}
+                          {ev.forma || "Pix"}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div className="chip-amount">
+                          {money(ev.valor || 0)}
+                        </div>
+                        <StatusPill status={ev.status} />
+                      </div>
+                    </div>
+                    <div className="list-item-actions-row">
+                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                        <span className="label-tag">Valor já pago (R$)</span>
+                        <input
+                          className="form-input"
+                          style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={
+                            ev.valorPagoParcial === 0 || ev.valorPagoParcial
+                              ? ev.valorPagoParcial
+                              : ""
+                          }
+                          onChange={(e) =>
+                            handlePartialValueChange(ev.id, e.target.value)
+                          }
+                        />
+                      </div>
+                      <button
+                        className="btn-ghost"
+                        onClick={() => handleToggleStatus(ev.id)}
+                      >
+                        Girar status
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Novo evento (com empresa & observação)
+              </div>
+              <div className="section-helper">
+                Campos mínimos: data, título, valor.
+              </div>
+            </div>
+            <form className="form" onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Data</label>
+                  <input
+                    type="date"
+                    className="form-input"
+                    value={form.data}
+                    onChange={(e) => handleChange("data", e.target.value)}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Título do evento</label>
+                  <input
+                    className="form-input"
+                    placeholder="Pré evento, formatura..."
+                    value={form.titulo}
+                    onChange={(e) => handleChange("titulo", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Empresa / cliente</label>
+                  <input
+                    className="form-input"
+                    placeholder="Euphoria, escola, família..."
+                    value={form.empresa}
+                    onChange={(e) => handleChange("empresa", e.target.value)}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Valor total (R$)</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.valor}
+                    onChange={(e) => handleChange("valor", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Forma de pagamento</label>
+                  <select
+                    className="form-select"
+                    value={form.forma}
+                    onChange={(e) => handleChange("forma", e.target.value)}
+                  >
+                    <option>Pix</option>
+                    <option>Crédito</option>
+                    <option>Débito</option>
+                    <option>Dinheiro</option>
+                    <option>Outro</option>
+                  </select>
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Observação</label>
+                  <input
+                    className="form-input"
+                    placeholder="Entrada, restante na data, etc."
+                    value={form.observacao}
+                    onChange={(e) =>
+                      handleChange("observacao", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-footer">
+                <div className="small-hint">
+                  Depois de salvo, use o status + valor parcial para controlar a
+                  evolução do pagamento.
+                </div>
+                <button type="submit" className="btn-primary">
+                  Salvar evento
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    function DividasSection({
+      debts,
+      setDebts,
+      debtMonth,
+      setDebtMonth,
+    }) {
+      const [form, setForm] = useState(() => {
+        const today = new Date();
+        const ym = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}`;
+        return {
+          mesInicial: ym,
           conta: "",
           valorTotal: "",
           parcelas: "1",
-          obs: "",
-          parcelado: true,
+          observacao: "",
+        };
+      });
+
+      const monthKey =
+        debtMonth.year + "-" + pad2(debtMonth.month + 1);
+
+      const debtsThisMonth = debts.filter(
+        (d) => d.mesReferencia === monthKey
+      );
+
+      const totals = useMemo(() => {
+        let total = 0;
+        let pago = 0;
+        debtsThisMonth.forEach((d) => {
+          total += d.valorParcela || 0;
+          if (d.status === "pago") pago += d.valorParcela || 0;
+          if (d.status === "parcial") pago += d.valorPagoParcial || 0;
         });
+        return { total, pago };
+      }, [debtsThisMonth]);
 
-        useEffect(() => {
-          try {
-            const savedEvents = JSON.parse(
-              localStorage.getItem(STORAGE_KEYS.EVENTS) || "[]"
-            );
-            const savedDebts = JSON.parse(
-              localStorage.getItem(STORAGE_KEYS.DEBTS) || "[]"
-            );
-            setEvents(savedEvents);
-            setDebts(savedDebts);
-          } catch (e) {
-            console.error("Erro ao carregar dados", e);
-          }
-        }, []);
+      const handleChange = (field, value) => {
+        setForm((f) => ({ ...f, [field]: value }));
+      };
 
-        useEffect(() => {
-          try {
-            localStorage.setItem(
-              STORAGE_KEYS.EVENTS,
-              JSON.stringify(events)
-            );
-            localStorage.setItem(
-              STORAGE_KEYS.DEBTS,
-              JSON.stringify(debts)
-            );
-          } catch (e) {
-            console.error("Erro ao salvar dados", e);
-          }
-        }, [events, debts]);
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const valorTotal = parseFloat(
+          form.valorTotal.replace(",", ".")
+        );
+        const parcelas = parseInt(form.parcelas, 10) || 1;
+        if (!form.mesInicial || !form.conta || !(valorTotal > 0)) return;
 
-        function handleAddEvent(e) {
-          e.preventDefault();
-          const valor = parseFloat(
-            (eventForm.valor || "0").replace(",", ".")
+        const [y, m] = form.mesInicial.split("-");
+        const startYear = parseInt(y, 10);
+        const startMonth = parseInt(m, 10) - 1;
+        const isParcelado = parcelas > 1;
+        const valorParcela = isParcelado
+          ? valorTotal / parcelas
+          : valorTotal;
+
+        const createdAt = Date.now();
+        const grupoId = "g-" + createdAt.toString();
+
+        const novos = [];
+        for (let i = 0; i < parcelas; i++) {
+          const { year, month } = addMonths(
+            startYear,
+            startMonth,
+            i
           );
-          if (!eventForm.evento || isNaN(valor)) return;
+          const mesReferencia =
+            year + "-" + pad2(month + 1);
 
-          const novo = {
-            id: Date.now(),
-            data: eventForm.data,
-            evento: eventForm.evento,
-            empresa: eventForm.empresa,
-            valor,
-            status: eventForm.status,
-            obs: eventForm.obs,
-          };
-
-          setEvents((prev) => [novo, ...prev]);
-          setEventForm((f) => ({
-            ...f,
-            evento: "",
-            empresa: "",
-            valor: "",
-            obs: "",
-          }));
-        }
-
-        function handleAddDebt(e) {
-          e.preventDefault();
-          const valorTotal = parseFloat(
-            (debtForm.valorTotal || "0").replace(",", ".")
-          );
-          const parcelas = parseInt(debtForm.parcelas || "1", 10);
-          if (!debtForm.conta || isNaN(valorTotal) || parcelas <= 0) return;
-
-          const baseMonth = debtForm.mesRef + "-01";
-          const isParcelado = debtForm.parcelado && parcelas > 1;
-          const valorParcela = isParcelado
-            ? valorTotal / parcelas
-            : valorTotal;
-
-          const novas = [];
-
-          if (isParcelado) {
-            for (let i = 0; i < parcelas; i++) {
-              const mes = addMonths(new Date(baseMonth), i);
-              novas.push({
-                id: Date.now() + i,
-                conta: debtForm.conta,
-                valor: valorParcela,
-                mesRef: formatMonthYYYYMM(mes),
-                parcelaAtual: i + 1,
-                parcelasTotais: parcelas,
-                status: "pendente",
-                obs: debtForm.obs,
-              });
-            }
-          } else {
-            novas.push({
-              id: Date.now(),
-              conta: debtForm.conta,
-              valor: valorParcela,
-              mesRef: debtForm.mesRef,
-              parcelaAtual: 1,
-              parcelasTotais: 1,
-              status: "pendente",
-              obs: debtForm.obs,
-            });
-          }
-
-          setDebts((prev) => [...novas, ...prev]);
-          setDebtForm((f) => ({
-            ...f,
-            conta: "",
-            valorTotal: "",
-            parcelas: "1",
-            obs: "",
-          }));
-        }
-
-        function toggleEventStatus(id) {
-          setEvents((prev) =>
-            prev.map((ev) =>
-              ev.id === id ? { ...ev, status: cycleStatus(ev.status) } : ev
-            )
-          );
-        }
-
-        function toggleDebtStatus(id) {
-          setDebts((prev) =>
-            prev.map((d) =>
-              d.id === id ? { ...d, status: cycleStatus(d.status) } : d
-            )
-          );
-        }
-
-        const eventosPagos = events.filter((e) => e.status === "pago");
-        const eventosParciais = events.filter((e) => e.status === "parcial");
-        const totalEventos = events.reduce((acc, e) => acc + e.valor, 0);
-        const totalEventosPagos = eventosPagos.reduce(
-          (acc, e) => acc + e.valor,
-          0
-        );
-        const totalEventosParciais = eventosParciais.reduce(
-          (acc, e) => acc + e.valor,
-          0
-        );
-
-        const debtsPagas = debts.filter((d) => d.status === "pago");
-        const debtsParciais = debts.filter((d) => d.status === "parcial");
-        const totalDividas = debts.reduce((acc, d) => acc + d.valor, 0);
-        const totalDividasPagas = debtsPagas.reduce(
-          (acc, d) => acc + d.valor,
-          0
-        );
-        const totalDividasParciais = debtsParciais.reduce(
-          (acc, d) => acc + d.valor,
-          0
-        );
-
-        const fluxoLiquido = totalEventosPagos - totalDividasPagas;
-
-        const eventosDoMes = events.filter(
-          (e) => e.data?.slice(0, 7) === eventsMonth
-        );
-        const dividasDoMes = debts.filter((d) => d.mesRef === debtsMonth);
-
-        function exportBackup() {
-          const data = {
-            events,
-            debts,
-            generatedAt: new Date().toISOString(),
-          };
-          const blob = new Blob([JSON.stringify(data, null, 2)], {
-            type: "application/json",
+          novos.push({
+            id: `${grupoId}-${i}`,
+            createdAt: createdAt + i,
+            grupoId,
+            conta: form.conta,
+            mesReferencia,
+            valorParcela,
+            status: "pendente",
+            valorPagoParcial: 0,
+            observacao: form.observacao || "",
           });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "painel-prestes-backup.json";
-          a.click();
-          URL.revokeObjectURL(url);
         }
 
-        function renderDashboard() {
-          return (
-            <div className="grid">
-              <section className="card">
-                <div className="card-header">
-                  <div>
-                    <div className="card-title">Visão geral</div>
-                    <div className="card-caption">
-                      Eventos fechados, dívidas e fluxo confirmados.
-                    </div>
-                  </div>
-                </div>
+        setDebts((prev) => [...prev, ...novos]);
+        setForm((f) => ({
+          ...f,
+          conta: "",
+          valorTotal: "",
+          parcelas: "1",
+          observacao: "",
+        }));
+      };
 
-                <div className="stat-row">
-                  <div className="stat">
-                    <div className="stat-label">
-                      Receita confirmada (eventos pagos)
-                    </div>
-                    <div className="stat-value positivo">
-                      {formatCurrency(totalEventosPagos)}
-                    </div>
-                  </div>
-                  <div className="stat">
-                    <div className="stat-label">
-                      Dívidas quitadas (parcelas pagas)
-                    </div>
-                    <div className="stat-value negativo">
-                      {formatCurrency(totalDividasPagas)}
-                    </div>
-                  </div>
-                </div>
+      const handleToggleStatus = (id) => {
+        setDebts((prev) =>
+          prev.map((d) =>
+            d.id === id ? { ...d, status: cycleStatus(d.status) } : d
+          )
+        );
+      };
 
-                <div className="stat-row" style={{ marginTop: 10 }}>
-                  <div className="stat">
-                    <div className="stat-label">
-                      Eventos com pagamento parcial
-                    </div>
-                    <div className="stat-value warning">
-                      {eventosParciais.length} evento(s) ·{" "}
-                      {formatCurrency(totalEventosParciais)}
-                    </div>
-                  </div>
-                  <div className="stat">
-                    <div className="stat-label">
-                      Dívidas em pagamento parcial
-                    </div>
-                    <div className="stat-value warning">
-                      {debtsParciais.length} conta(s) ·{" "}
-                      {formatCurrency(totalDividasParciais)}
-                    </div>
-                  </div>
-                </div>
+      const handlePartialChange = (id, value) => {
+        const n = parseFloat(value.replace(",", ".")) || 0;
+        setDebts((prev) =>
+          prev.map((d) =>
+            d.id === id ? { ...d, valorPagoParcial: n } : d
+          )
+        );
+      };
 
-                <div className="stat-row" style={{ marginTop: 10 }}>
-                  <div className="stat">
-                    <div className="stat-label">Fluxo líquido</div>
-                    <div
-                      className={
-                        "stat-value " +
-                        (fluxoLiquido >= 0 ? "positivo" : "negativo")
-                      }
-                    >
-                      {formatCurrency(fluxoLiquido)}
-                    </div>
-                  </div>
-                  <div className="stat">
-                    <div className="stat-label">
-                      Total a receber / a pagar
-                    </div>
-                    <div className="stat-value">
-                      {formatCurrency(totalEventos)} de eventos ·{" "}
-                      {formatCurrency(totalDividas)} em dívidas
-                    </div>
-                  </div>
-                </div>
+      const handlePrevMonth = () =>
+        setDebtMonth((m) => addMonths(m.year, m.month, -1));
+      const handleNextMonth = () =>
+        setDebtMonth((m) => addMonths(m.year, m.month, 1));
 
-                <div className="btn-row">
-                  <button className="btn-ghost" onClick={exportBackup}>
-                    Exportar backup (.json)
-                  </button>
-                </div>
-              </section>
-
-              <section className="card">
-                <div className="card-header">
-                  <div>
-                    <div className="card-title">Linha do tempo rápida</div>
-                    <div className="card-caption">
-                      Últimos eventos e dívidas cadastrados.
-                    </div>
-                  </div>
-                </div>
-
-                <div className="list">
-                  {events.slice(0, 4).map((ev) => (
-                    <div className="item" key={ev.id}>
-                      <div className="item-main">
-                        <div className="item-title">
-                          {ev.evento}{" "}
-                          <span className="badge-valor positivo">
-                            {formatCurrency(ev.valor)}
-                          </span>
-                        </div>
-                        <div className="item-sub">
-                          {ev.empresa && `${ev.empresa} · `}
-                          {ev.data &&
-                            new Date(ev.data).toLocaleDateString("pt-BR")}
-                        </div>
-                      </div>
-                      <span className={"chip " + ev.status}>
-                        {ev.status === "pendente"
-                          ? "Pendente"
-                          : ev.status === "parcial"
-                          ? "Pago parcial"
-                          : "Pago"}
-                      </span>
-                    </div>
-                  ))}
-
-                  {debts.slice(0, 4).map((d) => (
-                    <div className="item" key={d.id}>
-                      <div className="item-main">
-                        <div className="item-title">
-                          {d.conta}{" "}
-                          <span className="badge-valor negativo">
-                            {formatCurrency(d.valor)}
-                          </span>
-                        </div>
-                        <div className="item-sub">
-                          {d.parcelasTotais > 1
-                            ? `Parcela ${d.parcelaAtual}/${d.parcelasTotais} · `
-                            : ""}
-                          {d.mesRef}
-                        </div>
-                      </div>
-                      <span className={"chip " + d.status}>
-                        {d.status === "pendente"
-                          ? "Pendente"
-                          : d.status === "parcial"
-                          ? "Pago parcial"
-                          : "Pago"}
-                      </span>
-                    </div>
-                  ))}
-
-                  {events.length === 0 && debts.length === 0 && (
-                    <div className="mini">
-                      Nada por aqui ainda. Cadastra um evento ou uma dívida
-                      nas outras abas.
-                    </div>
-                  )}
-                </div>
-              </section>
-            </div>
-          );
-        }
-               function renderEventos() {
-          const monthDate = new Date(eventsMonth + "-01");
-          const monthName = monthDate.toLocaleDateString("pt-BR", {
-            month: "long",
-            year: "numeric",
-          });
-
-          const first = firstDayOfMonth(monthDate);
-          const firstWeekday = first.getDay();
-          const daysInMonth = new Date(
-            first.getFullYear(),
-            first.getMonth() + 1,
-            0
-          ).getDate();
-
-          const weeks = [];
-          let currentDay = 1 - firstWeekday;
-          for (let w = 0; w < 6; w++) {
-            const weekDays = [];
-            for (let d = 0; d < 7; d++) {
-              if (currentDay < 1 || currentDay > daysInMonth) {
-                weekDays.push(null);
-              } else {
-                weekDays.push(currentDay);
-              }
-              currentDay++;
-            }
-            weeks.push(weekDays);
-          }
-
-          function eventsForDay(day) {
-            const dayStr = String(day).padStart(2, "0");
-            const prefix = eventsMonth + "-" + dayStr;
-            return eventosDoMes.filter((ev) => ev.data === prefix);
-          }
-
-          return (
-            <div className="grid">
-              <section className="card">
-                <div className="card-header">
-                  <div>
-                    <div className="card-title">Eventos</div>
-                    <div className="card-caption">
-                      Calendário mensal com eventos, empresas e status.
-                    </div>
-                  </div>
-                  <div className="calendar-controls">
-                    <button
-                      className="btn-ghost"
-                      style={{ padding: "4px 8px", fontSize: "0.72rem" }}
-                      onClick={() =>
-                        setEventsMonth(
-                          formatMonthYYYYMM(
-                            addMonths(new Date(eventsMonth + "-01"), -1)
-                          )
-                        )
-                      }
-                    >
-                      ◀
-                    </button>
-                    <div className="calendar-title">{monthName}</div>
-                    <button
-                      className="btn-ghost"
-                      style={{ padding: "4px 8px", fontSize: "0.72rem" }}
-                      onClick={() =>
-                        setEventsMonth(
-                          formatMonthYYYYMM(
-                            addMonths(new Date(eventsMonth + "-01"), 1)
-                          )
-                        )
-                      }
-                    >
-                      ▶
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mini" style={{ marginBottom: 4 }}>
-                  Botão de status: pendente → parcial → pago.
-                </div>
-
-                <div className="calendar-grid">
-                  {["D", "S", "T", "Q", "Q", "S", "S"].map((dia) => (
-                    <div key={dia} className="calendar-header">
-                      {dia}
-                    </div>
-                  ))}
-
-                  {weeks.map((week, wi) =>
-                    week.map((day, di) => {
-                      if (!day) return <div key={wi + "-" + di}></div>;
-                      const evDay = eventsForDay(day);
-                      return (
-                        <div className="day-cell" key={wi + "-" + di}>
-                          <div className="day-number">{day}</div>
-                          {evDay.map((ev) => (
-                            <div
-                              key={ev.id}
-                              className="event-pill"
-                              title={
-                                ev.empresa
-                                  ? `${ev.evento} – ${ev.empresa}`
-                                  : ev.evento
-                              }
-                            >
-                              {ev.evento.slice(0, 14)}
-                              {ev.evento.length > 14 ? "…" : ""} ·{" "}
-                              {formatCurrency(ev.valor)}
-                            </div>
-                          ))}
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </section>
-
-              <section className="card">
-                <div className="card-header">
-                  <div>
-                    <div className="card-title">
-                      Novo evento (empresa & observação)
-                    </div>
-                    <div className="card-caption">
-                      Evento, empresa, valor, pago / parcial, observação.
-                    </div>
-                  </div>
-                </div>
-
-                <form onSubmit={handleAddEvent}>
-                  <div className="form-grid">
-                    <div>
-                      <div className="field">
-                        <label>Data</label>
-                        <input
-                          type="date"
-                          value={eventForm.data}
-                          onChange={(e) =>
-                            setEventForm({ ...eventForm, data: e.target.value })
-                          }
-                          required
-                        />
-                      </div>
-                      <div className="field">
-                        <label>Evento</label>
-                        <input
-                          value={eventForm.evento}
-                          onChange={(e) =>
-                            setEventForm({
-                              ...eventForm,
-                              evento: e.target.value,
-                            })
-                          }
-                          placeholder="Formatura, ensaio, casamento..."
-                          required
-                        />
-                      </div>
-                      <div className="field">
-                        <label>Empresa / cliente</label>
-                        <input
-                          value={eventForm.empresa}
-                          onChange={(e) =>
-                            setEventForm({
-                              ...eventForm,
-                              empresa: e.target.value,
-                            })
-                          }
-                          placeholder="Agência, escola, família..."
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="field">
-                        <label>Valor (R$)</label>
-                        <input
-                          value={eventForm.valor}
-                          onChange={(e) =>
-                            setEventForm({
-                              ...eventForm,
-                              valor: e.target.value,
-                            })
-                          }
-                          placeholder="400, 800, 1200..."
-                          required
-                        />
-                      </div>
-                      <div className="field">
-                        <label>Status de pagamento</label>
-                        <select
-                          value={eventForm.status}
-                          onChange={(e) =>
-                            setEventForm({
-                              ...eventForm,
-                              status: e.target.value,
-                            })
-                          }
-                        >
-                          <option value="pendente">Pendente</option>
-                          <option value="parcial">Pago parcial</option>
-                          <option value="pago">Pago</option>
-                        </select>
-                      </div>
-                      <div className="field">
-                        <label>Observação</label>
-                        <textarea
-                          rows="3"
-                          value={eventForm.obs}
-                          onChange={(e) =>
-                            setEventForm({
-                              ...eventForm,
-                              obs: e.target.value,
-                            })
-                          }
-                          placeholder="Pix, prazo, detalhes do contrato..."
-                        ></textarea>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="btn-row">
-                    <button type="submit" className="btn-primary">
-                      Salvar evento
-                    </button>
-                  </div>
-                </form>
-
-                <div className="list">
-                  {eventosDoMes.map((ev) => (
-                    <div className="item" key={ev.id}>
-                      <div className="item-main">
-                        <div className="item-title">
-                          {ev.evento}{" "}
-                          <span className="badge-valor positivo">
-                            {formatCurrency(ev.valor)}
-                          </span>
-                        </div>
-                        <div className="item-sub">
-                          {ev.empresa && `${ev.empresa} · `}
-                          {new Date(ev.data).toLocaleDateString("pt-BR")}
-                          {ev.obs ? ` · ${ev.obs}` : ""}
-                        </div>
-                      </div>
-                      <span className={"chip " + ev.status}>
-                        {ev.status === "pendente"
-                          ? "Pendente"
-                          : ev.status === "parcial"
-                          ? "Pago parcial"
-                          : "Pago"}
-                      </span>
-                      <button
-                        className="btn-status"
-                        onClick={() => toggleEventStatus(ev.id)}
-                      >
-                        Girar status
-                      </button>
-                    </div>
-                  ))}
-
-                  {eventosDoMes.length === 0 && (
-                    <div className="mini" style={{ marginTop: 8 }}>
-                      Nenhum evento neste mês ainda.
-                    </div>
-                  )}
-                </div>
-              </section>
-            </div>
-          );
-        }
-
-        function renderDividas() {
-          const monthLabel = new Date(debtsMonth + "-01").toLocaleDateString(
-            "pt-BR",
-            { month: "long", year: "numeric" }
-          );
-
-          const totalMes = dividasDoMes.reduce(
-            (acc, d) => acc + d.valor,
-            0
-          );
-          const totalMesPagas = dividasDoMes
-            .filter((d) => d.status === "pago")
-            .reduce((acc, d) => acc + d.valor, 0);
-
-          return (
-            <div className="grid">
-              <section className="card">
-                <div className="card-header">
-                  <div>
-                    <div className="card-title">Dívidas / contas</div>
-                    <div className="card-caption">
-                      Conta, valor, pago, parcial, parcelado por meses.
-                    </div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "0.72rem", color: "#9ca3af" }}>
-                      Mês de referência
-                    </label>
-                    <input
-                      className="month-input"
-                      type="month"
-                      value={debtsMonth}
-                      onChange={(e) => setDebtsMonth(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="stat-row">
-                  <div className="stat">
-                    <div className="stat-label">Total deste mês</div>
-                    <div className="stat-value negativo">
-                      {formatCurrency(totalMes)}
-                    </div>
-                  </div>
-                  <div className="stat">
-                    <div className="stat-label">Já pago neste mês</div>
-                    <div className="stat-value positivo">
-                      {formatCurrency(totalMesPagas)}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mini" style={{ marginTop: 8 }}>
-                  Cada parcela cai no mês correto. Clique no status para
-                  alternar.
-                </div>
-
-                <div className="list" style={{ marginTop: 6 }}>
-                  {dividasDoMes.map((d) => (
-                    <div className="item" key={d.id}>
-                      <div className="item-main">
-                        <div className="item-title">
-                          {d.conta}{" "}
-                          <span className="badge-valor negativo">
-                            {formatCurrency(d.valor)}
-                          </span>
-                        </div>
-                        <div className="item-sub">
-                          {d.parcelasTotais > 1
-                            ? `Parcela ${d.parcelaAtual}/${d.parcelasTotais} · `
-                            : ""}
-                          {monthLabel}
-                          {d.obs ? ` · ${d.obs}` : ""}
-                        </div>
-                      </div>
-                      <span className={"chip " + d.status}>
-                        {d.status === "pendente"
-                          ? "Pendente"
-                          : d.status === "parcial"
-                          ? "Pago parcial"
-                          : "Pago"}
-                      </span>
-                      <button
-                        className="btn-status"
-                        onClick={() => toggleDebtStatus(d.id)}
-                      >
-                        Girar status
-                      </button>
-                    </div>
-                  ))}
-
-                  {dividasDoMes.length === 0 && (
-                    <div className="mini" style={{ marginTop: 8 }}>
-                      Nenhuma conta cadastrada para este mês.
-                    </div>
-                  )}
-                </div>
-              </section>
-
-              <section className="card">
-                <div className="card-header">
-                  <div>
-                    <div className="card-title">
-                      Nova dívida / conta parcelada
-                    </div>
-                    <div className="card-caption">
-                      Conta, valor total, nº de parcelas, parcelado.
-                    </div>
-                  </div>
-                </div>
-
-                <form onSubmit={handleAddDebt}>
-                  <div className="form-grid">
-                    <div>
-                      <div className="field">
-                        <label>Mês inicial</label>
-                        <input
-                          type="month"
-                          value={debtForm.mesRef}
-                          onChange={(e) =>
-                            setDebtForm({
-                              ...debtForm,
-                              mesRef: e.target.value,
-                            })
-                          }
-                          required
-                        />
-                      </div>
-                      <div className="field">
-                        <label>Conta / Descrição</label>
-                        <input
-                          value={debtForm.conta}
-                          onChange={(e) =>
-                            setDebtForm({
-                              ...debtForm,
-                              conta: e.target.value,
-                            })
-                          }
-                          placeholder="Cartão, câmera, viagem..."
-                          required
-                        />
-                      </div>
-                      <div className="field">
-                        <label>Valor total (R$)</label>
-                        <input
-                          value={debtForm.valorTotal}
-                          onChange={(e) =>
-                            setDebtForm({
-                              ...debtForm,
-                              valorTotal: e.target.value,
-                            })
-                          }
-                          placeholder="5500, 8326, 1200..."
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="field">
-                        <label>Nº de parcelas</label>
-                        <input
-                          type="number"
-                          min="1"
-                          value={debtForm.parcelas}
-                          onChange={(e) =>
-                            setDebtForm({
-                              ...debtForm,
-                              parcelas: e.target.value,
-                            })
-                          }
-                          required
-                        />
-                      </div>
-                      <div className="field">
-                        <label>
-                          Parcelado? (se 1 parcela, vira dívida única)
-                        </label>
-                        <select
-                          value={debtForm.parcelado ? "sim" : "nao"}
-                          onChange={(e) =>
-                            setDebtForm({
-                              ...debtForm,
-                              parcelado: e.target.value === "sim",
-                            })
-                          }
-                        >
-                          <option value="sim">Sim, dividir em meses</option>
-                          <option value="nao">
-                            Não, tudo no mês inicial
-                          </option>
-                        </select>
-                      </div>
-                      <div className="field">
-                        <label>Observação</label>
-                        <textarea
-                          rows="3"
-                          value={debtForm.obs}
-                          onChange={(e) =>
-                            setDebtForm({
-                              ...debtForm,
-                              obs: e.target.value,
-                            })
-                          }
-                          placeholder="Banco, juros, acordo..."
-                        ></textarea>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="btn-row">
-                    <button type="submit" className="btn-primary">
-                      Salvar dívida / parcelas
-                    </button>
-                  </div>
-                </form>
-              </section>
-            </div>
-          );
-        }
-
-        return (
-          <div className="app">
-            <div className="shell">
-              <header className="header">
-                <div>
-                  <span className="pill">
-                    <span className="pill-dot" />
-                    painel financeiro • prestes
-                  </span>
-                  <h1>Eventos, dívidas e parcelas em modo profissional</h1>
-                  <div className="subtitle">
-                    Uma tela para cada lado da sua mente: dashboard,
-                    calendário e matriz de dívidas.
-                  </div>
-                </div>
-
-                <div className="header-right">
-                  <button className="btn-theme">
-                    <span className="knob" />
-                    Modo escuro ativo
-                  </button>
-                  <div style={{ marginTop: 6 }}>
-                    Dados guardados no seu navegador (localStorage).
-                  </div>
-                </div>
-              </header>
-
-              <div className="nav">
-                <button
-                  className={
-                    "nav-btn " + (view === "dashboard" ? "active" : "")
-                  }
-                  onClick={() => setView("dashboard")}
-                >
-                  Dashboard
-                </button>
-                <button
-                  className={
-                    "nav-btn " + (view === "eventos" ? "active" : "")
-                  }
-                  onClick={() => setView("eventos")}
-                >
-                  Eventos
-                </button>
-                <button
-                  className={
-                    "nav-btn " + (view === "dividas" ? "active" : "")
-                  }
-                  onClick={() => setView("dividas")}
-                >
-                  Dívidas
-                </button>
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Dívidas / contas</div>
+              <div className="card-subtitle">
+                Conta, valor, pago parcial e parcelas distribuídas por meses.
               </div>
-
-              {view === "dashboard" && renderDashboard()}
-              {view === "eventos" && renderEventos()}
-              {view === "dividas" && renderDividas()}
             </div>
           </div>
-        );
-      }
 
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
-    </script>
-  </body>
-</html>       
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Mês de referência – {monthLabel(debtMonth.year, debtMonth.month)}
+              </div>
+              <div className="calendar-nav">
+                <button className="icon-btn" onClick={handlePrevMonth}>
+                  ‹
+                </button>
+                <button className="icon-btn" onClick={handleNextMonth}>
+                  ›
+                </button>
+              </div>
+            </div>
+
+            <div className="card-kpi-row" style={{ marginBottom: 8 }}>
+              <div className="kpi-card">
+                <div className="kpi-label">
+                  Total deste mês (todas parcelas)
+                </div>
+                <div className="kpi-main negative">
+                  {money(totals.total)}
+                </div>
+              </div>
+              <div className="kpi-card">
+                <div className="kpi-label">Já pago neste mês</div>
+                <div className="kpi-main positive">
+                  {money(totals.pago)}
+                </div>
+              </div>
+            </div>
+
+            <div className="list">
+              {debtsThisMonth.length === 0 && (
+                <div
+                  className="small-hint"
+                  style={{ paddingInline: 4, color: "var(--text-muted)" }}
+                >
+                  Nenhuma conta cadastrada para este mês.
+                </div>
+              )}
+              {debtsThisMonth
+                .slice()
+                .sort((a, b) =>
+                  (a.createdAt || 0) - (b.createdAt || 0)
+                )
+                .map((d) => (
+                  <div key={d.id} className="list-item">
+                    <div className="list-item-main-row">
+                      <div>
+                        <div className="list-item-title">
+                          {d.conta || "Conta"}
+                        </div>
+                        <div className="list-item-sub">
+                          Parcela de {money(d.valorParcela)} ·{" "}
+                          {d.mesReferencia}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div className="chip-amount-negative">
+                          {money(d.valorParcela)}
+                        </div>
+                        <StatusPill status={d.status} />
+                      </div>
+                    </div>
+                    <div className="list-item-actions-row">
+                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                        <span className="label-tag">Valor já pago (R$)</span>
+                        <input
+                          className="form-input"
+                          style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={
+                            d.valorPagoParcial === 0 || d.valorPagoParcial
+                              ? d.valorPagoParcial
+                              : ""
+                          }
+                          onChange={(e) =>
+                            handlePartialChange(d.id, e.target.value)
+                          }
+                        />
+                      </div>
+                      <button
+                        className="btn-ghost"
+                        onClick={() => handleToggleStatus(d.id)}
+                      >
+                        Girar status
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">
+                Nova dívida / conta parcelada
+              </div>
+              <div className="section-helper">
+                “Conta, valor, pago, pago parcial, parcelado” distribuído nos
+                próximos meses.
+              </div>
+            </div>
+            <form className="form" onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Mês inicial</label>
+                  <input
+                    type="month"
+                    className="form-input"
+                    value={form.mesInicial}
+                    onChange={(e) =>
+                      handleChange("mesInicial", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Conta / descrição</label>
+                  <input
+                    className="form-input"
+                    placeholder="Cartão Nubank, câmera, viagem..."
+                    value={form.conta}
+                    onChange={(e) =>
+                      handleChange("conta", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Valor total (R$)</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.valorTotal}
+                    onChange={(e) =>
+                      handleChange("valorTotal", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Nº de parcelas</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={form.parcelas}
+                    onChange={(e) =>
+                      handleChange("parcelas", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Observação</label>
+                  <textarea
+                    className="form-textarea"
+                    placeholder="Banco tal, juros, acordo..."
+                    value={form.observacao}
+                    onChange={(e) =>
+                      handleChange("observacao", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-footer">
+                <div className="small-hint">
+                  Se você colocar 6 parcelas, cada uma cai no mês correto
+                  automaticamente.
+                </div>
+                <button type="submit" className="btn-primary">
+                  Salvar dívida / parcelas
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      );
+    }
+        function App() {
+      const saved = useMemo(() => {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch {
+          return null;
+        }
+      }, []);
+
+      const today = new Date();
+      const [events, setEvents] = useState(() => saved?.events || []);
+      const [debts, setDebts] = useState(() => saved?.debts || []);
+      const [theme, setTheme] = useState(() => saved?.theme || "light");
+
+      const [activeTab, setActiveTab] = useState("dashboard");
+
+      const [eventMonth, setEventMonth] = useState(() => ({
+        year: today.getFullYear(),
+        month: today.getMonth(),
+      }));
+      const [debtMonth, setDebtMonth] = useState(() => ({
+        year: today.getFullYear(),
+        month: today.getMonth(),
+      }));
+
+      useEffect(() => {
+        document.body.classList.remove("light", "dark");
+        document.body.classList.add(theme);
+      }, [theme]);
+
+      useEffect(() => {
+        try {
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({ events, debts, theme })
+          );
+        } catch {}
+      }, [events, debts, theme]);
+
+      const handleToggleTheme = () => {
+        setTheme((t) => (t === "light" ? "dark" : "light"));
+      };
+
+      const handleExportPDF = async () => {
+        try {
+          const root = document.getElementById("root");
+          if (!root) return;
+
+          const canvas = await html2canvas(root, {
+            scale: 2,
+            backgroundColor:
+              theme === "dark" ? "#020617" : "#f3f4f6",
+          });
+
+          const imgData = canvas.toDataURL("image/png");
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF("p", "mm", "a4");
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+
+          const ratio = Math.min(
+            pageWidth / canvas.width,
+            pageHeight / canvas.height
+          );
+          const imgWidth = canvas.width * ratio;
+          const imgHeight = canvas.height * ratio;
+
+          const x = (pageWidth - imgWidth) / 2;
+          const y = 8;
+
+          pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+          pdf.save("painel-financeiro-prestes.pdf");
+        } catch (err) {
+          console.error(err);
+          alert(
+            "Não consegui gerar o PDF no navegador agora. Tenta recarregar a página."
+          );
+        }
+      };
+
+      return (
+        <div className="app-shell">
+          <header className="app-header">
+            <div className="app-title">
+              <div className="pill-badge">
+                <span className="pill-dot" />
+                painel financeiro · prestes
+              </div>
+              <h1>Eventos, dívidas e parcelas em modo profissional</h1>
+              <p>
+                Uma tela para cada lado da sua mente: dashboard, calendário de
+                eventos e matriz de dívidas. Tudo salvo no seu navegador.
+              </p>
+            </div>
+            <div className="header-right">
+              <div
+                className="theme-toggle"
+                onClick={handleToggleTheme}
+              >
+                <div className="theme-toggle-indicator">
+                  <div className="theme-toggle-indicator-inner" />
+                </div>
+                <span>
+                  {theme === "dark"
+                    ? "Modo escuro ativo"
+                    : "Modo claro ativo"}
+                </span>
+              </div>
+              <div className="storage-note">
+                Dados guardados no seu navegador (localStorage).
+              </div>
+            </div>
+          </header>
+
+          <div className="tabs-row">
+            <button
+              className={
+                "tab-btn" + (activeTab === "dashboard" ? " active" : "")
+              }
+              onClick={() => setActiveTab("dashboard")}
+            >
+              Dashboard
+            </button>
+            <button
+              className={
+                "tab-btn" + (activeTab === "eventos" ? " active" : "")
+              }
+              onClick={() => setActiveTab("eventos")}
+            >
+              Eventos
+            </button>
+            <button
+              className={
+                "tab-btn" + (activeTab === "dividas" ? " active" : "")
+              }
+              onClick={() => setActiveTab("dividas")}
+            >
+              Dívidas
+            </button>
+          </div>
+
+          {activeTab === "dashboard" && (
+            <Dashboard
+              events={events}
+              debts={debts}
+              onExportPDF={handleExportPDF}
+            />
+          )}
+
+          {activeTab === "eventos" && (
+            <EventosSection
+              events={events}
+              setEvents={setEvents}
+              eventMonth={eventMonth}
+              setEventMonth={setEventMonth}
+            />
+          )}
+
+          {activeTab === "dividas" && (
+            <DividasSection
+              debts={debts}
+              setDebts={setDebts}
+              debtMonth={debtMonth}
+              setDebtMonth={setDebtMonth}
+            />
+          )}
+        </div>
+      );
+    }
+
+    const rootEl = document.getElementById("root");
+    ReactDOM.createRoot(rootEl).render(<App />);
+  </script>
+</body>
+</html>
