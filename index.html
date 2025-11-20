@@ -10,15 +10,13 @@
       --bg-card-claro: #ffffff;
       --bg-escuro: #050716;
       --bg-card-escuro: #101322;
-      --roxo: #7b5cff;
-      --rosa: #ff5ccd;
-      --cinza-escuro: #111827;
       --texto-principal: #0f172a;
       --texto-secundario: #4b5563;
       --borda-suave: rgba(148, 163, 184, 0.4);
       --verde: #16a34a;
       --vermelho: #dc2626;
-      --laranja: #f97316;
+      --rosa: #ec4899;
+      --roxo: #4f46e5;
     }
 
     * {
@@ -42,6 +40,13 @@
       max-width: 960px;
       margin: 16px auto 40px;
       padding: 12px;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
     }
 
     .badge-top {
@@ -69,8 +74,38 @@
       box-shadow: 0 0 0 4px rgba(34,197,94,.2);
     }
 
+    .toggle-tema-wrap {
+      display: flex;
+      justify-content: flex-end;
+      flex: 1;
+    }
+
+    .toggle-tema {
+      position: relative;
+      width: 40px;
+      height: 20px;
+      border-radius: 999px;
+      background: linear-gradient(120deg, var(--rosa), var(--roxo));
+      cursor: pointer;
+      padding: 2px;
+      box-shadow: 0 0 0 1px rgba(148,163,184,0.6);
+    }
+
+    .toggle-knob {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: #f9fafb;
+      transform: translateX(0);
+      transition: transform .18s ease;
+    }
+
+    body[data-theme="escuro"] .toggle-knob {
+      transform: translateX(18px);
+    }
+
     h1 {
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: 24px;
       line-height: 1.2;
     }
@@ -86,102 +121,57 @@
       color: #9ca3af;
     }
 
-    .top-row {
+    .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 12px;
       flex-wrap: wrap;
     }
 
-    .toggle-tema {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px;
-      border-radius: 999px;
-      background: linear-gradient(120deg, #4f46e5, #ec4899);
-      box-shadow: 0 12px 30px rgba(79,70,229,0.35);
-      cursor: pointer;
-    }
-
-    .toggle-tema span {
-      font-size: 12px;
-      color: #e5e7eb;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.2);
-    }
-
-    .toggle-switch {
-      position: relative;
-      width: 42px;
-      height: 22px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.8);
-      padding: 3px;
-    }
-
-    .toggle-knob {
-      width: 16px;
-      height: 16px;
-      background: #e5e7eb;
-      border-radius: 999px;
-      transition: transform .18s ease;
-    }
-
-    body[data-theme="claro"] .toggle-knob {
-      transform: translateX(0);
-    }
-
-    body[data-theme="escuro"] .toggle-knob {
-      transform: translateX(18px);
-    }
-
     .tabs {
-      margin-top: 18px;
-      background: rgba(15,23,42,0.06);
-      border-radius: 999px;
-      padding: 4px;
       display: inline-flex;
       gap: 6px;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.06);
     }
 
     body[data-theme="escuro"] .tabs {
-      background: rgba(15,23,42,0.85);
+      background: rgba(15,23,42,0.8);
     }
 
     .tab-btn {
       border: none;
       background: transparent;
+      padding: 7px 16px;
       border-radius: 999px;
-      padding: 7px 18px;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
       color: var(--texto-secundario);
-      transition: background .18s ease, color .18s ease, transform .1s ease;
     }
 
     .tab-btn.active {
-      background: linear-gradient(120deg, #4f46e5, #ec4899);
-      color: white;
-      box-shadow: 0 8px 20px rgba(79,70,229,0.4);
-      transform: translateY(-1px);
+      background: linear-gradient(120deg, var(--roxo), var(--rosa));
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(79,70,229,0.35);
     }
 
-    .card-main {
-      margin-top: 18px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 28px;
-      padding: 18px 16px 24px;
-      box-shadow: 0 20px 60px rgba(15,23,42,0.15);
-      border: 1px solid rgba(148,163,184,0.35);
+    .btn-pdf {
+      border: none;
+      background: transparent;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px dashed rgba(148,163,184,0.9);
+      color: var(--texto-secundario);
     }
 
-    body[data-theme="escuro"] .card-main {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: rgba(51,65,85,0.8);
+    body[data-theme="escuro"] .btn-pdf {
+      color: #e5e7eb;
+      border-color: rgba(148,163,184,0.7);
     }
 
     .hint-storage {
@@ -194,9 +184,23 @@
       color: #9ca3af;
     }
 
+    .card-main {
+      margin-top: 16px;
+      background: rgba(255,255,255,0.96);
+      border-radius: 24px;
+      padding: 18px 14px 22px;
+      box-shadow: 0 20px 50px rgba(15,23,42,0.16);
+      border: 1px solid rgba(148,163,184,0.35);
+    }
+
+    body[data-theme="escuro"] .card-main {
+      background: rgba(15,23,42,0.96);
+      border-color: rgba(51,65,85,0.9);
+    }
+
     .section {
-      margin-top: 18px;
       display: none;
+      margin-top: 8px;
     }
 
     .section.active {
@@ -208,8 +212,8 @@
       justify-content: space-between;
       align-items: baseline;
       gap: 8px;
-      margin-bottom: 6px;
       flex-wrap: wrap;
+      margin-bottom: 8px;
     }
 
     .sec-title-row h2 {
@@ -221,80 +225,71 @@
       color: var(--texto-secundario);
     }
 
-    .grid-visao {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 12px;
+    body[data-theme="escuro"] .sec-title-row small {
+      color: #9ca3af;
+    }
+
+    /* DASHBOARD QUADRADO */
+    .dashboard-grid {
       margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
     }
 
-    @media (max-width: 768px) {
-      .grid-visao {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .card-small {
+    .kpi-card {
       background: var(--bg-card-claro);
       border-radius: 16px;
       padding: 12px 12px 10px;
       border: 1px solid var(--borda-suave);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    body[data-theme="escuro"] .card-small {
+    body[data-theme="escuro"] .kpi-card {
       background: var(--bg-card-escuro);
-      border-color: rgba(55,65,81,0.8);
+      border-color: rgba(55,65,81,0.9);
     }
 
-    .card-small h3, .card-small h4 {
-      margin-bottom: 4px;
+    .kpi-card h4 {
       font-size: 13px;
+      margin: 0;
     }
 
-    .valor-ok {
-      color: var(--verde);
-      font-weight: 700;
+    .kpi-valor {
       font-size: 18px;
-    }
-
-    .valor-bad {
-      color: var(--vermelho);
       font-weight: 700;
-      font-size: 18px;
     }
 
-    .valor-neutro {
-      color: var(--texto-principal);
-      font-weight: 700;
-      font-size: 18px;
-    }
+    .kpi-valor.verde { color: var(--verde); }
+    .kpi-valor.vermelho { color: var(--vermelho); }
+    .kpi-valor.neutro { color: var(--texto-principal); }
+    body[data-theme="escuro"] .kpi-valor.neutro { color: #e5e7eb; }
 
-    body[data-theme="escuro"] .valor-neutro {
-      color: #e5e7eb;
-    }
-
-    .texto-menor {
+    .kpi-sub {
       font-size: 11px;
       color: var(--texto-secundario);
     }
 
-    body[data-theme="escuro"] .texto-menor {
+    body[data-theme="escuro"] .kpi-sub {
       color: #9ca3af;
     }
 
+    /* LINHA DO TEMPO */
     .linha-tempo {
-      margin-top: 14px;
+      margin-top: 16px;
       background: var(--bg-card-claro);
       border-radius: 16px;
       padding: 10px;
       border: 1px solid var(--borda-suave);
-      max-height: 240px;
+      max-height: 230px;
       overflow-y: auto;
     }
 
     body[data-theme="escuro"] .linha-tempo {
       background: var(--bg-card-escuro);
-      border-color: rgba(55,65,81,0.8);
+      border-color: rgba(55,65,81,0.9);
     }
 
     .linha-item {
@@ -302,13 +297,13 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      padding: 7px 6px;
+      padding: 6px 6px;
       border-radius: 10px;
       font-size: 12px;
     }
 
     .linha-item:nth-child(odd) {
-      background: rgba(148,163,184,0.09);
+      background: rgba(148,163,184,0.12);
     }
     body[data-theme="escuro"] .linha-item:nth-child(odd) {
       background: rgba(31,41,55,0.9);
@@ -373,78 +368,50 @@
       border-color: rgba(34,197,94,.5);
     }
 
-    .btn-pdf {
-      border: none;
-      background: transparent;
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: 12px;
-      cursor: pointer;
-      border: 1px dashed rgba(148,163,184,0.8);
-      color: var(--texto-secundario);
-    }
-
-    body[data-theme="escuro"] .btn-pdf {
-      color: #e5e7eb;
-      border-color: rgba(148,163,184,0.6);
-    }
-
-    .btn-pdf:hover {
-      border-style: solid;
-    }
-
-    .calendar-shell {
-      margin-top: 10px;
-      background: var(--bg-card-claro);
+    /* CALENDÁRIO */
+    .calendario-wrap {
+      margin-top: 12px;
       border-radius: 18px;
-      padding: 12px;
+      background: var(--bg-card-claro);
       border: 1px solid var(--borda-suave);
+      padding: 12px;
     }
 
-    body[data-theme="escuro"] .calendar-shell {
+    body[data-theme="escuro"] .calendario-wrap {
       background: var(--bg-card-escuro);
-      border-color: rgba(55,65,81,0.8);
+      border-color: rgba(55,65,81,0.7);
     }
 
-    .month-header {
+    .cal-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
     }
 
-    .month-header h3 {
+    .cal-nav button {
+      background: transparent;
+      border: none;
+      color: var(--texto-secundario);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 10px;
+    }
+
+    .cal-nav span {
+      font-weight: 600;
       font-size: 16px;
     }
 
-    .month-nav-btn {
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      background: transparent;
-      width: 26px;
-      height: 26px;
-      font-size: 15px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    body[data-theme="escuro"] .month-nav-btn {
-      border-color: rgba(148,163,184,0.8);
-      color: #e5e7eb;
-      background: rgba(15,23,42,0.6);
-    }
-
-    .calendar-grid {
+    .cal-grid {
       display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 4px;
-      font-size: 11px;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
     }
 
     .cal-header {
       text-align: center;
+      font-size: 11px;
       font-weight: 600;
       color: var(--texto-secundario);
       margin-bottom: 4px;
@@ -454,234 +421,168 @@
       color: #9ca3af;
     }
 
-    .cal-cell {
-      min-height: 52px;
-      border-radius: 12px;
-      padding: 3px 3px 4px;
-      background: rgba(148,163,184,0.15);
-      position: relative;
-      overflow: hidden;
-    }
-
-    body[data-theme="escuro"] .cal-cell {
-      background: rgba(15,23,42,0.85);
-      border: 1px solid rgba(55,65,81,0.9);
-    }
-
-    .cal-day-num {
-      font-size: 10px;
-      opacity: .7;
-      margin-bottom: 2px;
-    }
-
-    .cal-badges {
+    .dia {
+      background: rgba(148,163,184,0.16);
+      border-radius: 10px;
+      padding: 6px;
+      min-height: 62px;
+      font-size: 12px;
+      cursor: default;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      justify-content: flex-start;
+      gap: 4px;
     }
 
-    .cal-badge {
+    body[data-theme="escuro"] .dia {
+      background: rgba(51,65,85,0.6);
+    }
+
+    .dia-num {
+      font-weight: 600;
+      margin-bottom: 2px;
+      font-size: 11px;
+    }
+
+    .evento-chip {
+      background: linear-gradient(120deg, var(--roxo), var(--rosa));
+      color: #fff;
+      padding: 2px 6px;
+      font-size: 10px;
       border-radius: 999px;
-      padding: 2px 4px;
-      font-size: 9px;
-      background: #4f46e5;
-      color: white;
+      display: inline-block;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .form-shell {
-      margin-top: 14px;
-      background: var(--bg-card-claro);
-      border-radius: 18px;
-      padding: 12px;
-      border: 1px solid var(--borda-suave);
-    }
-
-    body[data-theme="escuro"] .form-shell {
-      background: var(--bg-card-escuro);
-      border-color: rgba(55,65,81,0.8);
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 10px;
-    }
-
-    @media (max-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      font-size: 12px;
-    }
-
-    .field label {
-      font-size: 11px;
-      color: var(--texto-secundario);
-    }
-
-    body[data-theme="escuro"] .field label {
-      color: #9ca3af;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      border-radius: 10px;
-      border: 1px solid rgba(148,163,184,0.8);
-      padding: 6px 8px;
-      font-size: 13px;
-      background: rgba(255,255,255,0.95);
-    }
-
-    body[data-theme="escuro"] .field input,
-    body[data-theme="escuro"] .field select,
-    body[data-theme="escuro"] .field textarea {
-      background: rgba(15,23,42,0.9);
-      color: #e5e7eb;
-      border-color: rgba(75,85,99,0.9);
-    }
-
-    .field textarea {
-      resize: vertical;
-      min-height: 40px;
-    }
-
-    .btn-primary {
-      margin-top: 8px;
       border: none;
-      border-radius: 999px;
-      padding: 7px 16px;
-      font-size: 13px;
       cursor: pointer;
-      background: linear-gradient(120deg, #4f46e5, #ec4899);
-      color: white;
-      box-shadow: 0 12px 30px rgba(79,70,229,0.35);
     }
 
-    .resumo-dividas-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 768px) {
-      .resumo-dividas-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .card-resumo-divida {
+    /* FORMULÁRIOS / CAMPOS */
+    .form-card {
+      margin-top: 16px;
       background: var(--bg-card-claro);
-      border-radius: 14px;
-      padding: 8px 10px;
       border: 1px solid var(--borda-suave);
-      font-size: 12px;
+      border-radius: 16px;
+      padding: 14px;
     }
 
-    body[data-theme="escuro"] .card-resumo-divida {
+    body[data-theme="escuro"] .form-card {
       background: var(--bg-card-escuro);
-      border-color: rgba(55,65,81,0.8);
+      border-color: rgba(55,65,81,0.7);
     }
 
-    .card-resumo-divida h4 {
-      font-size: 12px;
-      margin-bottom: 3px;
-    }
-
-    .card-resumo-divida .valor {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .lista-dividas {
-      margin-top: 12px;
+    .form-row {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .divida-card {
-      padding: 8px 10px;
-      border-radius: 14px;
-      background: var(--bg-card-claro);
-      border: 1px solid var(--borda-suave);
+    .form-row label {
       font-size: 12px;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-    }
-
-    body[data-theme="escuro"] .divida-card {
-      background: var(--bg-card-escuro);
-      border-color: rgba(55,65,81,0.8);
-    }
-
-    .divida-main strong {
-      display: block;
-      font-size: 13px;
-    }
-
-    .divida-main span {
-      display: block;
-      font-size: 11px;
       color: var(--texto-secundario);
+      margin-bottom: 4px;
     }
 
-    body[data-theme="escuro"] .divida-main span {
+    body[data-theme="escuro"] .form-row label {
       color: #9ca3af;
     }
 
-    .divida-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      align-items: flex-end;
+    .form-row input,
+    .form-row textarea,
+    .form-row select {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--borda-suave);
+      background: var(--bg-card-claro);
+      color: inherit;
+      font-size: 13px;
     }
 
-    .btn-status {
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      background: transparent;
-      padding: 4px 8px;
-      font-size: 11px;
+    body[data-theme="escuro"] .form-row input,
+    body[data-theme="escuro"] .form-row textarea,
+    body[data-theme="escuro"] .form-row select {
+      background: var(--bg-card-escuro);
+      border-color: rgba(55,65,81,0.7);
+    }
+
+    .form-row textarea {
+      resize: vertical;
+      min-height: 48px;
+    }
+
+    .btn-salvar {
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      background: linear-gradient(120deg, var(--rosa), var(--roxo));
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
+      margin-top: 6px;
+      width: 100%;
     }
 
-    body[data-theme="escuro"] .btn-status {
-      color: #e5e7eb;
-      border-color: rgba(148,163,184,0.7);
+    /* LISTA NA ABA DÍVIDAS */
+    .lista-dividas {
+      margin-top: 6px;
+      background: var(--bg-card-claro);
+      border: 1px solid var(--borda-suave);
+      border-radius: 16px;
+      padding: 10px;
+      max-height: 270px;
+      overflow-y: auto;
+    }
+
+    body[data-theme="escuro"] .lista-dividas {
+      background: var(--bg-card-escuro);
+      border-color: rgba(55,65,81,0.7);
+    }
+
+    .divida-item {
+      padding: 8px;
+      border-radius: 12px;
+      background: rgba(148,163,184,0.15);
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    body[data-theme="escuro"] .divida-item {
+      background: rgba(51,65,85,0.6);
+    }
+
+    .divida-item strong {
+      display:block;
+      font-size:13px;
+      margin-bottom:3px;
     }
   </style>
 </head>
 <body data-theme="claro">
   <div class="app-shell">
-    <div class="badge-top">
-      <span class="dot-ok"></span>
-      <span>PAINEL FINANCEIRO • PRESTES</span>
+    <div class="header-row">
+      <div class="badge-top">
+        <span class="dot-ok"></span>
+        <span>painel financeiro • prestes</span>
+      </div>
+      <div class="toggle-tema-wrap" onclick="toggleTema()">
+        <div class="toggle-tema">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
     </div>
 
     <h1>Eventos, dívidas e parcelas em modo profissional</h1>
     <p class="subtitulo">
-      Uma tela para cada lado da sua mente: dashboard, calendário de eventos e matriz de dívidas. Tudo salvo no seu navegador.
+      Uma tela pra cada lado da sua mente: dashboard, calendário de eventos e matriz de dívidas. Tudo salvo no seu navegador.
     </p>
 
-    <div class="top-row">
-      <div class="toggle-tema" onclick="toggleTema()">
-        <span id="label-tema">Modo claro ativo</span>
-        <div class="toggle-switch">
-          <div class="toggle-knob"></div>
-        </div>
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-dashboard" onclick="mudarAba('dashboard')">Dashboard</button>
+        <button class="tab-btn" id="tab-eventos" onclick="mudarAba('eventos')">Eventos</button>
+        <button class="tab-btn" id="tab-dividas" onclick="mudarAba('dividas')">Dívidas</button>
       </div>
 
       <button class="btn-pdf" onclick="exportarPDFCompleto()">
@@ -690,14 +591,8 @@
     </div>
 
     <p class="hint-storage">
-      Dados guardados no seu navegador (localStorage).
+      Dados salvos apenas no seu navegador (localStorage).
     </p>
-
-    <div class="tabs">
-      <button class="tab-btn active" id="tab-dashboard" onclick="mudarAba('dashboard')">Dashboard</button>
-      <button class="tab-btn" id="tab-eventos" onclick="mudarAba('eventos')">Eventos</button>
-      <button class="tab-btn" id="tab-dividas" onclick="mudarAba('dividas')">Dívidas</button>
-    </div>
 
     <div class="card-main">
       <!-- DASHBOARD -->
@@ -705,212 +600,177 @@
         <div class="sec-title-row">
           <div>
             <h2>Visão geral</h2>
-            <small>Eventos fechados, dívidas e fluxo confirmado.</small>
+            <small>Receitas de eventos, dívidas do mês e fluxo líquido.</small>
           </div>
         </div>
 
-        <div class="grid-visao">
-          <div class="card-small">
+        <div class="dashboard-grid">
+          <div class="kpi-card">
             <h4>Receita confirmada (eventos pagos)</h4>
-            <p id="dash-receita-confirmada" class="valor-ok">R$ 0,00</p>
-            <p id="dash-total-eventos" class="texto-menor">Total em eventos: R$ 0,00</p>
+            <div id="dash-receita-confirmada" class="kpi-valor verde">R$ 0,00</div>
+            <div id="dash-total-eventos" class="kpi-sub">Total em eventos: R$ 0,00</div>
           </div>
 
-          <div class="card-small">
+          <div class="kpi-card">
             <h4>Dívidas do mês</h4>
-            <p id="dash-dividas-mes-total" class="valor-bad">R$ 0,00</p>
-            <p id="dash-dividas-mes-quitadas" class="texto-menor">
-              Quitadas neste mês: R$ 0,00
-            </p>
-            <p id="dash-dividas-geral-total" class="texto-menor">
-              Total geral (todas dívidas): R$ 0,00
-            </p>
+            <div id="dash-dividas-mes-total" class="kpi-valor vermelho">R$ 0,00</div>
+            <div id="dash-dividas-mes-quitadas" class="kpi-sub">Quitadas neste mês: R$ 0,00</div>
+            <div id="dash-dividas-geral-total" class="kpi-sub">Total geral (todas dívidas): R$ 0,00</div>
           </div>
 
-          <div class="card-small">
+          <div class="kpi-card">
             <h4>Eventos com pagamento parcial</h4>
-            <p id="dash-eventos-parciais" class="valor-neutro">0 evento(s)</p>
-            <p id="dash-eventos-parciais-valor" class="texto-menor">Valor potencial: R$ 0,00</p>
+            <div id="dash-eventos-parciais" class="kpi-valor neutro">0 evento(s)</div>
+            <div id="dash-eventos-parciais-valor" class="kpi-sub">Valor potencial: R$ 0,00</div>
           </div>
 
-          <div class="card-small">
+          <div class="kpi-card">
             <h4>Dívidas em pagamento parcial</h4>
-            <p id="dash-dividas-parciais" class="valor-neutro">0 conta(s)</p>
-            <p id="dash-dividas-parciais-valor" class="texto-menor">Valor deste mês: R$ 0,00</p>
+            <div id="dash-dividas-parciais" class="kpi-valor neutro">0 conta(s)</div>
+            <div id="dash-dividas-parciais-valor" class="kpi-sub">Valor deste mês: R$ 0,00</div>
           </div>
 
-          <div class="card-small">
+          <div class="kpi-card">
             <h4>Fluxo líquido</h4>
-            <p id="dash-fluxo-liquido" class="valor-ok">R$ 0,00</p>
-            <p class="texto-menor">Receita confirmada – dívidas quitadas no mês.</p>
+            <div id="dash-fluxo-liquido" class="kpi-valor verde">R$ 0,00</div>
+            <div class="kpi-sub">Receita confirmada – dívidas quitadas do mês.</div>
           </div>
         </div>
 
         <div class="linha-tempo">
           <div class="sec-title-row">
-            <h3>Linha do tempo rápida</h3>
+            <h3>Linha do tempo</h3>
             <small>Últimos eventos e dívidas cadastrados.</small>
           </div>
           <div id="linha-tempo-lista"></div>
         </div>
       </section>
-            <!-- EVENTOS -->
+
+      <!-- EVENTOS -->
       <section id="sec-eventos" class="section">
         <div class="sec-title-row">
-          <div>
-            <h2>Eventos</h2>
-            <small>Calendário mensal com eventos, empresas e status de pagamento.</small>
-          </div>
+          <h2>Eventos</h2>
+          <small>Calendário + registro de eventos</small>
         </div>
 
-        <div class="calendar-shell">
-          <div class="month-header">
-            <div>
-              <h3 id="titulo-mes-eventos">Mês de referência</h3>
-              <small class="texto-menor">
-                Toque no chip do evento para girar o status: pendente → parcial → pago.
-              </small>
-            </div>
-            <div>
-              <button class="month-nav-btn" onclick="mudarMesEventos(-1)">‹</button>
-              <button class="month-nav-btn" onclick="mudarMesEventos(1)">›</button>
-            </div>
+        <div class="calendario-wrap">
+          <div class="cal-nav">
+            <button onclick="mesEventosAnterior()">&larr;</button>
+            <span id="cal-mes-label">--/----</span>
+            <button onclick="mesEventosProximo()">&rarr;</button>
           </div>
 
-          <div class="calendar-grid" id="grid-eventos"></div>
+          <div id="cal-grid" class="cal-grid"></div>
         </div>
 
-        <div class="form-shell">
+        <div class="form-card">
           <div class="sec-title-row">
             <h3>Novo evento</h3>
-            <small>Campos básicos: evento, empresa, valor, forma, observação.</small>
           </div>
 
-          <div class="form-grid">
-            <div class="field">
-              <label for="ev-nome">Nome / tipo do evento</label>
-              <input id="ev-nome" type="text" placeholder="Pré evento, casamento, formatura..." />
-            </div>
-
-            <div class="field">
-              <label for="ev-empresa">Empresa / cliente</label>
-              <input id="ev-empresa" type="text" placeholder="Euphoria, Colégio X..." />
-            </div>
-
-            <div class="field">
-              <label for="ev-data">Data</label>
-              <input id="ev-data" type="date" />
-            </div>
-
-            <div class="field">
-              <label for="ev-valor">Valor (R$)</label>
-              <input id="ev-valor" type="number" step="0.01" min="0" placeholder="350, 1200..." />
-            </div>
-
-            <div class="field">
-              <label for="ev-forma">Forma de pagamento</label>
-              <input id="ev-forma" type="text" placeholder="Pix, cartão, boleto..." />
-            </div>
-
-            <div class="field">
-              <label for="ev-obs">Observação</label>
-              <textarea id="ev-obs" placeholder="Pré evento do casamento da fulana, combinado 30% agora..."></textarea>
-            </div>
+          <div class="form-row">
+            <label>Nome do evento / cliente</label>
+            <input id="ev-nome" placeholder="Formatura, ensaio, aniversário..." />
           </div>
 
-          <button class="btn-primary" onclick="salvarEvento()">Salvar evento</button>
+          <div class="form-row">
+            <label>Empresa</label>
+            <input id="ev-empresa" placeholder="Empresa, local ou referência" />
+          </div>
+
+          <div class="form-row">
+            <label>Valor</label>
+            <input id="ev-valor" type="number" placeholder="400, 800, 1500..." />
+          </div>
+
+          <div class="form-row">
+            <label>Status</label>
+            <select id="ev-status">
+              <option value="pendente">Pendente</option>
+              <option value="parcial">Parcial</option>
+              <option value="pago">Pago</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label>Data do evento</label>
+            <input id="ev-data" type="date" />
+          </div>
+
+          <div class="form-row">
+            <label>Observações</label>
+            <textarea id="ev-obs" rows="2" placeholder="Horário, local, detalhes..."></textarea>
+          </div>
+
+          <button class="btn-salvar" onclick="salvarEvento()">Salvar evento</button>
         </div>
       </section>
 
       <!-- DÍVIDAS -->
       <section id="sec-dividas" class="section">
         <div class="sec-title-row">
-          <div>
-            <h2>Dívidas / contas</h2>
-            <small>Conta, valor, pago parcial e parcelas distribuídas por mês.</small>
+          <h2>Dívidas & Parcelados</h2>
+          <small>Resumo do mês + controle geral</small>
+        </div>
+
+        <div class="dashboard-grid" style="margin-bottom:14px;">
+          <div class="kpi-card">
+            <h4>Total do mês (parcelas do mês)</h4>
+            <div id="dividas-total-mes" class="kpi-valor vermelho">R$ 0,00</div>
+          </div>
+
+          <div class="kpi-card">
+            <h4>Quitado neste mês</h4>
+            <div id="dividas-quitado-mes" class="kpi-valor verde">R$ 0,00</div>
+          </div>
+
+          <div class="kpi-card">
+            <h4>Total geral (todas dívidas)</h4>
+            <div id="dividas-total-geral" class="kpi-valor neutro">R$ 0,00</div>
           </div>
         </div>
 
-        <div class="calendar-shell">
-          <div class="month-header">
-            <div>
-              <h3 id="titulo-mes-dividas">Mês de referência</h3>
-              <small class="texto-menor">
-                Cada parcela já cai no mês correto. Clique no status pra alternar pendente / parcial / pago.
-              </small>
-            </div>
-            <div>
-              <button class="month-nav-btn" onclick="mudarMesDividas(-1)">‹</button>
-              <button class="month-nav-btn" onclick="mudarMesDividas(1)">›</button>
-            </div>
-          </div>
+        <div class="lista-dividas" id="lista-dividas"></div>
 
-          <div class="resumo-dividas-grid">
-            <div class="card-resumo-divida">
-              <h4>Total deste mês (todas parcelas)</h4>
-              <p id="resumo-dividas-total-mes" class="valor valor-bad">R$ 0,00</p>
-            </div>
-            <div class="card-resumo-divida">
-              <h4>Já pago neste mês</h4>
-              <p id="resumo-dividas-quitado-mes" class="valor valor-ok">R$ 0,00</p>
-            </div>
-            <div class="card-resumo-divida">
-              <h4>Em aberto neste mês</h4>
-              <p id="resumo-dividas-aberto-mes" class="valor valor-neutro">R$ 0,00</p>
-            </div>
-          </div>
-
-          <div class="lista-dividas" id="lista-dividas-mes"></div>
-        </div>
-
-        <div class="form-shell">
+        <div class="form-card" style="margin-top:16px;">
           <div class="sec-title-row">
-            <h3>Nova dívida / conta parcelada</h3>
-            <small>
-              O valor mensal é calculado automaticamente: valor total ÷ número de parcelas.
-            </small>
+            <h3>Nova dívida</h3>
           </div>
 
-          <div class="form-grid">
-            <div class="field">
-              <label for="dv-mes-inicial">Mês inicial</label>
-              <input id="dv-mes-inicial" type="month" />
-            </div>
-
-            <div class="field">
-              <label for="dv-conta">Conta / descrição</label>
-              <input id="dv-conta" type="text" placeholder="Cartão Nubank, câmera, viagem..." />
-            </div>
-
-            <div class="field">
-              <label for="dv-valor-total">Valor total (R$)</label>
-              <input id="dv-valor-total" type="number" step="0.01" min="0" placeholder="5500, 1200, 230..." />
-            </div>
-
-            <div class="field">
-              <label for="dv-parcelas">Nº de parcelas</label>
-              <input id="dv-parcelas" type="number" min="1" value="1" />
-            </div>
-
-            <div class="field">
-              <label for="dv-obs">Observação</label>
-              <textarea id="dv-obs" placeholder="Compra da R8, peças naro, viagem, etc."></textarea>
-            </div>
+          <div class="form-row">
+            <label>Conta / Descrição</label>
+            <input id="dv-conta" placeholder="Cartão, câmera, luz..." />
           </div>
 
-          <button class="btn-primary" onclick="salvarDivida()">Salvar dívida / parcelas</button>
+          <div class="form-row">
+            <label>Valor total</label>
+            <input id="dv-valor-total" type="number" placeholder="1200, 3000..." />
+          </div>
+
+          <div class="form-row">
+            <label>Nº de parcelas</label>
+            <input id="dv-parcelas" type="number" value="1" />
+          </div>
+
+          <div class="form-row">
+            <label>Mês inicial</label>
+            <input id="dv-mes-ref" type="month" />
+          </div>
+
+          <div class="form-row">
+            <label>Observações</label>
+            <textarea id="dv-obs" rows="2"></textarea>
+          </div>
+
+          <button class="btn-salvar" onclick="salvarDivida()">Salvar dívida</button>
         </div>
       </section>
-    </div> <!-- card-main -->
-  </div> <!-- app-shell -->
+    </div><!-- card-main -->
+  </div><!-- app-shell -->
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    // =========================
-    // ESTADO & LOCALSTORAGE
-    // =========================
-
-    const STORAGE_KEY = "painelFinanceiroPrestes-v3";
+    const STORAGE_KEY = "painelFinanceiroPrestes-v4";
 
     const hoje = new Date();
     function criaMesObj(baseDate) {
@@ -923,61 +783,9 @@
       mesEventos: criaMesObj(hoje),
       mesDividas: criaMesObj(hoje),
       eventos: [],
-      dividas: [] // cada parcela é um item
+      dividas: [] // cada parcela como item separado
     };
 
-    function carregarState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const salvo = JSON.parse(raw);
-          state = { ...state, ...salvo };
-        }
-      } catch (e) {
-        console.error("Erro ao carregar state", e);
-      }
-      aplicarTema();
-    }
-
-    function salvarState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-
-    function aplicarTema() {
-      document.body.setAttribute("data-theme", state.tema || "claro");
-      const label = document.getElementById("label-tema");
-      if (label) {
-        label.textContent =
-          state.tema === "claro" ? "Modo claro ativo" : "Modo escuro ativo";
-      }
-    }
-
-    function toggleTema() {
-      state.tema = state.tema === "claro" ? "escuro" : "claro";
-      aplicarTema();
-      salvarState();
-    }
-
-    function mudarAba(aba) {
-      state.aba = aba;
-      document
-        .querySelectorAll(".section")
-        .forEach((s) => s.classList.remove("active"));
-      document
-        .querySelectorAll(".tab-btn")
-        .forEach((b) => b.classList.remove("active"));
-
-      const sec = document.getElementById("sec-" + aba);
-      const tab = document.getElementById("tab-" + aba);
-      if (sec) sec.classList.add("active");
-      if (tab) tab.classList.add("active");
-
-      if (aba === "dashboard") renderDashboard();
-      if (aba === "eventos") renderEventos();
-      if (aba === "dividas") renderDividasMesCompleto();
-    }
-
-    // Helpers de data / mês
     const MESES = [
       "janeiro","fevereiro","março","abril","maio","junho",
       "julho","agosto","setembro","outubro","novembro","dezembro"
@@ -1004,64 +812,94 @@
       return "R$ " + Number(n || 0).toFixed(2);
     }
 
-    // parse seguro pra não dar problema de fuso
     function parseDateStr(str) {
       if (!str || typeof str !== "string" || str.length < 10) return null;
       const [ano, mes, dia] = str.split("-").map(Number);
       if (!ano || !mes || !dia) return null;
       return { ano, mes: mes - 1, dia };
     }
-        // =====================
-    // EVENTOS
-    // =====================
 
+    function carregarState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const salvo = JSON.parse(raw);
+          state = { ...state, ...salvo };
+        }
+      } catch (e) {
+        console.error("Erro ao carregar state", e);
+      }
+      aplicarTema();
+    }
+
+    function salvarState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function aplicarTema() {
+      document.body.setAttribute("data-theme", state.tema || "claro");
+    }
+
+    function toggleTema() {
+      state.tema = state.tema === "claro" ? "escuro" : "claro";
+      aplicarTema();
+      salvarState();
+    }
+
+    function mudarAba(aba) {
+      state.aba = aba;
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+
+      document.getElementById("sec-" + aba).classList.add("active");
+      document.getElementById("tab-" + aba).classList.add("active");
+
+      if (aba === "dashboard") renderDashboard();
+      if (aba === "eventos") renderEventos();
+      if (aba === "dividas") renderDividasMesCompleto();
+    }
+
+    // EVENTOS
     function salvarEvento() {
       const nome = document.getElementById("ev-nome").value.trim();
       const empresa = document.getElementById("ev-empresa").value.trim();
-      const data = document.getElementById("ev-data").value;
       const valor = parseFloat(document.getElementById("ev-valor").value || "0");
-      const forma = document.getElementById("ev-forma").value.trim();
+      const status = document.getElementById("ev-status").value;
+      const data = document.getElementById("ev-data").value;
       const obs = document.getElementById("ev-obs").value.trim();
 
-      if (!data || !nome) {
-        alert("Preciso pelo menos do nome do evento e da data.");
+      if (!nome || !data) {
+        alert("Preciso de pelo menos nome do evento e data.");
         return;
       }
 
-      const novo = {
+      state.eventos.push({
         id: Date.now(),
         nome,
         empresa,
-        data, // yyyy-mm-dd direto
         valor,
-        forma,
-        status: "pendente",
+        status,
+        data,
         obs
-      };
+      });
 
-      state.eventos.push(novo);
       salvarState();
 
       document.getElementById("ev-nome").value = "";
       document.getElementById("ev-empresa").value = "";
-      document.getElementById("ev-data").value = "";
       document.getElementById("ev-valor").value = "";
-      document.getElementById("ev-forma").value = "";
+      document.getElementById("ev-status").value = "pendente";
+      document.getElementById("ev-data").value = "";
       document.getElementById("ev-obs").value = "";
 
       renderEventos();
       renderDashboard();
     }
 
-    function mudarMesEventos(delta) {
-      state.mesEventos = adicionarMes(state.mesEventos, delta);
-      renderEventos();
-    }
-
     function eventosDoMes(mesObj) {
       const mes = mesObj.mes;
       const ano = mesObj.ano;
-      return state.eventos.filter((ev) => {
+      return state.eventos.filter(ev => {
         const parsed = parseDateStr(ev.data);
         if (!parsed) return false;
         return parsed.mes === mes && parsed.ano === ano;
@@ -1069,7 +907,7 @@
     }
 
     function girarStatusEvento(id) {
-      const ev = state.eventos.find((e) => e.id === id);
+      const ev = state.eventos.find(e => e.id === id);
       if (!ev) return;
       if (ev.status === "pendente") ev.status = "parcial";
       else if (ev.status === "parcial") ev.status = "pago";
@@ -1079,16 +917,26 @@
       renderDashboard();
     }
 
-    function renderEventos() {
-      const titulo = document.getElementById("titulo-mes-eventos");
-      if (titulo) titulo.textContent = mesObjToTitulo(state.mesEventos);
+    function mesEventosAnterior() {
+      state.mesEventos = adicionarMes(state.mesEventos, -1);
+      renderEventos();
+    }
 
-      const grid = document.getElementById("grid-eventos");
+    function mesEventosProximo() {
+      state.mesEventos = adicionarMes(state.mesEventos, 1);
+      renderEventos();
+    }
+
+    function renderEventos() {
+      const label = document.getElementById("cal-mes-label");
+      if (label) label.textContent = mesObjToTitulo(state.mesEventos);
+
+      const grid = document.getElementById("cal-grid");
       if (!grid) return;
       grid.innerHTML = "";
 
       const diasSemana = ["D", "S", "T", "Q", "Q", "S", "S"];
-      diasSemana.forEach((d) => {
+      diasSemana.forEach(d => {
         const h = document.createElement("div");
         h.className = "cal-header";
         h.textContent = d;
@@ -1097,11 +945,7 @@
 
       const primeiroDia = new Date(state.mesEventos.ano, state.mesEventos.mes, 1);
       const offset = primeiroDia.getDay();
-      const diasNoMes = new Date(
-        state.mesEventos.ano,
-        state.mesEventos.mes + 1,
-        0
-      ).getDate();
+      const diasNoMes = new Date(state.mesEventos.ano, state.mesEventos.mes + 1, 0).getDate();
 
       const eventosMes = eventosDoMes(state.mesEventos);
 
@@ -1112,56 +956,46 @@
 
       for (let dia = 1; dia <= diasNoMes; dia++) {
         const cell = document.createElement("div");
-        cell.className = "cal-cell";
+        cell.className = "dia";
 
         const num = document.createElement("div");
-        num.className = "cal-day-num";
+        num.className = "dia-num";
         num.textContent = dia;
         cell.appendChild(num);
-
-        const badgesBox = document.createElement("div");
-        badgesBox.className = "cal-badges";
 
         const diaStr = String(dia).padStart(2, "0");
         const mesStr = String(state.mesEventos.mes + 1).padStart(2, "0");
         const keyDia = `${state.mesEventos.ano}-${mesStr}-${diaStr}`;
 
-        const eventosDia = eventosMes.filter((ev) => ev.data === keyDia);
-        eventosDia.forEach((ev) => {
+        const eventosDia = eventosMes.filter(ev => ev.data === keyDia);
+        eventosDia.forEach(ev => {
           const b = document.createElement("button");
-          b.className = "cal-badge";
-          b.textContent = (ev.nome || "Ev").slice(0, 3) + "...";
-          b.title =
-            `${ev.nome || ""} • ${ev.empresa || ""} • ${formatarMoeda(ev.valor)} • ${ev.status}`;
+          b.className = "evento-chip";
+          b.textContent = (ev.nome || "Ev").slice(0, 8);
+          b.title = `${ev.nome} • ${ev.empresa || ""} • ${formatarMoeda(ev.valor)} • ${ev.status}`;
           b.onclick = () => girarStatusEvento(ev.id);
-          badgesBox.appendChild(b);
+          cell.appendChild(b);
         });
 
-        cell.appendChild(badgesBox);
         grid.appendChild(cell);
       }
     }
 
-    // =====================
-    // DÍVIDAS / PARCELAS
-    // =====================
-
+    // DÍVIDAS
     function salvarDivida() {
-      const mesInicial = document.getElementById("dv-mes-inicial").value;
       const conta = document.getElementById("dv-conta").value.trim();
-      const valorTotal = parseFloat(
-        document.getElementById("dv-valor-total").value || "0"
-      );
+      const valorTotal = parseFloat(document.getElementById("dv-valor-total").value || "0");
       let parcelas = parseInt(document.getElementById("dv-parcelas").value || "1");
+      const mesRef = document.getElementById("dv-mes-ref").value;
       const obs = document.getElementById("dv-obs").value.trim();
 
-      if (!mesInicial || !conta || !valorTotal) {
-        alert("Preciso de mês inicial, conta e valor total.");
+      if (!conta || !valorTotal || !mesRef) {
+        alert("Preciso de conta, valor total e mês inicial.");
         return;
       }
       if (parcelas < 1) parcelas = 1;
 
-      const [anoStr, mesStr] = mesInicial.split("-");
+      const [anoStr, mesStr] = mesRef.split("-");
       let ano = parseInt(anoStr);
       let mes = parseInt(mesStr) - 1;
 
@@ -1169,29 +1003,27 @@
 
       for (let i = 0; i < parcelas; i++) {
         const m = adicionarMes({ ano, mes }, i);
-        const mesRefKey = mesKeyFromObj(m);
+        const mesReferencia = mesKeyFromObj(m);
 
-        const parcelaItem = {
+        state.dividas.push({
           id: Date.now() + i,
           conta,
-          obs,
+          valorTotal,
           parcelas,
           parcelaIndex: i + 1,
-          valorTotal,
           valorMensal,
-          mesReferencia: mesRefKey,
+          mesReferencia,
           status: "pendente",
-        };
-
-        state.dividas.push(parcelaItem);
+          obs
+        });
       }
 
       salvarState();
 
-      document.getElementById("dv-mes-inicial").value = "";
       document.getElementById("dv-conta").value = "";
       document.getElementById("dv-valor-total").value = "";
       document.getElementById("dv-parcelas").value = "1";
+      document.getElementById("dv-mes-ref").value = "";
       document.getElementById("dv-obs").value = "";
 
       renderDividasMesCompleto();
@@ -1200,11 +1032,11 @@
 
     function dividasDoMes(mesObj) {
       const key = mesKeyFromObj(mesObj);
-      return state.dividas.filter((d) => d.mesReferencia === key);
+      return state.dividas.filter(d => d.mesReferencia === key);
     }
 
     function girarStatusDivida(id) {
-      const d = state.dividas.find((x) => x.id === id);
+      const d = state.dividas.find(x => x.id === id);
       if (!d) return;
       if (d.status === "pendente") d.status = "parcial";
       else if (d.status === "parcial") d.status = "pago";
@@ -1214,21 +1046,13 @@
       renderDashboard();
     }
 
-    function mudarMesDividas(delta) {
-      state.mesDividas = adicionarMes(state.mesDividas, delta);
-      renderDividasMesCompleto();
-      renderDashboard();
-    }
-
     function calcularTotaisDividasMes(mesObj) {
-      const key = mesKeyFromObj(mesObj);
-      const divMes = state.dividas.filter((d) => d.mesReferencia === key);
-
+      const divMes = dividasDoMes(mesObj);
       let totalMes = 0;
       let totalQuitado = 0;
       let totalParcial = 0;
 
-      divMes.forEach((d) => {
+      divMes.forEach(d => {
         const v = d.valorMensal || d.valorTotal;
         totalMes += v;
         if (d.status === "pago") totalQuitado += v;
@@ -1238,7 +1062,6 @@
       return { totalMes, totalQuitado, totalParcial };
     }
 
-    // total geral = soma de TODAS as parcelas (fixas + parceladas)
     function calcularTotalDividasGeral() {
       return state.dividas.reduce(
         (acc, d) => acc + (d.valorMensal || d.valorTotal || 0),
@@ -1247,10 +1070,10 @@
     }
 
     function renderDividasMesCompleto() {
-      const titulo = document.getElementById("titulo-mes-dividas");
-      if (titulo) titulo.textContent = mesObjToTitulo(state.mesDividas);
+      const tituloMes = mesObjToTitulo(state.mesDividas);
+      // se quiser mostrar em algum lugar, dá pra usar título
 
-      const lista = document.getElementById("lista-dividas-mes");
+      const lista = document.getElementById("lista-dividas");
       if (!lista) return;
       lista.innerHTML = "";
 
@@ -1258,47 +1081,38 @@
 
       if (divMes.length === 0) {
         const vazio = document.createElement("p");
-        vazio.className = "texto-menor";
-        vazio.textContent = "Nenhuma dívida cadastrada pra este mês.";
+        vazio.className = "kpi-sub";
+        vazio.textContent = "Nenhuma dívida cadastrada para este mês.";
         lista.appendChild(vazio);
       } else {
-        divMes.forEach((d) => {
-          const card = document.createElement("div");
-          card.className = "divida-card";
+        divMes.forEach(d => {
+          const item = document.createElement("div");
+          item.className = "divida-item";
 
-          const main = document.createElement("div");
-          main.className = "divida-main";
+          const vMes = d.valorMensal || d.valorTotal;
 
-          const tituloConta = document.createElement("strong");
-          tituloConta.textContent = d.conta;
-          main.appendChild(tituloConta);
+          const titulo = document.createElement("strong");
+          titulo.textContent = d.conta;
+          item.appendChild(titulo);
 
-          const valorMes = d.valorMensal || d.valorTotal;
+          const linha1 = document.createElement("div");
+          linha1.textContent =
+            `Valor deste mês: ${formatarMoeda(vMes)} • Parcela ${d.parcelaIndex}/${d.parcelas}`;
+          item.appendChild(linha1);
 
-          const spanValor = document.createElement("span");
-          spanValor.textContent = `Valor deste mês: ${formatarMoeda(valorMes)}`;
-          main.appendChild(spanValor);
-
-          const spanParcela = document.createElement("span");
-          spanParcela.textContent =
-            d.parcelas > 1
-              ? `Parcela ${d.parcelaIndex}/${d.parcelas} • total ${formatarMoeda(
-                  d.valorTotal
-                )}`
-              : `Dívida única • total ${formatarMoeda(d.valorTotal)}`;
-          main.appendChild(spanParcela);
+          const linha2 = document.createElement("div");
+          linha2.textContent = `Total da dívida: ${formatarMoeda(d.valorTotal)}`;
+          item.appendChild(linha2);
 
           if (d.obs) {
-            const spanObs = document.createElement("span");
-            spanObs.textContent = `Obs: ${d.obs}`;
-            main.appendChild(spanObs);
+            const linhaObs = document.createElement("div");
+            linhaObs.textContent = `Obs: ${d.obs}`;
+            item.appendChild(linhaObs);
           }
-
-          const actions = document.createElement("div");
-          actions.className = "divida-actions";
 
           const statusBtn = document.createElement("button");
           statusBtn.className = "tag-status " + d.status;
+          statusBtn.style.marginTop = "6px";
           statusBtn.textContent =
             d.status === "pendente"
               ? "Pendente"
@@ -1307,49 +1121,43 @@
               : "Quitado";
           statusBtn.onclick = () => girarStatusDivida(d.id);
 
-          const giroBtn = document.createElement("button");
-          giroBtn.className = "btn-status";
-          giroBtn.textContent = "Girar status";
-          giroBtn.onclick = () => girarStatusDivida(d.id);
+          item.appendChild(statusBtn);
 
-          actions.appendChild(statusBtn);
-          actions.appendChild(giroBtn);
-
-          card.appendChild(main);
-          card.appendChild(actions);
-
-          lista.appendChild(card);
+          lista.appendChild(item);
         });
       }
 
       const { totalMes, totalQuitado } = calcularTotaisDividasMes(state.mesDividas);
+      const totalGeral = calcularTotalDividasGeral();
 
-      const elTotal = document.getElementById("resumo-dividas-total-mes");
-      const elQuit = document.getElementById("resumo-dividas-quitado-mes");
-      const elAberto = document.getElementById("resumo-dividas-aberto-mes");
+      document.getElementById("dividas-total-mes").textContent = formatarMoeda(totalMes);
+      document.getElementById("dividas-quitado-mes").textContent = formatarMoeda(totalQuitado);
+      document.getElementById("dividas-total-geral").textContent = formatarMoeda(totalGeral);
 
-      if (elTotal) elTotal.textContent = formatarMoeda(totalMes);
-      if (elQuit) elQuit.textContent = formatarMoeda(totalQuitado);
-      if (elAberto) elAberto.textContent = formatarMoeda(totalMes - totalQuitado);
+      // também refletir no dashboard
+      document.getElementById("dash-dividas-mes-total").textContent = formatarMoeda(totalMes);
+      document.getElementById("dash-dividas-mes-quitadas").textContent =
+        "Quitadas neste mês: " + formatarMoeda(totalQuitado);
+      document.getElementById("dash-dividas-geral-total").textContent =
+        "Total geral (todas dívidas): " + formatarMoeda(totalGeral);
     }
-        // =====================
-    // DASHBOARD
-    // =====================
 
+    // Mudar mês de dívidas (usa o mesmo state.mesDividas da dashboard)
+    // Se quiser navegar por mês de dívidas, dá pra adaptar depois
+
+    // DASHBOARD
     function renderDashboard() {
       const totalEventos = state.eventos.reduce(
         (acc, ev) => acc + (ev.valor || 0),
         0
       );
-      const eventosPagos = state.eventos.filter((e) => e.status === "pago");
+      const eventosPagos = state.eventos.filter(e => e.status === "pago");
       const receitaConfirmada = eventosPagos.reduce(
         (acc, ev) => acc + (ev.valor || 0),
         0
       );
 
-      const eventosParciais = state.eventos.filter(
-        (e) => e.status === "parcial"
-      );
+      const eventosParciais = state.eventos.filter(e => e.status === "parcial");
       const potencialParcial = eventosParciais.reduce(
         (acc, ev) => acc + (ev.valor || 0),
         0
@@ -1357,62 +1165,36 @@
 
       const { totalMes, totalQuitado, totalParcial } =
         calcularTotaisDividasMes(state.mesDividas);
-
       const totalGeralDividas = calcularTotalDividasGeral();
-
-      const elRecConf = document.getElementById("dash-receita-confirmada");
-      const elTotEv = document.getElementById("dash-total-eventos");
-      const elEvParc = document.getElementById("dash-eventos-parciais");
-      const elEvParcVal = document.getElementById(
-        "dash-eventos-parciais-valor"
-      );
-      const elDivMesTot = document.getElementById("dash-dividas-mes-total");
-      const elDivMesQuit = document.getElementById(
-        "dash-dividas-mes-quitadas"
-      );
-      const elDivGeralTot = document.getElementById(
-        "dash-dividas-geral-total"
-      );
-      const elDivParc = document.getElementById("dash-dividas-parciais");
-      const elDivParcVal = document.getElementById(
-        "dash-dividas-parciais-valor"
-      );
-      const elFluxo = document.getElementById("dash-fluxo-liquido");
-
-      if (elRecConf) elRecConf.textContent = formatarMoeda(receitaConfirmada);
-      if (elTotEv)
-        elTotEv.textContent = `Total em eventos: ${formatarMoeda(
-          totalEventos
-        )}`;
-      if (elEvParc)
-        elEvParc.textContent = `${eventosParciais.length} evento(s)`;
-      if (elEvParcVal)
-        elEvParcVal.textContent = `Valor potencial: ${formatarMoeda(
-          potencialParcial
-        )}`;
-
-      if (elDivMesTot) elDivMesTot.textContent = formatarMoeda(totalMes);
-      if (elDivMesQuit)
-        elDivMesQuit.textContent = `Quitadas neste mês: ${formatarMoeda(
-          totalQuitado
-        )}`;
-      if (elDivGeralTot)
-        elDivGeralTot.textContent = `Total geral (todas dívidas): ${formatarMoeda(
-          totalGeralDividas
-        )}`;
-
       const divParciaisMes = dividasDoMes(state.mesDividas).filter(
-        (d) => d.status === "parcial"
+        d => d.status === "parcial"
       );
-      if (elDivParc)
-        elDivParc.textContent = `${divParciaisMes.length} conta(s)`;
-      if (elDivParcVal)
-        elDivParcVal.textContent = `Valor deste mês: ${formatarMoeda(
-          totalParcial
-        )}`;
+
+      document.getElementById("dash-receita-confirmada").textContent =
+        formatarMoeda(receitaConfirmada);
+      document.getElementById("dash-total-eventos").textContent =
+        "Total em eventos: " + formatarMoeda(totalEventos);
+
+      document.getElementById("dash-eventos-parciais").textContent =
+        `${eventosParciais.length} evento(s)`;
+      document.getElementById("dash-eventos-parciais-valor").textContent =
+        "Valor potencial: " + formatarMoeda(potencialParcial);
+
+      document.getElementById("dash-dividas-mes-total").textContent =
+        formatarMoeda(totalMes);
+      document.getElementById("dash-dividas-mes-quitadas").textContent =
+        "Quitadas neste mês: " + formatarMoeda(totalQuitado);
+      document.getElementById("dash-dividas-geral-total").textContent =
+        "Total geral (todas dívidas): " + formatarMoeda(totalGeralDividas);
+
+      document.getElementById("dash-dividas-parciais").textContent =
+        `${divParciaisMes.length} conta(s)`;
+      document.getElementById("dash-dividas-parciais-valor").textContent =
+        "Valor deste mês: " + formatarMoeda(totalParcial);
 
       const fluxoLiquido = receitaConfirmada - totalQuitado;
-      if (elFluxo) elFluxo.textContent = formatarMoeda(fluxoLiquido);
+      document.getElementById("dash-fluxo-liquido").textContent =
+        formatarMoeda(fluxoLiquido);
 
       renderLinhaTempo();
     }
@@ -1424,7 +1206,7 @@
 
       const itens = [];
 
-      state.eventos.forEach((ev) => {
+      state.eventos.forEach(ev => {
         itens.push({
           tipo: "evento",
           data: ev.data || "",
@@ -1435,7 +1217,7 @@
         });
       });
 
-      state.dividas.forEach((d) => {
+      state.dividas.forEach(d => {
         const data = d.mesReferencia ? d.mesReferencia + "-01" : "";
         itens.push({
           tipo: "divida",
@@ -1455,13 +1237,13 @@
 
       if (recorte.length === 0) {
         const vazio = document.createElement("p");
-        vazio.className = "texto-menor";
+        vazio.className = "kpi-sub";
         vazio.textContent = "Nada cadastrado ainda.";
         cont.appendChild(vazio);
         return;
       }
 
-      recorte.forEach((it) => {
+      recorte.forEach(it => {
         const linha = document.createElement("div");
         linha.className = "linha-item";
 
@@ -1480,7 +1262,7 @@
         info.appendChild(s2);
 
         const valor = document.createElement("span");
-        valor.className = "texto-menor";
+        valor.className = "kpi-sub";
         valor.textContent = formatarMoeda(it.valor);
         info.appendChild(valor);
 
@@ -1499,112 +1281,95 @@
       });
     }
 
-    // =====================
-    // PDF – versão mais organizada
-    // =====================
-
+    // PDF bonitinho
     function exportarPDFCompleto() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      let y = 18;
+      let y = 16;
 
-      function novaPaginaSePreciso(extra = 6) {
-        if (y + extra > 280) {
-          doc.addPage();
-          y = 18;
-        }
+      function linha(txt, size = 11, cor = [0,0,0], indent = 10, bold = false) {
+        doc.setFont("helvetica", bold ? "bold" : "normal");
+        doc.setFontSize(size);
+        doc.setTextColor(cor[0], cor[1], cor[2]);
+        const linhas = doc.splitTextToSize(txt, 190 - indent);
+        linhas.forEach(l => {
+          if (y > 280) {
+            doc.addPage();
+            y = 16;
+          }
+          doc.text(l, indent, y);
+          y += 5;
+        });
       }
 
-      function tituloCentral(txt) {
+      function tituloPrincipal() {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(18);
+        doc.setTextColor(79, 70, 229); // roxo
+        const txt = "Relatório financeiro • Prestes";
         const w = doc.getTextWidth(txt);
         doc.text(txt, (210 - w) / 2, y);
         y += 8;
-        doc.setLineWidth(0.3);
-        doc.line(10, y, 200, y);
-        y += 6;
+
+        doc.setDrawColor(236, 72, 153); // rosa
+        doc.setLineWidth(0.8);
+        doc.line(20, y, 190, y);
+        y += 8;
       }
 
-      function subtitulo(txt) {
-        novaPaginaSePreciso();
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(13);
-        doc.text(txt, 10, y);
-        y += 6;
-      }
-
-      function linha(txt, indent = 0) {
-        novaPaginaSePreciso();
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        doc.text(txt, 10 + indent, y);
-        y += 5;
-      }
-
-      // Cabeçalho
-      tituloCentral("Relatório financeiro • Prestes");
+      tituloPrincipal();
 
       const mesTitulo = mesObjToTitulo(state.mesDividas);
-      linha("Mês de referência para dívidas: " + mesTitulo);
-
       const totMes = calcularTotaisDividasMes(state.mesDividas);
       const totalGeralDividas = calcularTotalDividasGeral();
+      const totalEventos = state.eventos.reduce((a, e) => a + (e.valor || 0), 0);
+      const eventosPagos = state.eventos.filter(e => e.status === "pago");
+      const receitaConfirmada = eventosPagos.reduce(
+        (a, e) => a + (e.valor || 0),
+        0
+      );
 
-      linha(
-        "Total de dívidas do mês: " + formatarMoeda(totMes.totalMes),
-        2
-      );
-      linha(
-        "Quitadas neste mês: " + formatarMoeda(totMes.totalQuitado),
-        2
-      );
-      linha(
-        "Em aberto neste mês: " +
-          formatarMoeda(totMes.totalMes - totMes.totalQuitado),
-        2
-      );
-      linha(
-        "Total geral de todas as dívidas (todas parcelas): " +
-          formatarMoeda(totalGeralDividas),
-        2
-      );
+      linha("Mês de referência: " + mesTitulo, 12, [55,65,81], 10, true);
+      linha("Resumo:", 12, [55,65,81], 10, true);
+      linha("• Receita confirmada em eventos: " + formatarMoeda(receitaConfirmada), 11, [0,128,0], 14);
+      linha("• Total em eventos (todos): " + formatarMoeda(totalEventos), 11, [0,0,0], 14);
+      linha("• Dívidas do mês (parcelas deste mês): " + formatarMoeda(totMes.totalMes), 11, [178,34,34], 14);
+      linha("• Quitadas neste mês: " + formatarMoeda(totMes.totalQuitado), 11, [22,163,74], 14);
+      linha("• Em aberto neste mês: " + formatarMoeda(totMes.totalMes - totMes.totalQuitado), 11, [234,88,12], 14);
+      linha("• Total geral de todas as dívidas (todas parcelas): " + formatarMoeda(totalGeralDividas), 11, [30,64,175], 14);
 
       y += 4;
-
-      // EVENTOS
-      subtitulo("Eventos");
+      linha("EVENTOS", 13, [79,70,229], 10, true);
+      doc.setDrawColor(79,70,229);
+      doc.setLineWidth(0.4);
+      doc.line(10, y, 70, y);
+      y += 6;
 
       if (state.eventos.length === 0) {
-        linha("Nenhum evento cadastrado.", 2);
+        linha("Nenhum evento cadastrado.", 11, [107,114,128], 12);
       } else {
         const eventosOrdenados = state.eventos
           .slice()
           .sort((a, b) => (a.data > b.data ? 1 : -1));
 
-        eventosOrdenados.forEach((ev) => {
-          novaPaginaSePreciso(12);
-          linha(
-            `• ${ev.nome || "Evento"}  •  ${formatarMoeda(
-              ev.valor
-            )}  •  status: ${(ev.status || "pendente").toUpperCase()}`,
-            2
-          );
-          if (ev.data) linha(`Data: ${ev.data}`, 6);
-          if (ev.empresa) linha(`Empresa / cliente: ${ev.empresa}`, 6);
-          if (ev.forma) linha(`Forma de pagamento: ${ev.forma}`, 6);
-          if (ev.obs) linha(`Obs: ${ev.obs}`, 6);
+        eventosOrdenados.forEach(ev => {
+          linha(`• ${ev.nome || "Evento"} (${ev.data || "-"})`, 11, [0,0,0], 12, true);
+          if (ev.empresa) linha(`Empresa / cliente: ${ev.empresa}`, 10, [75,85,99], 16);
+          linha(`Valor: ${formatarMoeda(ev.valor || 0)} • Status: ${(ev.status || "pendente").toUpperCase()}`, 10, [55,65,81], 16);
+          if (ev.obs) linha(`Obs: ${ev.obs}`, 10, [107,114,128], 16);
           y += 2;
         });
       }
 
       y += 4;
-
-      // DÍVIDAS
-      subtitulo("Dívidas / contas (todas parcelas)");
+      linha("DÍVIDAS / PARCELADOS", 13, [236,72,153], 10, true);
+      doc.setDrawColor(236,72,153);
+      doc.setLineWidth(0.4);
+      doc.line(10, y, 80, y);
+      y += 6;
 
       if (state.dividas.length === 0) {
-        linha("Nenhuma dívida cadastrada.", 2);
+        linha("Nenhuma dívida cadastrada.", 11, [107,114,128], 12);
       } else {
         const divsOrdenadas = state.dividas
           .slice()
@@ -1612,23 +1377,33 @@
             a.mesReferencia > b.mesReferencia ? 1 : -1
           );
 
-        divsOrdenadas.forEach((d) => {
-          novaPaginaSePreciso(12);
+        divsOrdenadas.forEach(d => {
           const vMes = d.valorMensal || d.valorTotal;
           linha(
-            `• ${d.conta || "Conta"}  •  mês: ${
-              d.mesReferencia || "-"
-            }  •  ${formatarMoeda(vMes)} (de ${formatarMoeda(
-              d.valorTotal
-            )})  •  status: ${(d.status || "pendente").toUpperCase()}`,
-            2
+            `• ${d.conta || "Conta"} • mês: ${d.mesReferencia || "-"} • ${formatarMoeda(vMes)} (total: ${formatarMoeda(d.valorTotal)})`,
+            11,
+            [0,0,0],
+            12,
+            true
           );
           if (d.parcelas > 1)
             linha(
               `Parcela ${d.parcelaIndex}/${d.parcelas}`,
-              6
+              10,
+              [75,85,99],
+              16
             );
-          if (d.obs) linha(`Obs: ${d.obs}`, 6);
+          linha(
+            `Status: ${(d.status || "pendente").toUpperCase()}`,
+            10,
+            d.status === "pago"
+              ? [22,163,74]
+              : d.status === "parcial"
+              ? [234,88,12]
+              : [178,34,34],
+            16
+          );
+          if (d.obs) linha(`Obs: ${d.obs}`, 10, [107,114,128], 16);
           y += 2;
         });
       }
@@ -1636,10 +1411,7 @@
       doc.save("relatorio-financeiro-prestes.pdf");
     }
 
-    // =====================
     // INIT
-    // =====================
-
     carregarState();
     aplicarTema();
     renderEventos();
