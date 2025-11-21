@@ -76,6 +76,7 @@
       box-sizing: border-box;
       border: 1px solid rgba(148, 163, 184, 0.3);
       color: var(--text-primary);
+      position: relative;
     }
 
     @media (max-width: 768px) {
@@ -143,47 +144,22 @@
     }
 
     .theme-toggle {
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 6px;
+      font-size: 18px;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.85);
-      color: #e5e7eb;
-      font-size: 11px;
-      cursor: pointer;
-      user-select: none;
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9),
-        0 12px 24px rgba(15, 23, 42, 0.5);
-    }
-
-    .theme-toggle-indicator {
-      width: 32px;
-      height: 18px;
-      border-radius: 999px;
-      padding: 2px;
-      box-sizing: border-box;
-      background: radial-gradient(circle at 20% 0,
-          #f97316,
-          #a855f7 42%,
-          #0ea5e9 75%);
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       transition: var(--transition-fast);
     }
 
-    .theme-toggle-indicator-inner {
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: #f9fafb;
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.35),
-        0 4px 12px rgba(15, 23, 42, 0.65);
-    }
-
-    body.dark .theme-toggle-indicator {
-      justify-content: flex-end;
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      color: var(--accent-strong);
     }
 
     .storage-note {
@@ -383,7 +359,6 @@
       font-size: 11px;
     }
 
-    /* botões menores para editar / excluir */
     .btn-small {
       padding: 4px 10px;
       font-size: 11px;
@@ -1831,39 +1806,130 @@
         setTheme((t) => (t === "light" ? "dark" : "light"));
       };
 
-      const handleExportPDF = async () => {
+      const handleExportPDF = () => {
         try {
-          const root = document.getElementById("root");
-          if (!root) return;
-
-          const canvas = await html2canvas(root, {
-            scale: 2,
-            backgroundColor:
-              theme === "dark" ? "#020617" : "#f3f4f6",
-          });
-
-          const imgData = canvas.toDataURL("image/png");
           const { jsPDF } = window.jspdf;
+          if (!jsPDF) {
+            alert("Biblioteca de PDF não carregou.");
+            return;
+          }
+
           const pdf = new jsPDF("p", "mm", "a4");
           const pageWidth = pdf.internal.pageSize.getWidth();
-          const pageHeight = pdf.internal.pageSize.getHeight();
+          let y = 18;
 
-          const ratio = Math.min(
-            pageWidth / canvas.width,
-            pageHeight / canvas.height
+          const addTitle = (txt) => {
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(18);
+            pdf.setTextColor(60, 45, 110);
+            pdf.text(txt, pageWidth / 2, y, { align: "center" });
+            y += 10;
+          };
+
+          const addSubtitle = (txt) => {
+            pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(11);
+            pdf.setTextColor(100, 100, 100);
+            pdf.text(txt, pageWidth / 2, y, { align: "center" });
+            y += 10;
+          };
+
+          const addSection = (label) => {
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(13);
+            pdf.setTextColor(40, 40, 40);
+            pdf.text(label, 14, y);
+            y += 7;
+          };
+
+          const addLine = (label, val) => {
+            pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(11);
+            pdf.setTextColor(60, 60, 60);
+            pdf.text(label + ":", 14, y);
+            pdf.text(val, pageWidth - 14, y, { align: "right" });
+            y += 6;
+          };
+
+          const totalEventos = events.reduce((s, e) => s + (e.valor || 0), 0);
+          const eventosPagos = events
+            .filter((e) => e.status === "pago")
+            .reduce((s, e) => s + (e.valor || 0), 0);
+          const eventosParciaisValor = events
+            .filter((e) => e.status === "parcial")
+            .reduce((s, e) => s + (e.valorPagoParcial || 0), 0);
+          const eventosAReceber =
+            totalEventos - eventosPagos - eventosParciaisValor;
+
+          const totalDividas = debts.reduce(
+            (s, d) => s + (d.valorParcela || 0),
+            0
           );
-          const imgWidth = canvas.width * ratio;
-          const imgHeight = canvas.height * ratio;
+          const dividasPagas = debts
+            .filter((d) => d.status === "pago")
+            .reduce((s, d) => s + (d.valorParcela || 0), 0);
+          const dividasParciaisValor = debts
+            .filter((d) => d.status === "parcial")
+            .reduce((s, d) => s + (d.valorPagoParcial || 0), 0);
+          const dividasPendentes =
+            totalDividas - dividasPagas - dividasParciaisValor;
 
-          const x = (pageWidth - imgWidth) / 2;
-          const y = 8;
+          const monthKey =
+            debtMonth.year + "-" + pad2(debtMonth.month + 1);
+          const dividasMes = debts.filter(
+            (d) => d.mesReferencia === monthKey
+          );
+          const totalDividasMes = dividasMes.reduce(
+            (s, d) => s + (d.valorParcela || 0),
+            0
+          );
+          const dividasMesPagas = dividasMes
+            .filter((d) => d.status === "pago")
+            .reduce((s, d) => s + (d.valorParcela || 0), 0);
 
-          pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
-          pdf.save("painel-financeiro-prestes.pdf");
+          addTitle("Relatório Financeiro – Prestes");
+          addSubtitle(
+            `Gerado em ${new Date().toLocaleString("pt-BR")}`
+          );
+
+          addSection("Eventos");
+          addLine("Receita total (bruta)", money(totalEventos));
+          addLine("Receita confirmada (pagos)", money(eventosPagos));
+          addLine("Recebido em parcial", money(eventosParciaisValor));
+          addLine("A receber", money(eventosAReceber));
+
+          y += 4;
+
+          addSection("Dívidas (geral)");
+          addLine("Total geral em dívidas", money(totalDividas));
+          addLine("Quitadas", money(dividasPagas));
+          addLine("Pagas parcialmente", money(dividasParciaisValor));
+          addLine("Restante a pagar", money(dividasPendentes));
+
+          y += 4;
+
+          addSection(
+            `Dívidas no mês de ${monthLabel(
+              debtMonth.year,
+              debtMonth.month
+            )}`
+          );
+          addLine("Total do mês", money(totalDividasMes));
+          addLine("Quitadas no mês", money(dividasMesPagas));
+
+          y += 4;
+
+          addSection("Fluxo líquido");
+          addLine(
+            "Receita confirmada – dívidas pagas",
+            money(eventosPagos - dividasPagas)
+          );
+
+          pdf.save("relatorio-financeiro-prestes.pdf");
         } catch (err) {
           console.error(err);
           alert(
-            "Não consegui gerar o PDF no navegador agora. Tenta recarregar a página."
+            "Erro ao gerar PDF. Recarregue a página e tente novamente."
           );
         }
       };
@@ -1883,19 +1949,13 @@
               </p>
             </div>
             <div className="header-right">
-              <div
+              <button
                 className="theme-toggle"
                 onClick={handleToggleTheme}
+                aria-label="Alternar tema"
               >
-                <div className="theme-toggle-indicator">
-                  <div className="theme-toggle-indicator-inner" />
-                </div>
-                <span>
-                  {theme === "dark"
-                    ? "Escuro"
-                    : "Claro"}
-                </span>
-              </div>
+                {theme === "dark" ? "🌙" : "☀️"}
+              </button>
               <div className="storage-note">
                 Dados guardados no seu navegador (localStorage).
               </div>
