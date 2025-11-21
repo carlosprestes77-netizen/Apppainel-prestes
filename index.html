@@ -229,6 +229,27 @@
       opacity: 1;
     }
 
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.15fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 940px) {
+      .app-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .header-right {
+        align-items: flex-start;
+      }
+
+      .main-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
     .card {
       background: rgba(15, 23, 42, 0.88);
       border-radius: var(--radius-lg);
@@ -269,21 +290,12 @@
       margin-top: 8px;
     }
 
-    @media (max-width: 640px) {
-      .card-kpi-row {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-      }
-    }
-
     .kpi-card {
       border-radius: var(--radius-md);
       background: rgba(15, 23, 42, 0.9);
       padding: 10px 12px;
       font-size: 12px;
       border: 1px solid rgba(30, 64, 175, 0.85);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
     }
 
     body.light .kpi-card {
@@ -294,6 +306,7 @@
     .kpi-label {
       font-size: 11px;
       color: var(--text-muted);
+      margin-bottom: 4px;
     }
 
     .kpi-main {
@@ -316,6 +329,7 @@
 
     .btn-primary,
     .btn-ghost,
+    .btn-chip,
     .btn-outline {
       border-radius: var(--radius-pill);
       padding: 6px 14px;
@@ -360,6 +374,44 @@
     body.light .btn-ghost {
       background: #111827;
       color: #e5e7eb;
+    }
+
+    .btn-chip {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text-muted);
+      padding-inline: 10px;
+      font-size: 11px;
+    }
+
+    /* botões menores para editar / excluir */
+    .btn-small {
+      padding: 4px 10px;
+      font-size: 11px;
+    }
+
+    .timeline {
+      margin-top: 10px;
+      border-radius: var(--radius-md);
+      padding: 10px 0 2px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+    }
+
+    body.light .timeline {
+      background: #f9fafb;
+      border-style: solid;
+    }
+
+    .timeline-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 12px;
+      font-size: 11px;
+    }
+
+    .timeline-item + .timeline-item {
+      border-top: 1px solid rgba(148, 163, 184, 0.35);
     }
 
     .pill-status {
@@ -602,6 +654,7 @@
       align-items: center;
       gap: 8px;
       margin-top: 2px;
+      flex-wrap: wrap;
     }
 
     .label-tag {
@@ -747,52 +800,7 @@
         </span>
       );
     }
-      <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
 
-    const STORAGE_KEY = "painel_prestes_v3";
-
-    const money = (n) =>
-      "R$ " +
-      (n || 0).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-
-    const monthLabel = (year, monthIndex) =>
-      new Date(year, monthIndex, 1).toLocaleDateString("pt-BR", {
-        month: "long",
-        year: "numeric",
-      });
-
-    const pad2 = (n) => String(n).padStart(2, "0");
-
-    const addMonths = (year, monthIndex, delta) => {
-      const d = new Date(year, monthIndex + delta, 1);
-      return { year: d.getFullYear(), month: d.getMonth() };
-    };
-
-    const cycleStatus = (status) => {
-      if (status === "pendente") return "parcial";
-      if (status === "parcial") return "pago";
-      return "pendente";
-    };
-
-    const STATUS_ORDER = ["pendente", "parcial", "pago"];
-
-    function StatusPill({ status }) {
-      return (
-        <span className={`pill-status ${status}`}>
-          {status === "pendente"
-            ? "Pendente"
-            : status === "parcial"
-            ? "Pago parcial"
-            : "Pago"}
-        </span>
-      );
-    }
-
-    /* DASHBOARD (SEM MUDAR LAYOUT) */
     function Dashboard({ events, debts, onExportPDF }) {
       const summary = useMemo(() => {
         let receitaConfirmada = 0;
@@ -989,19 +997,15 @@
       );
     }
 
-    /* EVENTOS – agora com EDITAR e APAGAR sem mudar layout */
     function EventosSection({
       events,
       setEvents,
       eventMonth,
       setEventMonth,
-      onPickDate,
     }) {
       const today = new Date();
-      const defaultDate = today.toISOString().slice(0, 10);
-
       const [form, setForm] = useState({
-        data: defaultDate,
+        data: today.toISOString().slice(0, 10),
         titulo: "",
         empresa: "",
         valor: "",
@@ -1015,59 +1019,71 @@
         setForm((f) => ({ ...f, [field]: value }));
       };
 
-      const resetForm = () => {
+      useEffect(() => {
+        if (!editingId) return;
+        const ev = events.find((e) => e.id === editingId);
+        if (!ev) return;
         setForm({
-          data: defaultDate,
+          data: ev.data || today.toISOString().slice(0, 10),
+          titulo: ev.titulo || "",
+          empresa: ev.empresa || "",
+          valor: ev.valor != null ? String(ev.valor) : "",
+          forma: ev.forma || "Pix",
+          observacao: ev.observacao || "",
+        });
+      }, [editingId, events]);
+
+      const resetForm = () => {
+        setForm((f) => ({
+          ...f,
           titulo: "",
           empresa: "",
           valor: "",
-          forma: "Pix",
           observacao: "",
-        });
-        setEditingId(null);
+        }));
       };
 
       const handleSubmit = (e) => {
         e.preventDefault();
-        const valor = parseFloat(String(form.valor).replace(",", ".")) || 0;
+        const valor = parseFloat(form.valor.replace(",", ".")) || 0;
         if (!form.data || !form.titulo || valor <= 0) return;
 
-        const base = {
+        if (editingId) {
+          setEvents((prev) =>
+            prev.map((ev) =>
+              ev.id === editingId
+                ? {
+                    ...ev,
+                    data: form.data,
+                    titulo: form.titulo,
+                    empresa: form.empresa || "",
+                    valor,
+                    forma: form.forma,
+                    observacao: form.observacao || "",
+                  }
+                : ev
+            )
+          );
+          setEditingId(null);
+          resetForm();
+          return;
+        }
+
+        const createdAt = Date.now();
+        const novo = {
+          id: createdAt.toString(),
+          createdAt,
           data: form.data,
           titulo: form.titulo,
           empresa: form.empresa || "",
           valor,
+          status: "pendente",
+          valorPagoParcial: 0,
           forma: form.forma,
           observacao: form.observacao || "",
         };
-
-        if (editingId) {
-          // ATUALIZAR EVENTO EXISTENTE
-          setEvents((prev) =>
-            prev.map((ev) =>
-              ev.id === editingId ? { ...ev, ...base } : ev
-            )
-          );
-          resetForm();
-        } else {
-          // CRIAR NOVO EVENTO
-          const createdAt = Date.now();
-          const novo = {
-            id: createdAt.toString(),
-            createdAt,
-            status: "pendente",
-            valorPagoParcial: 0,
-            ...base,
-          };
-          setEvents((prev) => [...prev, novo]);
-          setForm((f) => ({
-            ...f,
-            titulo: "",
-            empresa: "",
-            valor: "",
-            observacao: "",
-          }));
-        }
+        setEvents((prev) => [...prev, novo]);
+        resetForm();
       };
 
       const handleToggleStatus = (id) => {
@@ -1079,7 +1095,7 @@
       };
 
       const handlePartialValueChange = (id, value) => {
-        const n = parseFloat(String(value).replace(",", ".")) || 0;
+        const n = parseFloat(value.replace(",", ".")) || 0;
         setEvents((prev) =>
           prev.map((ev) =>
             ev.id === id ? { ...ev, valorPagoParcial: n } : ev
@@ -1087,22 +1103,18 @@
         );
       };
 
-      const handleEditEvent = (ev) => {
-        setEditingId(ev.id);
-        setForm({
-          data: ev.data || defaultDate,
-          titulo: ev.titulo || "",
-          empresa: ev.empresa || "",
-          valor: ev.valor != null ? String(ev.valor) : "",
-          forma: ev.forma || "Pix",
-          observacao: ev.observacao || "",
-        });
+      const handleDeleteEvent = (id) => {
+        if (!window.confirm("Você quer mesmo apagar este evento?")) return;
+        setEvents((prev) => prev.filter((ev) => ev.id !== id));
+        if (editingId === id) {
+          setEditingId(null);
+          resetForm();
+        }
       };
 
-      const handleDeleteEvent = (id) => {
-        if (!window.confirm("Apagar este evento?")) return;
-        setEvents((prev) => prev.filter((ev) => ev.id !== id));
-        if (editingId === id) resetForm();
+      const handleCancelEdit = () => {
+        setEditingId(null);
+        resetForm();
       };
 
       const monthKey =
@@ -1143,7 +1155,6 @@
         const dateObj = new Date(year, month, cell.day);
         const iso = dateObj.toISOString().slice(0, 10);
         setForm((f) => ({ ...f, data: iso }));
-        if (typeof onPickDate === "function") onPickDate(iso);
       };
 
       const handlePrevMonth = () =>
@@ -1272,27 +1283,16 @@
                       </div>
                     </div>
                     <div className="list-item-actions-row">
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 3,
-                        }}
-                      >
+                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                         <span className="label-tag">Valor já pago (R$)</span>
                         <input
                           className="form-input"
-                          style={{
-                            maxWidth: 130,
-                            fontSize: 11,
-                            padding: "4px 6px",
-                          }}
+                          style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
                           type="number"
                           min="0"
                           step="0.01"
                           value={
-                            ev.valorPagoParcial === 0 ||
-                            ev.valorPagoParcial
+                            ev.valorPagoParcial === 0 || ev.valorPagoParcial
                               ? ev.valorPagoParcial
                               : ""
                           }
@@ -1301,27 +1301,24 @@
                           }
                         />
                       </div>
-                      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
                         <button
-                          className="edit-btn"
-                          type="button"
-                          onClick={() => handleEditEvent(ev)}
+                          className="btn-ghost btn-small"
+                          onClick={() => handleToggleStatus(ev.id)}
+                        >
+                          Girar status
+                        </button>
+                        <button
+                          className="btn-outline btn-small"
+                          onClick={() => setEditingId(ev.id)}
                         >
                           Editar
                         </button>
                         <button
-                          className="delete-btn"
-                          type="button"
+                          className="btn-outline btn-small"
                           onClick={() => handleDeleteEvent(ev.id)}
                         >
                           Apagar
-                        </button>
-                        <button
-                          className="btn-ghost"
-                          type="button"
-                          onClick={() => handleToggleStatus(ev.id)}
-                        >
-                          Girar status
                         </button>
                       </div>
                     </div>
@@ -1334,7 +1331,7 @@
             <div className="section-title-row">
               <div className="section-title">
                 {editingId
-                  ? "Editar evento existente"
+                  ? "Editar evento selecionado"
                   : "Novo evento (com empresa & observação)"}
               </div>
               <div className="section-helper">
@@ -1416,22 +1413,21 @@
 
               <div className="form-footer">
                 <div className="small-hint">
-                  {editingId
-                    ? "Editando um evento já cadastrado. Para cancelar, limpe os campos ou clique em outro evento."
-                    : "Depois de salvo, use o status + valor parcial para controlar a evolução do pagamento."}
+                  Depois de salvo, use o status + valor parcial para controlar a
+                  evolução do pagamento.
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   {editingId && (
                     <button
                       type="button"
-                      className="btn-outline"
-                      onClick={resetForm}
+                      className="btn-outline btn-small"
+                      onClick={handleCancelEdit}
                     >
                       Cancelar edição
                     </button>
                   )}
                   <button type="submit" className="btn-primary">
-                    {editingId ? "Salvar edição" : "Salvar evento"}
+                    {editingId ? "Salvar alterações" : "Salvar evento"}
                   </button>
                 </div>
               </div>
@@ -1440,7 +1436,7 @@
         </div>
       );
     }
-       /* DÍVIDAS – agora com EDITAR e APAGAR, sem alterar layout */
+
     function DividasSection({
       debts,
       setDebts,
@@ -1448,17 +1444,16 @@
       setDebtMonth,
     }) {
       const today = new Date();
-      const ym = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}`;
-
-      const [form, setForm] = useState({
-        mesInicial: ym,
-        conta: "",
-        valorTotal: "",
-        parcelas: "1",
-        observacao: "",
+      const [form, setForm] = useState(() => {
+        const ym = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}`;
+        return {
+          mesInicial: ym,
+          conta: "",
+          valorTotal: "",
+          parcelas: "1",
+          observacao: "",
+        };
       });
-
-      const [editingGroup, setEditingGroup] = useState(null);
 
       const monthKey =
         debtMonth.year + "-" + pad2(debtMonth.month + 1);
@@ -1482,18 +1477,6 @@
         setForm((f) => ({ ...f, [field]: value }));
       };
 
-      const resetForm = () => {
-        setForm({
-          mesInicial: ym,
-          conta: "",
-          valorTotal: "",
-          parcelas: "1",
-          observacao: "",
-        });
-        setEditingGroup(null);
-      };
-
-      /* SALVAR OU EDITAR DÍVIDA */
       const handleSubmit = (e) => {
         e.preventDefault();
         const valorTotal = parseFloat(
@@ -1505,38 +1488,11 @@
         const [y, m] = form.mesInicial.split("-");
         const startYear = parseInt(y, 10);
         const startMonth = parseInt(m, 10) - 1;
-        const valorParcela =
-          parcelas > 1 ? valorTotal / parcelas : valorTotal;
+        const isParcelado = parcelas > 1;
+        const valorParcela = isParcelado
+          ? valorTotal / parcelas
+          : valorTotal;
 
-        if (editingGroup) {
-          // EDITAR GRUPO EXISTENTE
-          setDebts((prev) =>
-            prev.map((d) => {
-              if (d.grupoId !== editingGroup) return d;
-
-              const index = d.id.split("-").pop();
-              const { year, month } = addMonths(
-                startYear,
-                startMonth,
-                parseInt(index, 10)
-              );
-              const novoMes = year + "-" + pad2(month + 1);
-
-              return {
-                ...d,
-                conta: form.conta,
-                observacao: form.observacao,
-                valorParcela,
-                mesReferencia: novoMes,
-              };
-            })
-          );
-
-          resetForm();
-          return;
-        }
-
-        // CRIAR NOVAS PARCELAS
         const createdAt = Date.now();
         const grupoId = "g-" + createdAt.toString();
 
@@ -1564,8 +1520,13 @@
         }
 
         setDebts((prev) => [...prev, ...novos]);
-
-        resetForm();
+        setForm((f) => ({
+          ...f,
+          conta: "",
+          valorTotal: "",
+          parcelas: "1",
+          observacao: "",
+        }));
       };
 
       const handleToggleStatus = (id) => {
@@ -1585,44 +1546,20 @@
         );
       };
 
+      const handleDeleteDebt = (id) => {
+        if (!window.confirm("Apagar apenas esta parcela?")) return;
+        setDebts((prev) => prev.filter((d) => d.id !== id));
+      };
+
+      const handleDeleteDebtGroup = (grupoId) => {
+        if (!window.confirm("Apagar TODAS as parcelas desta dívida?")) return;
+        setDebts((prev) => prev.filter((d) => d.grupoId !== grupoId));
+      };
+
       const handlePrevMonth = () =>
         setDebtMonth((m) => addMonths(m.year, m.month, -1));
       const handleNextMonth = () =>
         setDebtMonth((m) => addMonths(m.year, m.month, 1));
-
-      /* EDITAR DÍVIDA */
-      const handleEditDebt = (grupoId) => {
-        const grupo = debts.filter((d) => d.grupoId === grupoId);
-        if (grupo.length === 0) return;
-
-        const base = grupo[0];
-
-        const parcelas = grupo.length;
-        const mesInicial = grupo[0].mesReferencia;
-
-        setEditingGroup(grupoId);
-        setForm({
-          mesInicial,
-          conta: base.conta,
-          valorTotal: String(base.valorParcela * parcelas),
-          parcelas: String(parcelas),
-          observacao: base.observacao,
-        });
-      };
-
-      /* APAGAR DÍVIDA */
-      const handleDeleteDebt = (grupoId) => {
-        if (
-          !window.confirm(
-            "Tem certeza que deseja apagar TODAS as parcelas desta dívida?"
-          )
-        )
-          return;
-
-        setDebts((prev) => prev.filter((d) => d.grupoId !== grupoId));
-
-        if (editingGroup === grupoId) resetForm();
-      };
 
       return (
         <div className="card">
@@ -1638,8 +1575,7 @@
           <div className="section">
             <div className="section-title-row">
               <div className="section-title">
-                Mês de referência –{" "}
-                {monthLabel(debtMonth.year, debtMonth.month)}
+                Mês de referência – {monthLabel(debtMonth.year, debtMonth.month)}
               </div>
               <div className="calendar-nav">
                 <button className="icon-btn" onClick={handlePrevMonth}>
@@ -1679,96 +1615,93 @@
               )}
               {debtsThisMonth
                 .slice()
-                .sort((a, b) => a.createdAt - b.createdAt)
-                .map((d) => (
-                  <div key={d.id} className="list-item">
-                    <div className="list-item-main-row">
-                      <div>
-                        <div className="list-item-title">
-                          {d.conta || "Conta"}
+                .sort((a, b) =>
+                  (a.createdAt || 0) - (b.createdAt || 0)
+                )
+                .map((d, index) => {
+                  const firstIndex = debtsThisMonth.findIndex(
+                    (x) => x.grupoId === d.grupoId
+                  );
+                  const isFirstOfGroup = firstIndex === index && d.grupoId;
+                  return (
+                    <div key={d.id} className="list-item">
+                      <div className="list-item-main-row">
+                        <div>
+                          <div className="list-item-title">
+                            {d.conta || "Conta"}
+                          </div>
+                          <div className="list-item-sub">
+                            Parcela de {money(d.valorParcela)} ·{" "}
+                            {d.mesReferencia}
+                          </div>
                         </div>
-                        <div className="list-item-sub">
-                          Parcela de {money(d.valorParcela)} ·{" "}
-                          {d.mesReferencia}
+                        <div style={{ textAlign: "right" }}>
+                          <div className="chip-amount-negative">
+                            {money(d.valorParcela)}
+                          </div>
+                          <StatusPill status={d.status} />
                         </div>
                       </div>
-
-                      <div style={{ textAlign: "right" }}>
-                        <div className="chip-amount-negative">
-                          {money(d.valorParcela)}
+                      <div className="list-item-actions-row">
+                        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                          <span className="label-tag">Valor já pago (R$)</span>
+                          <input
+                            className="form-input"
+                            style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={
+                              d.valorPagoParcial === 0 || d.valorPagoParcial
+                                ? d.valorPagoParcial
+                                : ""
+                            }
+                            onChange={(e) =>
+                              handlePartialChange(d.id, e.target.value)
+                            }
+                          />
                         </div>
-                        <StatusPill status={d.status} />
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                          <button
+                            className="btn-ghost btn-small"
+                            onClick={() => handleToggleStatus(d.id)}
+                          >
+                            Girar status
+                          </button>
+                          <button
+                            className="btn-outline btn-small"
+                            onClick={() => handleDeleteDebt(d.id)}
+                          >
+                            Apagar parcela
+                          </button>
+                          {isFirstOfGroup && (
+                            <button
+                              className="btn-outline btn-small"
+                              onClick={() =>
+                                handleDeleteDebtGroup(d.grupoId)
+                              }
+                            >
+                              Apagar dívida inteira
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
-
-                    <div className="list-item-actions-row">
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        <span className="label-tag">Valor já pago (R$)</span>
-                        <input
-                          className="form-input"
-                          style={{
-                            maxWidth: 130,
-                            fontSize: 11,
-                            padding: "4px 6px",
-                          }}
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          value={
-                            d.valorPagoParcial === 0 ||
-                            d.valorPagoParcial
-                              ? d.valorPagoParcial
-                              : ""
-                          }
-                          onChange={(e) =>
-                            handlePartialChange(d.id, e.target.value)
-                          }
-                        />
-                      </div>
-
-                      <div style={{ display: "flex", gap: 8 }}>
-                        <button
-                          className="edit-btn"
-                          type="button"
-                          onClick={() => handleEditDebt(d.grupoId)}
-                        >
-                          Editar
-                        </button>
-
-                        <button
-                          className="delete-btn"
-                          type="button"
-                          onClick={() => handleDeleteDebt(d.grupoId)}
-                        >
-                          Apagar
-                        </button>
-
-                        <button
-                          className="btn-ghost"
-                          type="button"
-                          onClick={() => handleToggleStatus(d.id)}
-                        >
-                          Girar status
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
             </div>
           </div>
 
           <div className="section">
             <div className="section-title-row">
               <div className="section-title">
-                {editingGroup
-                  ? "Editar dívida parcelada"
-                  : "Nova dívida / conta parcelada"}
+                Nova dívida / conta parcelada
               </div>
               <div className="section-helper">
-                Preencha conta, valor total e parcelas.
+                “Conta, valor, pago, pago parcial, parcelado” distribuído nos
+                próximos meses.
               </div>
             </div>
-
             <form className="form" onSubmit={handleSubmit}>
               <div className="form-row">
                 <div className="form-field">
@@ -1786,7 +1719,7 @@
                   <label className="form-label">Conta / descrição</label>
                   <input
                     className="form-input"
-                    placeholder="Cartão Nubank, câmera..."
+                    placeholder="Cartão Nubank, câmera, viagem..."
                     value={form.conta}
                     onChange={(e) =>
                       handleChange("conta", e.target.value)
@@ -1829,7 +1762,7 @@
                   <label className="form-label">Observação</label>
                   <textarea
                     className="form-textarea"
-                    placeholder="Acordo, renegociação..."
+                    placeholder="Banco tal, juros, acordo..."
                     value={form.observacao}
                     onChange={(e) =>
                       handleChange("observacao", e.target.value)
@@ -1840,30 +1773,18 @@
 
               <div className="form-footer">
                 <div className="small-hint">
-                  Parcelas são distribuídas automaticamente pelos meses.
+                  Se você colocar 6 parcelas, cada uma cai no mês correto
+                  automaticamente.
                 </div>
-
-                <div style={{ display: "flex", gap: 8 }}>
-                  {editingGroup && (
-                    <button
-                      type="button"
-                      className="btn-outline"
-                      onClick={resetForm}
-                    >
-                      Cancelar edição
-                    </button>
-                  )}
-                  <button type="submit" className="btn-primary">
-                    {editingGroup ? "Salvar edição" : "Salvar dívida"}
-                  </button>
-                </div>
+                <button type="submit" className="btn-primary">
+                  Salvar dívida / parcelas
+                </button>
               </div>
             </form>
           </div>
         </div>
       );
     }
-        /* APP RAIZ */
 
     function App() {
       const saved = useMemo(() => {
@@ -1877,17 +1798,16 @@
       }, []);
 
       const today = new Date();
-
       const [events, setEvents] = useState(() => saved?.events || []);
       const [debts, setDebts] = useState(() => saved?.debts || []);
       const [theme, setTheme] = useState(() => saved?.theme || "light");
+
       const [activeTab, setActiveTab] = useState("dashboard");
 
       const [eventMonth, setEventMonth] = useState(() => ({
         year: today.getFullYear(),
         month: today.getMonth(),
       }));
-
       const [debtMonth, setDebtMonth] = useState(() => ({
         year: today.getFullYear(),
         month: today.getMonth(),
@@ -1904,16 +1824,13 @@
             STORAGE_KEY,
             JSON.stringify({ events, debts, theme })
           );
-        } catch {
-          // se o navegador não deixar salvar, paciência
-        }
+        } catch {}
       }, [events, debts, theme]);
 
       const handleToggleTheme = () => {
         setTheme((t) => (t === "light" ? "dark" : "light"));
       };
 
-      /* PDF geral (print da tela) – mantém layout que você já curte */
       const handleExportPDF = async () => {
         try {
           const root = document.getElementById("root");
@@ -1921,7 +1838,8 @@
 
           const canvas = await html2canvas(root, {
             scale: 2,
-            backgroundColor: theme === "dark" ? "#020617" : "#f3f4f6",
+            backgroundColor:
+              theme === "dark" ? "#020617" : "#f3f4f6",
           });
 
           const imgData = canvas.toDataURL("image/png");
@@ -1945,7 +1863,7 @@
         } catch (err) {
           console.error(err);
           alert(
-            "Não consegui gerar o PDF agora. Tenta recarregar a página e gerar de novo."
+            "Não consegui gerar o PDF no navegador agora. Tenta recarregar a página."
           );
         }
       };
@@ -1956,25 +1874,30 @@
             <div className="app-title">
               <div className="pill-badge">
                 <span className="pill-dot" />
-                PAINEL FINANCEIRO · PRESTES
+                painel financeiro · prestes
               </div>
               <h1>Eventos, dívidas e parcelas em modo profissional</h1>
               <p>
-                Uma tela pra cada lado da sua mente: dashboard, calendário de
+                Uma tela para cada lado da sua mente: dashboard, calendário de
                 eventos e matriz de dívidas. Tudo salvo no seu navegador.
               </p>
             </div>
-
             <div className="header-right">
-              <div className="theme-toggle" onClick={handleToggleTheme}>
+              <div
+                className="theme-toggle"
+                onClick={handleToggleTheme}
+              >
                 <div className="theme-toggle-indicator">
                   <div className="theme-toggle-indicator-inner" />
                 </div>
-                <span>{theme === "dark" ? "Escuro" : "Claro"}</span>
+                <span>
+                  {theme === "dark"
+                    ? "Escuro"
+                    : "Claro"}
+                </span>
               </div>
               <div className="storage-note">
-                Dados guardados apenas no seu navegador (localStorage). Se
-                limpar o histórico, adeus tudo.
+                Dados guardados no seu navegador (localStorage).
               </div>
             </div>
           </header>
@@ -2035,8 +1958,8 @@
       );
     }
 
-    /* MONTAGEM NO DOM */
     const rootEl = document.getElementById("root");
     ReactDOM.createRoot(rootEl).render(<App />);
-                  {/* 🔹 RENDER FINAL DO APP */}
-    
+  </script>
+</body>
+</html>
