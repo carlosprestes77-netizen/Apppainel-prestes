@@ -14,6 +14,87 @@
       --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.35);
       --shadow-subtle: 0 1px 4px rgba(15, 23, 42, 0.12);
       --transition-fast: 0.18s ease-out;
+      /* ===== MODAL ===== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+}
+
+.modal-box {
+  background: var(--bg-elevated);
+  padding: 22px;
+  border-radius: 18px;
+  width: min(92%, 420px);
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  animation: modalFade .25s ease-out;
+  position: relative;
+  border: 1px solid var(--border-subtle);
+}
+
+@keyframes modalFade {
+  from { opacity: 0; transform: scale(.94);}
+  to { opacity: 1; transform: scale(1);}
+}
+
+.modal-close-btn {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.modal-event-item {
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--bg-soft);
+  margin-bottom: 8px;
+  border: 1px solid var(--border-subtle);
+  font-size: 13px;
+}
+
+/* ===== GLOBAL SEARCH ===== */
+
+.search-box {
+  margin-bottom: 14px;
+}
+
+.search-results {
+  border-radius: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.search-item {
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 13px;
+}
+
+.search-item:last-child {
+  border-bottom: none;
+}
+
     }
 
     body {
