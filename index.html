@@ -140,7 +140,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 10px;
+      gap: 8px;
     }
 
     .theme-toggle {
@@ -203,27 +203,6 @@
 
     .tab-btn:not(.active):hover {
       opacity: 1;
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.15fr);
-      gap: 16px;
-    }
-
-    @media (max-width: 940px) {
-      .app-header {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .header-right {
-        align-items: flex-start;
-      }
-
-      .main-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
     }
 
     .card {
@@ -1761,6 +1740,197 @@
       );
     }
 
+    // 🔮 SIMULAÇÃO (item 5)
+    function SimulationPanel() {
+      const [saldoInicial, setSaldoInicial] = useState(0);
+      const [dividaInicial, setDividaInicial] = useState(0);
+      const [pagamentoMensalDividas, setPagamentoMensalDividas] = useState(0);
+      const [eventosPorMes, setEventosPorMes] = useState(0);
+      const [lucroPorEvento, setLucroPorEvento] = useState(0);
+      const [meses, setMeses] = useState(12);
+      const [projecao, setProjecao] = useState([]);
+
+      const gerarProjecao = () => {
+        let saldo = Number(saldoInicial) || 0;
+        let divida = Number(dividaInicial) || 0;
+        const pagMensal = Number(pagamentoMensalDividas) || 0;
+        const evMes = Number(eventosPorMes) || 0;
+        const lucroEv = Number(lucroPorEvento) || 0;
+        const qtdMeses = Math.max(1, Math.min(60, Number(meses) || 1));
+
+        const resultados = [];
+
+        for (let i = 0; i < qtdMeses; i++) {
+          const ganhosEventos = evMes * lucroEv;
+          const pagamentoPossivel = Math.min(pagMensal, divida);
+          divida = divida - pagamentoPossivel;
+
+          const saldoInicialMes = saldo;
+          saldo = saldo + ganhosEventos - pagamentoPossivel;
+
+          resultados.push({
+            monthIndex: i + 1,
+            saldoInicial: saldoInicialMes,
+            ganhosEventos,
+            pagamentoDividas: pagamentoPossivel,
+            saldoFinal: saldo,
+            dividaRestante: divida,
+          });
+
+          if (divida <= 0) break;
+        }
+
+        setProjecao(resultados);
+      };
+
+      return (
+        <div className="card">
+          <div className="card-header-row">
+            <div>
+              <div className="card-title">Simulação de futuro</div>
+              <div className="card-subtitle">
+                Brinca com cenários: eventos por mês, quanto paga de dívida e em quanto tempo zera.
+              </div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="section-title-row">
+              <div className="section-title">Premissas</div>
+              <div className="section-helper">
+                Ajuste os números do jeito que você realmente vive (sem se enganar).
+              </div>
+            </div>
+
+            <div className="form">
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Saldo atual (R$)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={saldoInicial}
+                    onChange={(e) => setSaldoInicial(e.target.value)}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Dívida total atual (R$)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={dividaInicial}
+                    onChange={(e) => setDividaInicial(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Pagamento mensal em dívidas (R$)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={pagamentoMensalDividas}
+                    onChange={(e) => setPagamentoMensalDividas(e.target.value)}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Eventos de fotografia por mês</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={eventosPorMes}
+                    onChange={(e) => setEventosPorMes(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="form-label">Lucro líquido por evento (R$)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={lucroPorEvento}
+                    onChange={(e) => setLucroPorEvento(e.target.value)}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="form-label">Meses de simulação (1 a 60)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    min="1"
+                    max="60"
+                    value={meses}
+                    onChange={(e) => setMeses(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-footer">
+                <div className="small-hint">
+                  Isso não é magia, é matemática emocional: você vê o cenário antes de se afogar.
+                </div>
+                <button type="button" className="btn-primary" onClick={gerarProjecao}>
+                  Gerar projeção
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {projecao.length > 0 && (
+            <div className="section">
+              <div className="section-title-row">
+                <div className="section-title">Resultado da simulação</div>
+              </div>
+              <div className="list" style={{ maxHeight: 260 }}>
+                <div
+                  style={{
+                    overflowX: "auto",
+                    fontSize: 11,
+                  }}
+                >
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr>
+                        <th style={{ textAlign: "left", padding: "4px" }}>Mês</th>
+                        <th style={{ textAlign: "right", padding: "4px" }}>Saldo inicial</th>
+                        <th style={{ textAlign: "right", padding: "4px" }}>Ganhos c/ eventos</th>
+                        <th style={{ textAlign: "right", padding: "4px" }}>Pago em dívidas</th>
+                        <th style={{ textAlign: "right", padding: "4px" }}>Saldo final</th>
+                        <th style={{ textAlign: "right", padding: "4px" }}>Dívida restante</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {projecao.map((linha) => (
+                        <tr key={linha.monthIndex}>
+                          <td style={{ padding: "4px" }}>Mês {linha.monthIndex}</td>
+                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.saldoInicial)}</td>
+                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.ganhosEventos)}</td>
+                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.pagamentoDividas)}</td>
+                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.saldoFinal)}</td>
+                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.dividaRestante)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="small-hint" style={{ marginTop: 6 }}>
+                  {projecao[projecao.length - 1].dividaRestante <= 0
+                    ? `Com essas premissas, você quita tudo em aproximadamente ${projecao.length} mês(es).`
+                    : `Após ${projecao.length} mês(es), ainda restariam ${money(
+                        projecao[projecao.length - 1].dividaRestante
+                      )} de dívidas.`}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     function App() {
       const saved = useMemo(() => {
         try {
@@ -1804,6 +1974,73 @@
 
       const handleToggleTheme = () => {
         setTheme((t) => (t === "light" ? "dark" : "light"));
+      };
+
+      // 💾 BACKUP (item 8)
+      const handleExportBackup = () => {
+        try {
+          const backup = {
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            events,
+            debts,
+            theme,
+          };
+
+          const json = JSON.stringify(backup, null, 2);
+          const blob = new Blob([json], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `backup-painel-prestes-${new Date()
+            .toISOString()
+            .slice(0, 10)}.json`;
+          a.click();
+
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error(err);
+          alert("Erro ao gerar backup.");
+        }
+      };
+
+      const handleImportBackup = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const text = e.target.result;
+            const data = JSON.parse(text);
+
+            if (!data || typeof data !== "object") {
+              alert("Arquivo de backup inválido.");
+              return;
+            }
+
+            if (!Array.isArray(data.events) || !Array.isArray(data.debts)) {
+              alert("Estrutura do backup não confere com o app.");
+              return;
+            }
+
+            setEvents(data.events || []);
+            setDebts(data.debts || []);
+            if (data.theme === "light" || data.theme === "dark") {
+              setTheme(data.theme);
+            }
+
+            alert("Backup importado com sucesso.");
+          } catch (err) {
+            console.error(err);
+            alert("Erro ao ler o arquivo de backup.");
+          } finally {
+            event.target.value = "";
+          }
+        };
+
+        reader.readAsText(file);
       };
 
       const handleExportPDF = () => {
@@ -1959,6 +2196,24 @@
               <div className="storage-note">
                 Dados guardados no seu navegador (localStorage).
               </div>
+              <div style={{ display: "flex", gap: 6, marginTop: 2 }}>
+                <button
+                  className="btn-chip"
+                  type="button"
+                  onClick={handleExportBackup}
+                >
+                  Backup
+                </button>
+                <label className="btn-chip" style={{ cursor: "pointer" }}>
+                  Restaurar
+                  <input
+                    type="file"
+                    accept="application/json"
+                    style={{ display: "none" }}
+                    onChange={handleImportBackup}
+                  />
+                </label>
+              </div>
             </div>
           </header>
 
@@ -1987,6 +2242,14 @@
             >
               Dívidas
             </button>
+            <button
+              className={
+                "tab-btn" + (activeTab === "simulacao" ? " active" : "")
+              }
+              onClick={() => setActiveTab("simulacao")}
+            >
+              Simulação
+            </button>
           </div>
 
           {activeTab === "dashboard" && (
@@ -2014,6 +2277,8 @@
               setDebtMonth={setDebtMonth}
             />
           )}
+
+          {activeTab === "simulacao" && <SimulationPanel />}
         </div>
       );
     }
