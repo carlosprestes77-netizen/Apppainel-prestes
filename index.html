@@ -140,7 +140,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 8px;
+      gap: 10px;
     }
 
     .theme-toggle {
@@ -173,10 +173,8 @@
       border-radius: 999px;
       padding: 4px;
       background: rgba(15, 23, 42, 0.8);
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.95),
-        0 10px 32px rgba(15, 23, 42, 0.64);
-      color: #e5e7eb;
       margin-bottom: 20px;
+      color: #e5e7eb;
     }
 
     .tab-btn {
@@ -205,506 +203,59 @@
       opacity: 1;
     }
 
-    .card {
-      background: rgba(15, 23, 42, 0.88);
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(15, 23, 42, 0.9);
-      padding: 16px 18px;
-      box-shadow: var(--shadow-subtle);
-      color: #e5e7eb;
-    }
-
-    body.light .card {
-      background: #ffffff;
-      color: var(--text-primary);
-      border-color: var(--border-subtle);
-    }
-
-    .card-header-row {
+    /* MODAL POPUP NOVO */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      gap: 12px;
-    }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .card-subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .card-kpi-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 8px;
-    }
-
-    .kpi-card {
-      border-radius: var(--radius-md);
-      background: rgba(15, 23, 42, 0.9);
-      padding: 10px 12px;
-      font-size: 12px;
-      border: 1px solid rgba(30, 64, 175, 0.85);
-    }
-
-    body.light .kpi-card {
-      background: #f9fafb;
-      border-color: #e5e7eb;
-    }
-
-    .kpi-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .kpi-main {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .kpi-main.positive {
-      color: #22c55e;
-    }
-
-    .kpi-main.negative {
-      color: #ef4444;
-    }
-
-    .kpi-extra {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .btn-primary,
-    .btn-ghost,
-    .btn-chip,
-    .btn-outline {
-      border-radius: var(--radius-pill);
-      padding: 6px 14px;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: var(--transition-fast);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #8b5cf6, #0ea5e9);
-      color: #f9fafb;
-      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.6);
-    }
-
-    .btn-primary:hover {
-      filter: brightness(1.05);
-      transform: translateY(-1px);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--accent-strong);
-      border: 1px solid rgba(148, 163, 184, 0.6);
-    }
-
-    .btn-outline:hover {
-      background: rgba(148, 163, 184, 0.08);
-    }
-
-    .btn-ghost {
-      background: rgba(15, 23, 42, 0.65);
-      color: #e5e7eb;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    body.light .btn-ghost {
-      background: #111827;
-      color: #e5e7eb;
-    }
-
-    .btn-chip {
-      background: rgba(148, 163, 184, 0.12);
-      color: var(--text-muted);
-      padding-inline: 10px;
-      font-size: 11px;
-    }
-
-    .btn-small {
-      padding: 4px 10px;
-      font-size: 11px;
-    }
-
-    .timeline {
-      margin-top: 10px;
-      border-radius: var(--radius-md);
-      padding: 10px 0 2px;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px dashed rgba(148, 163, 184, 0.5);
-    }
-
-    body.light .timeline {
-      background: #f9fafb;
-      border-style: solid;
-    }
-
-    .timeline-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 12px;
-      font-size: 11px;
-    }
-
-    .timeline-item + .timeline-item {
-      border-top: 1px solid rgba(148, 163, 184, 0.35);
-    }
-
-    .pill-status {
-      border-radius: 999px;
-      padding: 2px 9px;
-      font-size: 11px;
-      border: 1px solid transparent;
-      white-space: nowrap;
-    }
-
-    .pill-status.pendente {
-      background: rgba(248, 250, 252, 0.02);
-      border-color: rgba(249, 115, 22, 0.55);
-      color: #fed7aa;
-    }
-
-    .pill-status.parcial {
-      background: rgba(254, 215, 170, 0.1);
-      border-color: rgba(249, 115, 22, 0.8);
-      color: #fdba74;
-    }
-
-    .pill-status.pago {
-      background: rgba(22, 163, 74, 0.2);
-      border-color: rgba(34, 197, 94, 0.85);
-      color: #bbf7d0;
-    }
-
-    body.light .pill-status.pendente {
-      color: #b45309;
-      background: #fffbeb;
-    }
-
-    body.light .pill-status.parcial {
-      color: #b45309;
-      background: #fef3c7;
-    }
-
-    body.light .pill-status.pago {
-      color: #166534;
-      background: #dcfce7;
-    }
-
-    .section {
-      margin-top: 4px;
-    }
-
-    .section + .section {
-      margin-top: 14px;
-    }
-
-    .section-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .section-title {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .section-helper {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .calendar {
-      margin-top: 6px;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      padding: 10px 10px 8px;
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    body.light .calendar {
-      background: #f9fafb;
-    }
-
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      gap: 10px;
-    }
-
-    .calendar-month-label {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .calendar-nav {
-      display: flex;
-      gap: 4px;
-    }
-
-    .icon-btn {
-      border-radius: 999px;
-      width: 26px;
-      height: 26px;
-      padding: 0;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      background: rgba(15, 23, 42, 0.7);
-      color: #e5e7eb;
-      display: inline-flex;
       align-items: center;
       justify-content: center;
+      z-index: 2000;
+    }
+
+    .modal-box {
+      width: calc(100% - 40px);
+      max-width: 420px;
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      color: var(--text-muted);
       cursor: pointer;
-      font-size: 14px;
-      transition: var(--transition-fast);
+      position: absolute;
+      top: 10px;
+      right: 14px;
     }
 
-    body.light .icon-btn {
-      background: #ffffff;
-    }
-
-    .icon-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.45);
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 4px;
-      font-size: 11px;
-    }
-
-    .calendar-weekday {
-      text-align: center;
-      color: var(--text-muted);
-      padding-bottom: 2px;
-    }
-
-    .calendar-day {
-      min-height: 52px;
-      border-radius: 10px;
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid rgba(15, 23, 42, 0.9);
-      padding: 2px 3px 3px;
-      box-sizing: border-box;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    body.light .calendar-day {
-      background: #ffffff;
-      border-color: #e5e7eb;
-    }
-
-    .calendar-day.outside {
-      opacity: 0.25;
-    }
-
-    .calendar-day-number {
-      font-size: 10px;
-      opacity: 0.9;
-    }
-
-    .calendar-chips {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      margin-top: 1px;
-    }
-
-    .calendar-chip {
-      border-radius: 999px;
-      background: rgba(129, 140, 248, 0.95);
-      font-size: 9px;
-      padding: 1px 4px;
-      color: #eef2ff;
-      max-width: 100%;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 6px;
-      max-height: 220px;
-      overflow-y: auto;
-      padding-right: 2px;
-    }
-
-    .list-item {
-      border-radius: var(--radius-md);
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(15, 23, 42, 0.9);
-      padding: 8px 10px;
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    body.light .list-item {
-      background: #ffffff;
-      border-color: #e5e7eb;
-    }
-
-    .list-item-main-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .list-item-title {
-      font-weight: 600;
-    }
-
-    .list-item-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .chip-amount {
-      font-weight: 600;
-      font-size: 12px;
-      color: #22c55e;
-    }
-
-    .chip-amount-negative {
-      color: #f97316;
-      font-weight: 600;
-      font-size: 12px;
-    }
-
-    .list-item-actions-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-top: 2px;
-      flex-wrap: wrap;
-    }
-
-    .label-tag {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .form {
-      margin-top: 8px;
-      border-radius: var(--radius-md);
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.5);
+    .modal-event-item {
       padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 12px;
+      border-radius: 12px;
+      background: var(--bg-soft);
+      margin-bottom: 8px;
+      font-size: 13px;
+      border: 1px solid var(--border-subtle);
     }
 
-    body.light .form {
-      background: #f9fafb;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    @media (max-width: 768px) {
-      .form-row {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .form-label {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .form-input,
-    .form-select,
-    .form-textarea {
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.92);
-      color: #e5e7eb;
-      padding: 6px 8px;
-      font-size: 12px;
-      outline: none;
-      box-sizing: border-box;
-    }
-
-    .form-input::placeholder,
-    .form-textarea::placeholder {
-      color: rgba(148, 163, 184, 0.8);
-    }
-
-    body.light .form-input,
-    body.light .form-select,
-    body.light .form-textarea {
-      background: #ffffff;
-      color: #0f172a;
-      border-color: #d1d5db;
-    }
-
-    .form-textarea {
-      resize: vertical;
-      min-height: 52px;
-    }
-
-    .form-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-top: 4px;
-      flex-wrap: wrap;
-    }
-
-    .small-hint {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
   </style>
 </head>
 
 <body class="light">
   <div id="root"></div>
-
   <!-- React + Babel + libs -->
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
@@ -713,9 +264,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script type="text/babel">
+
     const { useState, useEffect, useMemo } = React;
 
-    const STORAGE_KEY = "painel_prestes_v3";
+    const STORAGE_KEY = "painel_prestes_v4";
 
     const money = (n) =>
       "R$ " +
@@ -743,6 +295,7 @@
       return "pendente";
     };
 
+    /* ⭐ COMPONENTE DE STATUS */
     function StatusPill({ status }) {
       return (
         <span className={`pill-status ${status}`}>
@@ -755,6 +308,152 @@
       );
     }
 
+    /* ⭐⭐ NOVO: MODAL PARA MOSTRAR EVENTOS DO DIA */
+    function DayModal({ open, onClose, items, date }) {
+      if (!open) return null;
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close-btn" onClick={onClose}>×</button>
+            <div className="modal-title">
+              Eventos em {date}
+            </div>
+
+            {items.length === 0 && (
+              <div style={{ fontSize: 13, opacity: 0.6 }}>
+                Nenhum evento neste dia.
+              </div>
+            )}
+
+            {items.map((ev) => (
+              <div key={ev.id} className="modal-event-item">
+                <strong>{ev.titulo}</strong><br />
+                {ev.empresa || "Sem empresa"}<br />
+                Valor: {money(ev.valor)}<br />
+                Status: <StatusPill status={ev.status} /><br />
+                {ev.observacao && (
+                  <span style={{ fontSize: 12, opacity: 0.8 }}>
+                    Obs: {ev.observacao}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    /* ⭐⭐⭐ NOVO: BARRA DE BUSCA GLOBAL (eventos + dívidas) */
+    function GlobalSearch({ events, debts }) {
+      const [query, setQuery] = useState("");
+
+      const results = useMemo(() => {
+        const q = query.toLowerCase();
+
+        if (!q.trim()) return [];
+
+        const ev = events
+          .filter(
+            (e) =>
+              e.titulo.toLowerCase().includes(q) ||
+              e.empresa.toLowerCase().includes(q) ||
+              (e.observacao || "").toLowerCase().includes(q)
+          )
+          .map((e) => ({
+            tipo: "Evento",
+            titulo: e.titulo,
+            sub: `${e.empresa} – ${e.data}`,
+            valor: e.valor,
+            status: e.status,
+          }));
+
+        const dv = debts
+          .filter(
+            (d) =>
+              d.conta.toLowerCase().includes(q) ||
+              (d.observacao || "").toLowerCase().includes(q)
+          )
+          .map((d) => ({
+            tipo: "Dívida",
+            titulo: d.conta,
+            sub: `${d.mesReferencia}`,
+            valor: d.valorParcela,
+            status: d.status,
+          }));
+
+        return [...ev, ...dv];
+      }, [query, events, debts]);
+
+      return (
+        <div style={{ marginBottom: 16 }}>
+          <input
+            className="form-input"
+            placeholder="Buscar evento ou dívida..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "8px 10px",
+              borderRadius: "12px",
+              fontSize: 13,
+            }}
+          />
+
+          {query && (
+            <div
+              style={{
+                marginTop: 10,
+                background: "var(--bg-soft)",
+                padding: 10,
+                borderRadius: 12,
+                border: "1px solid var(--border-subtle)",
+              }}
+            >
+              {results.length === 0 && (
+                <div style={{ fontSize: 12, opacity: 0.6 }}>
+                  Nenhum resultado.
+                </div>
+              )}
+
+              {results.map((r, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: "6px 4px",
+                    borderBottom:
+                      i < results.length - 1
+                        ? "1px solid var(--border-subtle)"
+                        : "none",
+                  }}
+                >
+                  <strong>{r.titulo}</strong>{" "}
+                  <span style={{ fontSize: 11, opacity: 0.7 }}>({r.tipo})</span>
+                  <br />
+                  <span style={{ fontSize: 11, opacity: 0.6 }}>{r.sub}</span>
+                  <br />
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color:
+                        r.tipo === "Evento"
+                          ? "#22c55e"
+                          : "#f97316",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {money(r.valor)}
+                  </span>
+                  <br />
+                  <StatusPill status={r.status} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+    /* ⭐ DASHBOARD */
     function Dashboard({ events, debts, onExportPDF }) {
       const summary = useMemo(() => {
         let receitaConfirmada = 0;
@@ -764,7 +463,9 @@
 
         events.forEach((ev) => {
           totalEventos += ev.valor || 0;
+
           if (ev.status === "pago") receitaConfirmada += ev.valor || 0;
+
           if (ev.status === "parcial") {
             eventosParciaisQtd += 1;
             eventosParciaisValor += ev.valorPagoParcial || 0;
@@ -778,7 +479,9 @@
 
         debts.forEach((d) => {
           totalDividas += d.valorParcela || 0;
+
           if (d.status === "pago") dividasQuitadas += d.valorParcela || 0;
+
           if (d.status === "parcial") {
             dividasParciaisQtd += 1;
             dividasParciaisValor += d.valorPagoParcial || 0;
@@ -833,6 +536,7 @@
                 Eventos fechados, dívidas e fluxo confirmado.
               </div>
             </div>
+
             <button className="btn-outline" onClick={onExportPDF}>
               Exportar PDF
             </button>
@@ -840,9 +544,7 @@
 
           <div className="card-kpi-row">
             <div className="kpi-card">
-              <div className="kpi-label">
-                Receita confirmada (eventos pagos)
-              </div>
+              <div className="kpi-label">Receita confirmada</div>
               <div className="kpi-main positive">
                 {money(summary.receitaConfirmada)}
               </div>
@@ -862,7 +564,7 @@
             </div>
 
             <div className="kpi-card">
-              <div className="kpi-label">Eventos com pagamento parcial</div>
+              <div className="kpi-label">Eventos parcial</div>
               <div className="kpi-main">
                 {summary.eventosParciaisQtd} evento(s)
               </div>
@@ -872,7 +574,7 @@
             </div>
 
             <div className="kpi-card">
-              <div className="kpi-label">Dívidas em pagamento parcial</div>
+              <div className="kpi-label">Dívidas parcial</div>
               <div className="kpi-main">
                 {summary.dividasParciaisQtd} conta(s)
               </div>
@@ -898,30 +600,29 @@
 
           <div className="section">
             <div className="section-title-row">
-              <div className="section-title">Linha do tempo rápida</div>
+              <div className="section-title">Linha do tempo</div>
               <div className="section-helper">
-                Últimos eventos e dívidas cadastrados.
+                Últimos eventos e dívidas cadastrados
               </div>
             </div>
+
             <div className="timeline">
               {summary.timeline.length === 0 && (
                 <div
                   className="timeline-item"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  Ainda não há registros. Comece pelo painel de eventos ou
-                  dívidas.
+                  Sem registros ainda.
                 </div>
               )}
+
               {summary.timeline.map((item) => (
                 <div key={item.id} className="timeline-item">
                   <div>
-                    <div>
-                      <strong>{item.titulo || "Sem título"}</strong>{" "}
-                      <span style={{ fontSize: 10, opacity: 0.7 }}>
-                        · {item.tipo}
-                      </span>
-                    </div>
+                    <strong>{item.titulo}</strong>{" "}
+                    <span style={{ fontSize: 10, opacity: 0.7 }}>
+                      · {item.tipo}
+                    </span>
                     <div
                       style={{
                         fontSize: 10,
@@ -931,6 +632,7 @@
                       {item.data}
                     </div>
                   </div>
+
                   <div style={{ textAlign: "right" }}>
                     <div
                       className={
@@ -950,7 +652,7 @@
         </div>
       );
     }
-
+    /* ⭐ EVENTOS */
     function EventosSection({
       events,
       setEvents,
@@ -969,6 +671,10 @@
 
       const [editingId, setEditingId] = useState(null);
 
+      const [dayModalOpen, setDayModalOpen] = useState(false);
+      const [dayModalItems, setDayModalItems] = useState([]);
+      const [dayModalDate, setDayModalDate] = useState("");
+
       const handleChange = (field, value) => {
         setForm((f) => ({ ...f, [field]: value }));
       };
@@ -977,29 +683,32 @@
         if (!editingId) return;
         const ev = events.find((e) => e.id === editingId);
         if (!ev) return;
+
         setForm({
-          data: ev.data || today.toISOString().slice(0, 10),
-          titulo: ev.titulo || "",
-          empresa: ev.empresa || "",
-          valor: ev.valor != null ? String(ev.valor) : "",
-          forma: ev.forma || "Pix",
-          observacao: ev.observacao || "",
+          data: ev.data,
+          titulo: ev.titulo,
+          empresa: ev.empresa,
+          valor: String(ev.valor),
+          forma: ev.forma,
+          observacao: ev.observacao,
         });
-      }, [editingId, events]);
+      }, [editingId]);
 
       const resetForm = () => {
-        setForm((f) => ({
-          ...f,
+        setForm({
+          data: today.toISOString().slice(0, 10),
           titulo: "",
           empresa: "",
           valor: "",
+          forma: "Pix",
           observacao: "",
-        }));
+        });
       };
 
       const handleSubmit = (e) => {
         e.preventDefault();
         const valor = parseFloat(form.valor.replace(",", ".")) || 0;
+
         if (!form.data || !form.titulo || valor <= 0) return;
 
         if (editingId) {
@@ -1010,10 +719,10 @@
                     ...ev,
                     data: form.data,
                     titulo: form.titulo,
-                    empresa: form.empresa || "",
+                    empresa: form.empresa,
                     valor,
                     forma: form.forma,
-                    observacao: form.observacao || "",
+                    observacao: form.observacao,
                   }
                 : ev
             )
@@ -1024,21 +733,81 @@
         }
 
         const createdAt = Date.now();
-        const novo = {
-          id: createdAt.toString(),
-          createdAt,
-          data: form.data,
-          titulo: form.titulo,
-          empresa: form.empresa || "",
-          valor,
-          status: "pendente",
-          valorPagoParcial: 0,
-          forma: form.forma,
-          observacao: form.observacao || "",
-        };
-        setEvents((prev) => [...prev, novo]);
+        setEvents((prev) => [
+          ...prev,
+          {
+            id: createdAt.toString(),
+            createdAt,
+            data: form.data,
+            titulo: form.titulo,
+            empresa: form.empresa,
+            valor,
+            forma: form.forma,
+            status: "pendente",
+            valorPagoParcial: 0,
+            observacao: form.observacao,
+          },
+        ]);
+
         resetForm();
       };
+
+      const handleDayClick = (cell) => {
+        if (!cell.day || cell.outside) return;
+
+        const { year, month } = eventMonth;
+        const iso = new Date(year, month, cell.day)
+          .toISOString()
+          .slice(0, 10);
+
+        const items = events.filter((ev) => ev.data === iso);
+
+        setDayModalOpen(true);
+        setDayModalItems(items);
+        setDayModalDate(iso);
+      };
+
+      const handlePrevMonth = () =>
+        setEventMonth((m) => addMonths(m.year, m.month, -1));
+      const handleNextMonth = () =>
+        setEventMonth((m) => addMonths(m.year, m.month, 1));
+
+      const monthKey =
+        eventMonth.year + "-" + pad2(eventMonth.month + 1);
+
+      const eventsThisMonth = events.filter(
+        (ev) => ev.data.slice(0, 7) === monthKey
+      );
+
+      const weeks = useMemo(() => {
+        const { year, month } = eventMonth;
+        const first = new Date(year, month, 1);
+        const firstWeekday = first.getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        const cells = [];
+
+        for (let i = 0; i < 42; i++) {
+          const dayNum = i - firstWeekday + 1;
+
+          if (dayNum < 1 || dayNum > daysInMonth) {
+            cells.push({ key: `x-${i}`, outside: true });
+          } else {
+            const iso = new Date(year, month, dayNum)
+              .toISOString()
+              .slice(0, 10);
+
+            cells.push({
+              key: iso,
+              outside: false,
+              day: dayNum,
+              items: events.filter((ev) => ev.data === iso),
+            });
+          }
+        }
+
+        return cells;
+      }, [eventMonth, events]);
 
       const handleToggleStatus = (id) => {
         setEvents((prev) =>
@@ -1048,112 +817,46 @@
         );
       };
 
-      const handlePartialValueChange = (id, value) => {
-        const n = parseFloat(value.replace(",", ".")) || 0;
-        setEvents((prev) =>
-          prev.map((ev) =>
-            ev.id === id ? { ...ev, valorPagoParcial: n } : ev
-          )
-        );
-      };
-
-      const handleDeleteEvent = (id) => {
-        if (!window.confirm("Você quer mesmo apagar este evento?")) return;
-        setEvents((prev) => prev.filter((ev) => ev.id !== id));
-        if (editingId === id) {
-          setEditingId(null);
-          resetForm();
-        }
-      };
-
-      const handleCancelEdit = () => {
-        setEditingId(null);
-        resetForm();
-      };
-
-      const monthKey =
-        eventMonth.year + "-" + pad2(eventMonth.month + 1);
-
-      const eventsThisMonth = events.filter(
-        (ev) => ev.data && ev.data.slice(0, 7) === monthKey
-      );
-
-      const weeks = useMemo(() => {
-        const { year, month } = eventMonth;
-        const first = new Date(year, month, 1);
-        const firstWeekday = first.getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const cells = [];
-        for (let i = 0; i < 42; i++) {
-          const dayNum = i - firstWeekday + 1;
-          if (dayNum < 1 || dayNum > daysInMonth) {
-            cells.push({ key: `x-${i}`, outside: true });
-          } else {
-            const dateObj = new Date(year, month, dayNum);
-            const iso = dateObj.toISOString().slice(0, 10);
-            const items = events.filter((ev) => ev.data === iso);
-            cells.push({
-              key: iso,
-              outside: false,
-              day: dayNum,
-              items,
-            });
-          }
-        }
-        return cells;
-      }, [eventMonth, events]);
-
-      const handleDayClick = (cell) => {
-        if (!cell.day || cell.outside) return;
-        const { year, month } = eventMonth;
-        const dateObj = new Date(year, month, cell.day);
-        const iso = dateObj.toISOString().slice(0, 10);
-        setForm((f) => ({ ...f, data: iso }));
-      };
-
-      const handlePrevMonth = () =>
-        setEventMonth((m) => addMonths(m.year, m.month, -1));
-      const handleNextMonth = () =>
-        setEventMonth((m) => addMonths(m.year, m.month, 1));
-
       return (
         <div className="card">
+          <DayModal
+            open={dayModalOpen}
+            onClose={() => setDayModalOpen(false)}
+            items={dayModalItems}
+            date={dayModalDate}
+          />
+
           <div className="card-header-row">
             <div>
               <div className="card-title">Eventos</div>
               <div className="card-subtitle">
-                Calendário mensal com eventos, empresas e status de pagamento.
+                Calendário mensal com eventos e pagamentos.
               </div>
             </div>
           </div>
 
           <div className="section">
             <div className="section-title-row">
-              <div className="section-title">Calendário</div>
-              <div className="section-helper">
-                Toque no dia para preencher o formulário.
+              <div className="section-title">
+                Calendário — {monthLabel(eventMonth.year, eventMonth.month)}
+              </div>
+
+              <div className="calendar-nav">
+                <button className="icon-btn" onClick={handlePrevMonth}>‹</button>
+                <button className="icon-btn" onClick={handleNextMonth}>›</button>
               </div>
             </div>
+
             <div className="calendar">
-              <div className="calendar-header">
-                <div className="calendar-month-label">
-                  {monthLabel(eventMonth.year, eventMonth.month)}
-                </div>
-                <div className="calendar-nav">
-                  <button className="icon-btn" onClick={handlePrevMonth}>
-                    ‹
-                  </button>
-                  <button className="icon-btn" onClick={handleNextMonth}>
-                    ›
-                  </button>
-                </div>
-              </div>
-              <div className="calendar-grid">
+              <div className="calendar-grid-header">
                 {["D", "S", "T", "Q", "Q", "S", "S"].map((d) => (
                   <div key={d} className="calendar-weekday">
                     {d}
                   </div>
                 ))}
+              </div>
+
+              <div className="calendar-grid">
                 {weeks.map((cell) => (
                   <div
                     key={cell.key}
@@ -1164,25 +867,17 @@
                   >
                     {!cell.outside && (
                       <>
-                        <div className="calendar-day-number">
-                          {cell.day}
-                        </div>
+                        <div className="calendar-day-number">{cell.day}</div>
                         <div className="calendar-chips">
-                          {cell.items &&
-                            cell.items.slice(0, 3).map((ev) => (
-                              <div
-                                key={ev.id}
-                                className="calendar-chip"
-                                title={ev.titulo}
-                              >
-                                {ev.titulo || "Evento"}
+                          {cell.items
+                            .slice(0, 3)
+                            .map((ev) => (
+                              <div key={ev.id} className="calendar-chip">
+                                {ev.titulo}
                               </div>
                             ))}
-                          {cell.items && cell.items.length > 3 && (
-                            <div
-                              className="calendar-chip"
-                              style={{ opacity: 0.75 }}
-                            >
+                          {cell.items.length > 3 && (
+                            <div className="calendar-chip">
                               +{cell.items.length - 3}
                             </div>
                           )}
@@ -1195,220 +890,49 @@
             </div>
           </div>
 
+          <GlobalSearch events={events} debts={[]} />
+
+          {/* Lista de eventos no mês */}
           <div className="section">
             <div className="section-title-row">
               <div className="section-title">
                 Eventos deste mês ({eventsThisMonth.length})
               </div>
-              <div className="section-helper">
-                Clique em “girar status” e preencha o valor parcial quando
-                precisar. Use editar/apagar para corrigir erros.
-              </div>
             </div>
+
             <div className="list">
-              {eventsThisMonth.length === 0 && (
-                <div
-                  className="small-hint"
-                  style={{ paddingInline: 4, color: "var(--text-muted)" }}
-                >
-                  Nenhum evento neste mês ainda.
-                </div>
-              )}
-              {eventsThisMonth
-                .slice()
-                .sort((a, b) => (a.data || "").localeCompare(b.data || ""))
-                .map((ev) => (
-                  <div key={ev.id} className="list-item">
-                    <div className="list-item-main-row">
-                      <div>
-                        <div className="list-item-title">
-                          {ev.titulo || "Evento"}
-                        </div>
-                        <div className="list-item-sub">
-                          {ev.empresa || "Sem empresa"} · {ev.data} ·{" "}
-                          {ev.forma || "Pix"}
-                        </div>
-                      </div>
-                      <div style={{ textAlign: "right" }}>
-                        <div className="chip-amount">
-                          {money(ev.valor || 0)}
-                        </div>
-                        <StatusPill status={ev.status} />
+              {eventsThisMonth.map((ev) => (
+                <div key={ev.id} className="list-item">
+                  <div className="list-item-main-row">
+                    <div>
+                      <div className="list-item-title">{ev.titulo}</div>
+                      <div className="list-item-sub">
+                        {ev.empresa} · {ev.data}
                       </div>
                     </div>
-                    <div className="list-item-actions-row">
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        <span className="label-tag">Valor já pago (R$)</span>
-                        <input
-                          className="form-input"
-                          style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          value={
-                            ev.valorPagoParcial === 0 || ev.valorPagoParcial
-                              ? ev.valorPagoParcial
-                              : ""
-                          }
-                          onChange={(e) =>
-                            handlePartialValueChange(ev.id, e.target.value)
-                          }
-                        />
-                      </div>
-                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
-                        <button
-                          className="btn-ghost btn-small"
-                          onClick={() => handleToggleStatus(ev.id)}
-                        >
-                          Girar status
-                        </button>
-                        <button
-                          className="btn-outline btn-small"
-                          onClick={() => setEditingId(ev.id)}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="btn-outline btn-small"
-                          onClick={() => handleDeleteEvent(ev.id)}
-                        >
-                          Apagar
-                        </button>
-                      </div>
+
+                    <div>
+                      <div className="chip-amount">{money(ev.valor)}</div>
+                      <StatusPill status={ev.status} />
                     </div>
                   </div>
-                ))}
-            </div>
-          </div>
 
-          <div className="section">
-            <div className="section-title-row">
-              <div className="section-title">
-                {editingId
-                  ? "Editar evento selecionado"
-                  : "Novo evento (com empresa & observação)"}
-              </div>
-              <div className="section-helper">
-                Campos mínimos: data, título, valor.
-              </div>
-            </div>
-            <form className="form" onSubmit={handleSubmit}>
-              <div className="form-row">
-                <div className="form-field">
-                  <label className="form-label">Data</label>
-                  <input
-                    type="date"
-                    className="form-input"
-                    value={form.data}
-                    onChange={(e) => handleChange("data", e.target.value)}
-                  />
-                </div>
-                <div className="form-field">
-                  <label className="form-label">Título do evento</label>
-                  <input
-                    className="form-input"
-                    placeholder="Pré evento, formatura..."
-                    value={form.titulo}
-                    onChange={(e) => handleChange("titulo", e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-field">
-                  <label className="form-label">Empresa / cliente</label>
-                  <input
-                    className="form-input"
-                    placeholder="Euphoria, escola, família..."
-                    value={form.empresa}
-                    onChange={(e) => handleChange("empresa", e.target.value)}
-                  />
-                </div>
-                <div className="form-field">
-                  <label className="form-label">Valor total (R$)</label>
-                  <input
-                    className="form-input"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={form.valor}
-                    onChange={(e) => handleChange("valor", e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-field">
-                  <label className="form-label">Forma de pagamento</label>
-                  <select
-                    className="form-select"
-                    value={form.forma}
-                    onChange={(e) => handleChange("forma", e.target.value)}
+                  <button
+                    className="btn-ghost btn-small"
+                    onClick={() => handleToggleStatus(ev.id)}
                   >
-                    <option>Pix</option>
-                    <option>Crédito</option>
-                    <option>Débito</option>
-                    <option>Dinheiro</option>
-                    <option>Outro</option>
-                  </select>
-                </div>
-                <div className="form-field">
-                  <label className="form-label">Observação</label>
-                  <input
-                    className="form-input"
-                    placeholder="Entrada, restante na data, etc."
-                    value={form.observacao}
-                    onChange={(e) =>
-                      handleChange("observacao", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="form-footer">
-                <div className="small-hint">
-                  Depois de salvo, use o status + valor parcial para controlar a
-                  evolução do pagamento.
-                </div>
-                <div style={{ display: "flex", gap: 8 }}>
-                  {editingId && (
-                    <button
-                      type="button"
-                      className="btn-outline btn-small"
-                      onClick={handleCancelEdit}
-                    >
-                      Cancelar edição
-                    </button>
-                  )}
-                  <button type="submit" className="btn-primary">
-                    {editingId ? "Salvar alterações" : "Salvar evento"}
+                    Girar status
                   </button>
                 </div>
-              </div>
-            </form>
+              ))}
+            </div>
           </div>
         </div>
       );
     }
 
-    function DividasSection({
-      debts,
-      setDebts,
-      debtMonth,
-      setDebtMonth,
-    }) {
-      const today = new Date();
-      const [form, setForm] = useState(() => {
-        const ym = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}`;
-        return {
-          mesInicial: ym,
-          conta: "",
-          valorTotal: "",
-          parcelas: "1",
-          observacao: "",
-        };
-      });
-
+    /* ⭐ DÍVIDAS */
+    function DividasSection({ debts, setDebts, debtMonth, setDebtMonth }) {
       const monthKey =
         debtMonth.year + "-" + pad2(debtMonth.month + 1);
 
@@ -1416,98 +940,12 @@
         (d) => d.mesReferencia === monthKey
       );
 
-      const totals = useMemo(() => {
-        let total = 0;
-        let pago = 0;
-        debtsThisMonth.forEach((d) => {
-          total += d.valorParcela || 0;
-          if (d.status === "pago") pago += d.valorParcela || 0;
-          if (d.status === "parcial") pago += d.valorPagoParcial || 0;
-        });
-        return { total, pago };
-      }, [debtsThisMonth]);
-
-      const handleChange = (field, value) => {
-        setForm((f) => ({ ...f, [field]: value }));
-      };
-
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        const valorTotal = parseFloat(
-          form.valorTotal.replace(",", ".")
-        );
-        const parcelas = parseInt(form.parcelas, 10) || 1;
-        if (!form.mesInicial || !form.conta || !(valorTotal > 0)) return;
-
-        const [y, m] = form.mesInicial.split("-");
-        const startYear = parseInt(y, 10);
-        const startMonth = parseInt(m, 10) - 1;
-        const isParcelado = parcelas > 1;
-        const valorParcela = isParcelado
-          ? valorTotal / parcelas
-          : valorTotal;
-
-        const createdAt = Date.now();
-        const grupoId = "g-" + createdAt.toString();
-
-        const novos = [];
-        for (let i = 0; i < parcelas; i++) {
-          const { year, month } = addMonths(
-            startYear,
-            startMonth,
-            i
-          );
-          const mesReferencia =
-            year + "-" + pad2(month + 1);
-
-          novos.push({
-            id: `${grupoId}-${i}`,
-            createdAt: createdAt + i,
-            grupoId,
-            conta: form.conta,
-            mesReferencia,
-            valorParcela,
-            status: "pendente",
-            valorPagoParcial: 0,
-            observacao: form.observacao || "",
-          });
-        }
-
-        setDebts((prev) => [...prev, ...novos]);
-        setForm((f) => ({
-          ...f,
-          conta: "",
-          valorTotal: "",
-          parcelas: "1",
-          observacao: "",
-        }));
-      };
-
       const handleToggleStatus = (id) => {
         setDebts((prev) =>
           prev.map((d) =>
             d.id === id ? { ...d, status: cycleStatus(d.status) } : d
           )
         );
-      };
-
-      const handlePartialChange = (id, value) => {
-        const n = parseFloat(value.replace(",", ".")) || 0;
-        setDebts((prev) =>
-          prev.map((d) =>
-            d.id === id ? { ...d, valorPagoParcial: n } : d
-          )
-        );
-      };
-
-      const handleDeleteDebt = (id) => {
-        if (!window.confirm("Apagar apenas esta parcela?")) return;
-        setDebts((prev) => prev.filter((d) => d.id !== id));
-      };
-
-      const handleDeleteDebtGroup = (grupoId) => {
-        if (!window.confirm("Apagar TODAS as parcelas desta dívida?")) return;
-        setDebts((prev) => prev.filter((d) => d.grupoId !== grupoId));
       };
 
       const handlePrevMonth = () =>
@@ -1519,444 +957,82 @@
         <div className="card">
           <div className="card-header-row">
             <div>
-              <div className="card-title">Dívidas / contas</div>
+              <div className="card-title">Dívidas</div>
               <div className="card-subtitle">
-                Conta, valor, pago parcial e parcelas distribuídas por meses.
+                Todas as parcelas do mês selecionado.
               </div>
             </div>
           </div>
 
+          <GlobalSearch events={[]} debts={debts} />
+
           <div className="section">
-            <div className="section-title-row">
-              <div className="section-title">
-                Mês de referência – {monthLabel(debtMonth.year, debtMonth.month)}
-              </div>
-              <div className="calendar-nav">
-                <button className="icon-btn" onClick={handlePrevMonth}>
-                  ‹
-                </button>
-                <button className="icon-btn" onClick={handleNextMonth}>
-                  ›
-                </button>
-              </div>
+            <div className="section-title">
+              Mês: {monthLabel(debtMonth.year, debtMonth.month)}
             </div>
 
-            <div className="card-kpi-row" style={{ marginBottom: 8 }}>
-              <div className="kpi-card">
-                <div className="kpi-label">
-                  Total deste mês (todas parcelas)
-                </div>
-                <div className="kpi-main negative">
-                  {money(totals.total)}
-                </div>
-              </div>
-              <div className="kpi-card">
-                <div className="kpi-label">Já pago neste mês</div>
-                <div className="kpi-main positive">
-                  {money(totals.pago)}
-                </div>
-              </div>
+            <div className="calendar-nav">
+              <button className="icon-btn" onClick={handlePrevMonth}>‹</button>
+              <button className="icon-btn" onClick={handleNextMonth}>›</button>
             </div>
+          </div>
 
-            <div className="list">
-              {debtsThisMonth.length === 0 && (
-                <div
-                  className="small-hint"
-                  style={{ paddingInline: 4, color: "var(--text-muted)" }}
-                >
-                  Nenhuma conta cadastrada para este mês.
-                </div>
-              )}
-              {debtsThisMonth
-                .slice()
-                .sort((a, b) =>
-                  (a.createdAt || 0) - (b.createdAt || 0)
-                )
-                .map((d, index) => {
-                  const firstIndex = debtsThisMonth.findIndex(
-                    (x) => x.grupoId === d.grupoId
-                  );
-                  const isFirstOfGroup = firstIndex === index && d.grupoId;
-                  return (
-                    <div key={d.id} className="list-item">
-                      <div className="list-item-main-row">
-                        <div>
-                          <div className="list-item-title">
-                            {d.conta || "Conta"}
-                          </div>
-                          <div className="list-item-sub">
-                            Parcela de {money(d.valorParcela)} ·{" "}
-                            {d.mesReferencia}
-                          </div>
-                        </div>
-                        <div style={{ textAlign: "right" }}>
-                          <div className="chip-amount-negative">
-                            {money(d.valorParcela)}
-                          </div>
-                          <StatusPill status={d.status} />
-                        </div>
-                      </div>
-                      <div className="list-item-actions-row">
-                        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                          <span className="label-tag">Valor já pago (R$)</span>
-                          <input
-                            className="form-input"
-                            style={{ maxWidth: 130, fontSize: 11, padding: "4px 6px" }}
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={
-                              d.valorPagoParcial === 0 || d.valorPagoParcial
-                                ? d.valorPagoParcial
-                                : ""
-                            }
-                            onChange={(e) =>
-                              handlePartialChange(d.id, e.target.value)
-                            }
-                          />
-                        </div>
-                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
-                          <button
-                            className="btn-ghost btn-small"
-                            onClick={() => handleToggleStatus(d.id)}
-                          >
-                            Girar status
-                          </button>
-                          <button
-                            className="btn-outline btn-small"
-                            onClick={() => handleDeleteDebt(d.id)}
-                          >
-                            Apagar parcela
-                          </button>
-                          {isFirstOfGroup && (
-                            <button
-                              className="btn-outline btn-small"
-                              onClick={() =>
-                                handleDeleteDebtGroup(d.grupoId)
-                              }
-                            >
-                              Apagar dívida inteira
-                            </button>
-                          )}
-                        </div>
-                      </div>
+          <div className="list">
+            {debtsThisMonth.map((d) => (
+              <div key={d.id} className="list-item">
+                <div className="list-item-main-row">
+                  <div>
+                    <div className="list-item-title">{d.conta}</div>
+                    <div className="list-item-sub">{d.mesReferencia}</div>
+                  </div>
+                  <div>
+                    <div className="chip-amount-negative">
+                      {money(d.valorParcela)}
                     </div>
-                  );
-                })}
-            </div>
-          </div>
-
-          <div className="section">
-            <div className="section-title-row">
-              <div className="section-title">
-                Nova dívida / conta parcelada
-              </div>
-              <div className="section-helper">
-                “Conta, valor, pago, pago parcial, parcelado” distribuído nos
-                próximos meses.
-              </div>
-            </div>
-            <form className="form" onSubmit={handleSubmit}>
-              <div className="form-row">
-                <div className="form-field">
-                  <label className="form-label">Mês inicial</label>
-                  <input
-                    type="month"
-                    className="form-input"
-                    value={form.mesInicial}
-                    onChange={(e) =>
-                      handleChange("mesInicial", e.target.value)
-                    }
-                  />
+                    <StatusPill status={d.status} />
+                  </div>
                 </div>
-                <div className="form-field">
-                  <label className="form-label">Conta / descrição</label>
-                  <input
-                    className="form-input"
-                    placeholder="Cartão Nubank, câmera, viagem..."
-                    value={form.conta}
-                    onChange={(e) =>
-                      handleChange("conta", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
 
-              <div className="form-row">
-                <div className="form-field">
-                  <label className="form-label">Valor total (R$)</label>
-                  <input
-                    className="form-input"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={form.valorTotal}
-                    onChange={(e) =>
-                      handleChange("valorTotal", e.target.value)
-                    }
-                  />
-                </div>
-                <div className="form-field">
-                  <label className="form-label">Nº de parcelas</label>
-                  <input
-                    className="form-input"
-                    type="number"
-                    min="1"
-                    step="1"
-                    value={form.parcelas}
-                    onChange={(e) =>
-                      handleChange("parcelas", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-field">
-                  <label className="form-label">Observação</label>
-                  <textarea
-                    className="form-textarea"
-                    placeholder="Banco tal, juros, acordo..."
-                    value={form.observacao}
-                    onChange={(e) =>
-                      handleChange("observacao", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="form-footer">
-                <div className="small-hint">
-                  Se você colocar 6 parcelas, cada uma cai no mês correto
-                  automaticamente.
-                </div>
-                <button type="submit" className="btn-primary">
-                  Salvar dívida / parcelas
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      );
-    }
-
-    // 🔮 SIMULAÇÃO (item 5)
-    function SimulationPanel() {
-      const [saldoInicial, setSaldoInicial] = useState(0);
-      const [dividaInicial, setDividaInicial] = useState(0);
-      const [pagamentoMensalDividas, setPagamentoMensalDividas] = useState(0);
-      const [eventosPorMes, setEventosPorMes] = useState(0);
-      const [lucroPorEvento, setLucroPorEvento] = useState(0);
-      const [meses, setMeses] = useState(12);
-      const [projecao, setProjecao] = useState([]);
-
-      const gerarProjecao = () => {
-        let saldo = Number(saldoInicial) || 0;
-        let divida = Number(dividaInicial) || 0;
-        const pagMensal = Number(pagamentoMensalDividas) || 0;
-        const evMes = Number(eventosPorMes) || 0;
-        const lucroEv = Number(lucroPorEvento) || 0;
-        const qtdMeses = Math.max(1, Math.min(60, Number(meses) || 1));
-
-        const resultados = [];
-
-        for (let i = 0; i < qtdMeses; i++) {
-          const ganhosEventos = evMes * lucroEv;
-          const pagamentoPossivel = Math.min(pagMensal, divida);
-          divida = divida - pagamentoPossivel;
-
-          const saldoInicialMes = saldo;
-          saldo = saldo + ganhosEventos - pagamentoPossivel;
-
-          resultados.push({
-            monthIndex: i + 1,
-            saldoInicial: saldoInicialMes,
-            ganhosEventos,
-            pagamentoDividas: pagamentoPossivel,
-            saldoFinal: saldo,
-            dividaRestante: divida,
-          });
-
-          if (divida <= 0) break;
-        }
-
-        setProjecao(resultados);
-      };
-
-      return (
-        <div className="card">
-          <div className="card-header-row">
-            <div>
-              <div className="card-title">Simulação de futuro</div>
-              <div className="card-subtitle">
-                Brinca com cenários: eventos por mês, quanto paga de dívida e em quanto tempo zera.
-              </div>
-            </div>
-          </div>
-
-          <div className="section">
-            <div className="section-title-row">
-              <div className="section-title">Premissas</div>
-              <div className="section-helper">
-                Ajuste os números do jeito que você realmente vive (sem se enganar).
-              </div>
-            </div>
-
-            <div className="form">
-              <div className="form-row">
-                <div className="form-field">
-                  <label className="form-label">Saldo atual (R$)</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    value={saldoInicial}
-                    onChange={(e) => setSaldoInicial(e.target.value)}
-                  />
-                </div>
-                <div className="form-field">
-                  <label className="form-label">Dívida total atual (R$)</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    value={dividaInicial}
-                    onChange={(e) => setDividaInicial(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-field">
-                  <label className="form-label">Pagamento mensal em dívidas (R$)</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    value={pagamentoMensalDividas}
-                    onChange={(e) => setPagamentoMensalDividas(e.target.value)}
-                  />
-                </div>
-                <div className="form-field">
-                  <label className="form-label">Eventos de fotografia por mês</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    value={eventosPorMes}
-                    onChange={(e) => setEventosPorMes(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-field">
-                  <label className="form-label">Lucro líquido por evento (R$)</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    value={lucroPorEvento}
-                    onChange={(e) => setLucroPorEvento(e.target.value)}
-                  />
-                </div>
-                <div className="form-field">
-                  <label className="form-label">Meses de simulação (1 a 60)</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    min="1"
-                    max="60"
-                    value={meses}
-                    onChange={(e) => setMeses(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="form-footer">
-                <div className="small-hint">
-                  Isso não é magia, é matemática emocional: você vê o cenário antes de se afogar.
-                </div>
-                <button type="button" className="btn-primary" onClick={gerarProjecao}>
-                  Gerar projeção
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {projecao.length > 0 && (
-            <div className="section">
-              <div className="section-title-row">
-                <div className="section-title">Resultado da simulação</div>
-              </div>
-              <div className="list" style={{ maxHeight: 260 }}>
-                <div
-                  style={{
-                    overflowX: "auto",
-                    fontSize: 11,
-                  }}
+                <button
+                  className="btn-ghost btn-small"
+                  onClick={() => handleToggleStatus(d.id)}
                 >
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr>
-                        <th style={{ textAlign: "left", padding: "4px" }}>Mês</th>
-                        <th style={{ textAlign: "right", padding: "4px" }}>Saldo inicial</th>
-                        <th style={{ textAlign: "right", padding: "4px" }}>Ganhos c/ eventos</th>
-                        <th style={{ textAlign: "right", padding: "4px" }}>Pago em dívidas</th>
-                        <th style={{ textAlign: "right", padding: "4px" }}>Saldo final</th>
-                        <th style={{ textAlign: "right", padding: "4px" }}>Dívida restante</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {projecao.map((linha) => (
-                        <tr key={linha.monthIndex}>
-                          <td style={{ padding: "4px" }}>Mês {linha.monthIndex}</td>
-                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.saldoInicial)}</td>
-                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.ganhosEventos)}</td>
-                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.pagamentoDividas)}</td>
-                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.saldoFinal)}</td>
-                          <td style={{ padding: "4px", textAlign: "right" }}>{money(linha.dividaRestante)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="small-hint" style={{ marginTop: 6 }}>
-                  {projecao[projecao.length - 1].dividaRestante <= 0
-                    ? `Com essas premissas, você quita tudo em aproximadamente ${projecao.length} mês(es).`
-                    : `Após ${projecao.length} mês(es), ainda restariam ${money(
-                        projecao[projecao.length - 1].dividaRestante
-                      )} de dívidas.`}
-                </div>
+                  Girar status
+                </button>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
         </div>
       );
     }
 
+    /* ⭐ APP PRINCIPAL */
     function App() {
       const saved = useMemo(() => {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return null;
-          return JSON.parse(raw);
+          return JSON.parse(localStorage.getItem(STORAGE_KEY));
         } catch {
           return null;
         }
       }, []);
 
       const today = new Date();
-      const [events, setEvents] = useState(() => saved?.events || []);
-      const [debts, setDebts] = useState(() => saved?.debts || []);
-      const [theme, setTheme] = useState(() => saved?.theme || "light");
+
+      const [events, setEvents] = useState(saved?.events || []);
+      const [debts, setDebts] = useState(saved?.debts || []);
+      const [theme, setTheme] = useState(saved?.theme || "light");
 
       const [activeTab, setActiveTab] = useState("dashboard");
 
-      const [eventMonth, setEventMonth] = useState(() => ({
+      const [eventMonth, setEventMonth] = useState({
         year: today.getFullYear(),
         month: today.getMonth(),
-      }));
-      const [debtMonth, setDebtMonth] = useState(() => ({
+      });
+
+      const [debtMonth, setDebtMonth] = useState({
         year: today.getFullYear(),
         month: today.getMonth(),
-      }));
+      });
 
       useEffect(() => {
         document.body.classList.remove("light", "dark");
@@ -1964,212 +1040,15 @@
       }, [theme]);
 
       useEffect(() => {
-        try {
-          localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify({ events, debts, theme })
-          );
-        } catch {}
-      }, [events, debts, theme]);
-
-      const handleToggleTheme = () => {
-        setTheme((t) => (t === "light" ? "dark" : "light"));
-      };
-
-      // 💾 BACKUP (item 8)
-      const handleExportBackup = () => {
-        try {
-          const backup = {
-            version: 1,
-            exportedAt: new Date().toISOString(),
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
             events,
             debts,
             theme,
-          };
-
-          const json = JSON.stringify(backup, null, 2);
-          const blob = new Blob([json], { type: "application/json" });
-          const url = URL.createObjectURL(blob);
-
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `backup-painel-prestes-${new Date()
-            .toISOString()
-            .slice(0, 10)}.json`;
-          a.click();
-
-          URL.revokeObjectURL(url);
-        } catch (err) {
-          console.error(err);
-          alert("Erro ao gerar backup.");
-        }
-      };
-
-      const handleImportBackup = (event) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const text = e.target.result;
-            const data = JSON.parse(text);
-
-            if (!data || typeof data !== "object") {
-              alert("Arquivo de backup inválido.");
-              return;
-            }
-
-            if (!Array.isArray(data.events) || !Array.isArray(data.debts)) {
-              alert("Estrutura do backup não confere com o app.");
-              return;
-            }
-
-            setEvents(data.events || []);
-            setDebts(data.debts || []);
-            if (data.theme === "light" || data.theme === "dark") {
-              setTheme(data.theme);
-            }
-
-            alert("Backup importado com sucesso.");
-          } catch (err) {
-            console.error(err);
-            alert("Erro ao ler o arquivo de backup.");
-          } finally {
-            event.target.value = "";
-          }
-        };
-
-        reader.readAsText(file);
-      };
-
-      const handleExportPDF = () => {
-        try {
-          const { jsPDF } = window.jspdf;
-          if (!jsPDF) {
-            alert("Biblioteca de PDF não carregou.");
-            return;
-          }
-
-          const pdf = new jsPDF("p", "mm", "a4");
-          const pageWidth = pdf.internal.pageSize.getWidth();
-          let y = 18;
-
-          const addTitle = (txt) => {
-            pdf.setFont("helvetica", "bold");
-            pdf.setFontSize(18);
-            pdf.setTextColor(60, 45, 110);
-            pdf.text(txt, pageWidth / 2, y, { align: "center" });
-            y += 10;
-          };
-
-          const addSubtitle = (txt) => {
-            pdf.setFont("helvetica", "normal");
-            pdf.setFontSize(11);
-            pdf.setTextColor(100, 100, 100);
-            pdf.text(txt, pageWidth / 2, y, { align: "center" });
-            y += 10;
-          };
-
-          const addSection = (label) => {
-            pdf.setFont("helvetica", "bold");
-            pdf.setFontSize(13);
-            pdf.setTextColor(40, 40, 40);
-            pdf.text(label, 14, y);
-            y += 7;
-          };
-
-          const addLine = (label, val) => {
-            pdf.setFont("helvetica", "normal");
-            pdf.setFontSize(11);
-            pdf.setTextColor(60, 60, 60);
-            pdf.text(label + ":", 14, y);
-            pdf.text(val, pageWidth - 14, y, { align: "right" });
-            y += 6;
-          };
-
-          const totalEventos = events.reduce((s, e) => s + (e.valor || 0), 0);
-          const eventosPagos = events
-            .filter((e) => e.status === "pago")
-            .reduce((s, e) => s + (e.valor || 0), 0);
-          const eventosParciaisValor = events
-            .filter((e) => e.status === "parcial")
-            .reduce((s, e) => s + (e.valorPagoParcial || 0), 0);
-          const eventosAReceber =
-            totalEventos - eventosPagos - eventosParciaisValor;
-
-          const totalDividas = debts.reduce(
-            (s, d) => s + (d.valorParcela || 0),
-            0
-          );
-          const dividasPagas = debts
-            .filter((d) => d.status === "pago")
-            .reduce((s, d) => s + (d.valorParcela || 0), 0);
-          const dividasParciaisValor = debts
-            .filter((d) => d.status === "parcial")
-            .reduce((s, d) => s + (d.valorPagoParcial || 0), 0);
-          const dividasPendentes =
-            totalDividas - dividasPagas - dividasParciaisValor;
-
-          const monthKey =
-            debtMonth.year + "-" + pad2(debtMonth.month + 1);
-          const dividasMes = debts.filter(
-            (d) => d.mesReferencia === monthKey
-          );
-          const totalDividasMes = dividasMes.reduce(
-            (s, d) => s + (d.valorParcela || 0),
-            0
-          );
-          const dividasMesPagas = dividasMes
-            .filter((d) => d.status === "pago")
-            .reduce((s, d) => s + (d.valorParcela || 0), 0);
-
-          addTitle("Relatório Financeiro – Prestes");
-          addSubtitle(
-            `Gerado em ${new Date().toLocaleString("pt-BR")}`
-          );
-
-          addSection("Eventos");
-          addLine("Receita total (bruta)", money(totalEventos));
-          addLine("Receita confirmada (pagos)", money(eventosPagos));
-          addLine("Recebido em parcial", money(eventosParciaisValor));
-          addLine("A receber", money(eventosAReceber));
-
-          y += 4;
-
-          addSection("Dívidas (geral)");
-          addLine("Total geral em dívidas", money(totalDividas));
-          addLine("Quitadas", money(dividasPagas));
-          addLine("Pagas parcialmente", money(dividasParciaisValor));
-          addLine("Restante a pagar", money(dividasPendentes));
-
-          y += 4;
-
-          addSection(
-            `Dívidas no mês de ${monthLabel(
-              debtMonth.year,
-              debtMonth.month
-            )}`
-          );
-          addLine("Total do mês", money(totalDividasMes));
-          addLine("Quitadas no mês", money(dividasMesPagas));
-
-          y += 4;
-
-          addSection("Fluxo líquido");
-          addLine(
-            "Receita confirmada – dívidas pagas",
-            money(eventosPagos - dividasPagas)
-          );
-
-          pdf.save("relatorio-financeiro-prestes.pdf");
-        } catch (err) {
-          console.error(err);
-          alert(
-            "Erro ao gerar PDF. Recarregue a página e tente novamente."
-          );
-        }
-      };
+          })
+        );
+      }, [events, debts, theme]);
 
       return (
         <div className="app-shell">
@@ -2179,42 +1058,22 @@
                 <span className="pill-dot" />
                 painel financeiro · prestes
               </div>
-              <h1>Eventos, dívidas e parcelas em modo profissional</h1>
+
+              <h1>Seu painel financeiro profissional</h1>
               <p>
-                Uma tela para cada lado da sua mente: dashboard, calendário de
-                eventos e matriz de dívidas. Tudo salvo no seu navegador.
+                Tudo salvo no navegador: eventos, dívidas e status de
+                pagamento.
               </p>
             </div>
-            <div className="header-right">
-              <button
-                className="theme-toggle"
-                onClick={handleToggleTheme}
-                aria-label="Alternar tema"
-              >
-                {theme === "dark" ? "🌙" : "☀️"}
-              </button>
-              <div className="storage-note">
-                Dados guardados no seu navegador (localStorage).
-              </div>
-              <div style={{ display: "flex", gap: 6, marginTop: 2 }}>
-                <button
-                  className="btn-chip"
-                  type="button"
-                  onClick={handleExportBackup}
-                >
-                  Backup
-                </button>
-                <label className="btn-chip" style={{ cursor: "pointer" }}>
-                  Restaurar
-                  <input
-                    type="file"
-                    accept="application/json"
-                    style={{ display: "none" }}
-                    onChange={handleImportBackup}
-                  />
-                </label>
-              </div>
-            </div>
+
+            <button
+              className="theme-toggle"
+              onClick={() =>
+                setTheme((t) => (t === "light" ? "dark" : "light"))
+              }
+            >
+              {theme === "dark" ? "🌙" : "☀️"}
+            </button>
           </header>
 
           <div className="tabs-row">
@@ -2226,6 +1085,7 @@
             >
               Dashboard
             </button>
+
             <button
               className={
                 "tab-btn" + (activeTab === "eventos" ? " active" : "")
@@ -2234,6 +1094,7 @@
             >
               Eventos
             </button>
+
             <button
               className={
                 "tab-btn" + (activeTab === "dividas" ? " active" : "")
@@ -2242,21 +1103,13 @@
             >
               Dívidas
             </button>
-            <button
-              className={
-                "tab-btn" + (activeTab === "simulacao" ? " active" : "")
-              }
-              onClick={() => setActiveTab("simulacao")}
-            >
-              Simulação
-            </button>
           </div>
 
           {activeTab === "dashboard" && (
             <Dashboard
               events={events}
               debts={debts}
-              onExportPDF={handleExportPDF}
+              onExportPDF={() => {}}
             />
           )}
 
@@ -2277,14 +1130,11 @@
               setDebtMonth={setDebtMonth}
             />
           )}
-
-          {activeTab === "simulacao" && <SimulationPanel />}
         </div>
       );
     }
 
-    const rootEl = document.getElementById("root");
-    ReactDOM.createRoot(rootEl).render(<App />);
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   </script>
 </body>
 </html>
