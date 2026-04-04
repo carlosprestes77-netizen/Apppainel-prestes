@@ -1,11 +1,21 @@
 from docx import Document
-from docx.shared import Pt, RGBColor, Cm
+from docx.shared import Pt, RGBColor, Cm, Inches, Twips
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
+import copy
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+# ── Paleta JCPV ──────────────────────────────────────────────────────────────
+DARK      = '1E1E1E'
+GOLD      = 'B89B6A'
+DARK_RGB  = RGBColor(0x1E, 0x1E, 0x1E)
+GOLD_RGB  = RGBColor(0xB8, 0x9B, 0x6A)
+WHITE_RGB = RGBColor(0xFF, 0xFF, 0xFF)
+GRAY_RGB  = RGBColor(0x88, 0x88, 0x88)
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
 def set_cell_bg(cell, hex_color):
     hex_color = hex_color.lstrip('#')
@@ -30,11 +40,11 @@ def set_cell_margins(cell, top=0, left=0, bottom=0, right=0):
         tcMar.append(m)
     tcPr.append(tcMar)
 
-def set_row_height(row, height_twips, exact=True):
+def set_row_height(row, twips, exact=True):
     tr = row._tr
     trPr = tr.get_or_add_trPr()
     trHeight = OxmlElement('w:trHeight')
-    trHeight.set(qn('w:val'), str(height_twips))
+    trHeight.set(qn('w:val'), str(twips))
     trHeight.set(qn('w:hRule'), 'exact' if exact else 'atLeast')
     trPr.append(trHeight)
 
@@ -54,347 +64,381 @@ def no_borders(table):
         tblBorders.append(b)
     tblPr.append(tblBorders)
 
-def set_table_width(table, twips):
+def set_table_width_pct(table, pct=100):
     tbl = table._tbl
     tblPr = tbl.find(qn('w:tblPr'))
     if tblPr is None:
         tblPr = OxmlElement('w:tblPr')
         tbl.insert(0, tblPr)
     tblW = OxmlElement('w:tblW')
-    tblW.set(qn('w:w'), str(twips))
-    tblW.set(qn('w:type'), 'dxa')
+    tblW.set(qn('w:w'), str(pct * 50))
+    tblW.set(qn('w:type'), 'pct')
     tblPr.append(tblW)
 
 def no_space(para):
     para.paragraph_format.space_before = Pt(0)
-    para.paragraph_format.space_after = Pt(0)
+    para.paragraph_format.space_after  = Pt(0)
 
-def gold_line(cell):
-    """Add a bottom-border gold line to a paragraph inside a cell."""
-    p = cell.add_paragraph()
-    no_space(p)
-    pPr = p._p.get_or_add_pPr()
+def add_run(para, text, font='Times New Roman', size=12, bold=False,
+            italic=False, color=None, underline=False):
+    r = para.add_run(text)
+    r.font.name  = font
+    r.font.size  = Pt(size)
+    r.font.bold  = bold
+    r.font.italic = italic
+    r.font.underline = underline
+    if color:
+        r.font.color.rgb = color
+    return r
+
+def para_border_bottom(para, color='B89B6A', sz='12'):
+    pPr = para._p.get_or_add_pPr()
     pBdr = OxmlElement('w:pBdr')
     bot = OxmlElement('w:bottom')
     bot.set(qn('w:val'), 'single')
-    bot.set(qn('w:sz'), '4')
+    bot.set(qn('w:sz'), sz)
     bot.set(qn('w:space'), '1')
-    bot.set(qn('w:color'), 'B89B6A')
+    bot.set(qn('w:color'), color)
     pBdr.append(bot)
     pPr.append(pBdr)
-    return p
 
-# ── Constants ─────────────────────────────────────────────────────────────────
+def set_line_spacing(para, spacing=1.5):
+    from docx.shared import Pt
+    para.paragraph_format.line_spacing = spacing * Pt(12)
 
-PAGE_W = 11906   # A4 width in twips
-DARK   = '1E1E1E'
-GOLD   = 'B89B6A'
-NAVY   = '1B3A5C'
-WHITE  = 'FFFFFF'
-LIGHT  = 'F5F5F0'
-DARK2  = '2C2C2C'
-
-DARK_RGB  = RGBColor(0x1E, 0x1E, 0x1E)
-GOLD_RGB  = RGBColor(0xB8, 0x9B, 0x6A)
-NAVY_RGB  = RGBColor(0x1B, 0x3A, 0x5C)
-WHITE_RGB = RGBColor(0xFF, 0xFF, 0xFF)
-GRAY_RGB  = RGBColor(0x66, 0x66, 0x66)
-
-# ── Document ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# DOCUMENTO
+# ─────────────────────────────────────────────────────────────────────────────
 
 doc = Document()
 sec = doc.sections[0]
-sec.page_height = Cm(29.7)
-sec.page_width  = Cm(21)
-sec.top_margin    = Cm(0)
-sec.bottom_margin = Cm(0)
-sec.left_margin   = Cm(0)
-sec.right_margin  = Cm(0)
 
-# Remove default paragraph spacing
+# Tamanho A4
+sec.page_height = Cm(29.7)
+sec.page_width  = Cm(21.0)
+
+# Margens ABNT para petições
+sec.top_margin    = Cm(3.0)
+sec.bottom_margin = Cm(2.0)
+sec.left_margin   = Cm(3.0)
+sec.right_margin  = Cm(2.0)
+
+# Distância do cabeçalho/rodapé à borda da folha
+sec.header_distance = Cm(1.0)
+sec.footer_distance = Cm(1.0)
+
+# Estilos base
 style = doc.styles['Normal']
+style.font.name = 'Times New Roman'
+style.font.size = Pt(12)
 style.paragraph_format.space_before = Pt(0)
 style.paragraph_format.space_after  = Pt(0)
 
-# ── 1. HEADER: fundo escuro com logo ─────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# CABEÇALHO (Word nativo)
+# ─────────────────────────────────────────────────────────────────────────────
 
-ht = doc.add_table(rows=1, cols=1)
+header = sec.header
+# Limpa parágrafo padrão
+for p in header.paragraphs:
+    p.clear()
+
+# Tabela no cabeçalho: fundo escuro cobrindo toda a largura
+ht = header.add_table(rows=1, cols=1, width=Cm(21))
 no_borders(ht)
-set_table_width(ht, PAGE_W)
+set_table_width_pct(ht, 100)
+
 hc = ht.rows[0].cells[0]
 set_cell_bg(hc, DARK)
-set_cell_margins(hc, top=520, left=720, bottom=420, right=720)
-set_row_height(ht.rows[0], 2100, exact=False)
+set_cell_margins(hc, top=300, left=500, bottom=220, right=500)
+set_row_height(ht.rows[0], 1500, exact=False)
 
-# Ícone balança
-p = hc.paragraphs[0]
-p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-no_space(p)
-r = p.add_run('⚖')
-r.font.size = Pt(30)
-r.font.color.rgb = GOLD_RGB
-r.font.name = 'Segoe UI'
+# Remove o parágrafo vazio que sobrou acima da tabela
+for p in header.paragraphs:
+    p._element.getparent().remove(p._element)
 
-# JCPV
-p2 = hc.add_paragraph()
-p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-no_space(p2)
-p2.paragraph_format.space_before = Pt(4)
-r2 = p2.add_run('J C P V')
-r2.font.size = Pt(28)
-r2.font.bold = True
-r2.font.color.rgb = GOLD_RGB
-r2.font.name = 'Garamond'
+# Logo JCPV como imagem
+p_logo = hc.paragraphs[0]
+p_logo.alignment = WD_ALIGN_PARAGRAPH.CENTER
+no_space(p_logo)
+p_logo.paragraph_format.space_before = Pt(6)
+p_logo.paragraph_format.space_after  = Pt(4)
+run_img = p_logo.add_run()
+run_img.add_picture('/home/user/Apppainel-prestes/jcpv_logo.png', height=Cm(3.2))
 
-# ADVOCACIA
-p3 = hc.add_paragraph()
-p3.alignment = WD_ALIGN_PARAGRAPH.CENTER
-no_space(p3)
-p3.paragraph_format.space_before = Pt(2)
-r3 = p3.add_run('A  D  V  O  C  A  C  I  A')
-r3.font.size = Pt(9)
-r3.font.color.rgb = GOLD_RGB
-r3.font.name = 'Garamond'
-r3.font.bold = False
+# Slogan
+p_slg = hc.add_paragraph()
+p_slg.alignment = WD_ALIGN_PARAGRAPH.CENTER
+no_space(p_slg)
+p_slg.paragraph_format.space_before = Pt(2)
+r = add_run(p_slg, 'A defesa técnica do seu patrimônio.',
+            font='Garamond', size=8, italic=True,
+            color=RGBColor(0xCC, 0xBB, 0x99))
 
-# Slogan abaixo do nome
-p4 = hc.add_paragraph()
-p4.alignment = WD_ALIGN_PARAGRAPH.CENTER
-no_space(p4)
-p4.paragraph_format.space_before = Pt(8)
-r4 = p4.add_run('A defesa técnica do seu patrimônio.')
-r4.font.size = Pt(9)
-r4.font.color.rgb = RGBColor(0xC8, 0xB8, 0x99)
-r4.font.name = 'Garamond'
-r4.font.italic = True
+# Linha dourada separadora dentro da célula
+p_sep = hc.add_paragraph()
+no_space(p_sep)
+p_sep.paragraph_format.space_before = Pt(6)
+para_border_bottom(p_sep, color=GOLD, sz='8')
 
-# ── 2. BARRA DOURADA ─────────────────────────────────────────────────────────
+# Info: OAB | Sigilo | Nacional
+p_cred = hc.add_paragraph()
+p_cred.alignment = WD_ALIGN_PARAGRAPH.CENTER
+no_space(p_cred)
+p_cred.paragraph_format.space_before = Pt(4)
+p_cred.paragraph_format.space_after  = Pt(4)
+add_run(p_cred,
+        'OAB/PR 118.596   ·   Alta Performance Jurídica   ·   Sigilo Absoluto   ·   Atuação Nacional',
+        font='Garamond', size=7.5, color=GOLD_RGB)
 
-def gold_bar(width=PAGE_W, height=90):
-    t = doc.add_table(rows=1, cols=1)
-    no_borders(t)
-    set_table_width(t, width)
-    c = t.rows[0].cells[0]
-    set_cell_bg(c, GOLD)
-    set_row_height(t.rows[0], height, exact=True)
-    c.paragraphs[0].text = ''
+# ─────────────────────────────────────────────────────────────────────────────
+# RODAPÉ (Word nativo)
+# ─────────────────────────────────────────────────────────────────────────────
 
-gold_bar()
+footer = sec.footer
+for p in footer.paragraphs:
+    p.clear()
 
-# ── 3. BARRA DE CREDENCIAIS ──────────────────────────────────────────────────
-
-ct = doc.add_table(rows=1, cols=3)
-no_borders(ct)
-set_table_width(ct, PAGE_W)
-
-cred = [
-    ('⚖  OAB/PR 118.596',    WD_ALIGN_PARAGRAPH.LEFT),
-    ('🔒  Sigilo Absoluto',   WD_ALIGN_PARAGRAPH.CENTER),
-    ('🌐  Atuação Nacional',  WD_ALIGN_PARAGRAPH.RIGHT),
-]
-for i, (txt, align) in enumerate(cred):
-    c = ct.rows[0].cells[i]
-    set_cell_bg(c, DARK2)
-    set_cell_margins(c, top=180, left=500, bottom=180, right=500)
-    p = c.paragraphs[0]
-    p.alignment = align
-    no_space(p)
-    r = p.add_run(txt)
-    r.font.size = Pt(8)
-    r.font.color.rgb = GOLD_RGB
-    r.font.name = 'Garamond'
-
-gold_bar(height=40)
-
-# ── 4. CORPO DO DOCUMENTO ────────────────────────────────────────────────────
-
-body_t = doc.add_table(rows=1, cols=1)
-no_borders(body_t)
-set_table_width(body_t, PAGE_W)
-bc = body_t.rows[0].cells[0]
-set_cell_bg(bc, WHITE)
-set_cell_margins(bc, top=560, left=1100, bottom=560, right=1100)
-set_row_height(body_t.rows[0], 10200, exact=False)
-
-# Destinatário / Exmo.
-p_dest = bc.paragraphs[0]
-no_space(p_dest)
-p_dest.paragraph_format.space_after = Pt(6)
-r = p_dest.add_run('Exmo.(a) Sr.(a) ')
-r.font.size = Pt(11)
-r.font.name = 'Garamond'
-r.font.color.rgb = DARK_RGB
-r2 = p_dest.add_run('__________________________________________')
-r2.font.size = Pt(11)
-r2.font.name = 'Garamond'
-r2.font.color.rgb = GRAY_RGB
-
-p_loc = bc.add_paragraph()
-no_space(p_loc)
-p_loc.paragraph_format.space_after = Pt(18)
-r = p_loc.add_run('Curitiba/PR, _____ de __________________ de 20_____')
-r.font.size = Pt(10)
-r.font.name = 'Garamond'
-r.font.color.rgb = GRAY_RGB
-
-# Linha divisória dourada
-gold_line(bc)
-
-# Título do documento
-p_title = bc.add_paragraph()
-p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_title.paragraph_format.space_before = Pt(18)
-p_title.paragraph_format.space_after = Pt(6)
-r = p_title.add_run('TÍTULO DO DOCUMENTO / PETIÇÃO')
-r.font.size = Pt(14)
-r.font.bold = True
-r.font.name = 'Garamond'
-r.font.color.rgb = DARK_RGB
-
-p_ref = bc.add_paragraph()
-p_ref.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_ref.paragraph_format.space_after = Pt(20)
-r = p_ref.add_run('Processo nº: ______________________ | Vara: ______________________')
-r.font.size = Pt(9)
-r.font.name = 'Garamond'
-r.font.color.rgb = GOLD_RGB
-
-gold_line(bc)
-
-# Corpo do texto
-p_body = bc.add_paragraph()
-p_body.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-p_body.paragraph_format.space_before = Pt(16)
-p_body.paragraph_format.space_after = Pt(10)
-p_body.paragraph_format.first_line_indent = Cm(1.25)
-r = p_body.add_run(
-    'Vem respeitosamente à presença de Vossa Excelência, por meio de seu advogado '
-    'regularmente constituído, nos termos da procuração que se acosta, expor e requerer '
-    'o quanto segue:'
-)
-r.font.size = Pt(11)
-r.font.name = 'Garamond'
-r.font.color.rgb = DARK_RGB
-
-# Parágrafos de texto
-for _ in range(4):
-    p_text = bc.add_paragraph()
-    p_text.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-    p_text.paragraph_format.space_before = Pt(0)
-    p_text.paragraph_format.space_after = Pt(10)
-    p_text.paragraph_format.first_line_indent = Cm(1.25)
-    r = p_text.add_run(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Atuação especializada na '
-        'Lei do Superendividamento. Analisamos contratos, evitamos abusos bancários e '
-        'reestruturamos o passivo com absoluto sigilo e rigor técnico jurídico.'
-    )
-    r.font.size = Pt(11)
-    r.font.name = 'Garamond'
-    r.font.color.rgb = DARK_RGB
-
-# Requerimento
-p_req_title = bc.add_paragraph()
-p_req_title.paragraph_format.space_before = Pt(14)
-p_req_title.paragraph_format.space_after = Pt(6)
-r = p_req_title.add_run('DOS REQUERIMENTOS')
-r.font.size = Pt(11)
-r.font.bold = True
-r.font.name = 'Garamond'
-r.font.color.rgb = GOLD_RGB
-
-p_req = bc.add_paragraph()
-p_req.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-p_req.paragraph_format.space_before = Pt(0)
-p_req.paragraph_format.space_after = Pt(16)
-p_req.paragraph_format.first_line_indent = Cm(1.25)
-r = p_req.add_run(
-    'Diante do exposto, requer a Vossa Excelência o deferimento do presente pedido, '
-    'em consonância com os princípios da dignidade da pessoa humana e da proteção ao '
-    'mínimo existencial.'
-)
-r.font.size = Pt(11)
-r.font.name = 'Garamond'
-r.font.color.rgb = DARK_RGB
-
-p_termos = bc.add_paragraph()
-p_termos.paragraph_format.space_after = Pt(30)
-r = p_termos.add_run('Termos em que pede deferimento.')
-r.font.size = Pt(11)
-r.font.name = 'Garamond'
-r.font.color.rgb = DARK_RGB
-
-# Assinatura
-p_sig_loc = bc.add_paragraph()
-p_sig_loc.paragraph_format.space_after = Pt(30)
-r = p_sig_loc.add_run('Curitiba/PR, _____ de __________________ de 20_____.')
-r.font.size = Pt(11)
-r.font.name = 'Garamond'
-r.font.color.rgb = DARK_RGB
-
-p_sig_line = bc.add_paragraph()
-p_sig_line.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_sig_line.paragraph_format.space_after = Pt(4)
-r = p_sig_line.add_run('_' * 45)
-r.font.color.rgb = GOLD_RGB
-r.font.name = 'Garamond'
-
-p_sig_name = bc.add_paragraph()
-p_sig_name.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_sig_name.paragraph_format.space_after = Pt(2)
-r = p_sig_name.add_run('Advogado(a) Responsável')
-r.font.size = Pt(10)
-r.font.bold = True
-r.font.name = 'Garamond'
-r.font.color.rgb = DARK_RGB
-
-p_sig_oab = bc.add_paragraph()
-p_sig_oab.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = p_sig_oab.add_run('OAB/PR 118.596 | JCPV Advocacia')
-r.font.size = Pt(9)
-r.font.name = 'Garamond'
-r.font.color.rgb = GOLD_RGB
-
-# ── 5. BARRA DOURADA + RODAPÉ ESCURO ─────────────────────────────────────────
-
-gold_bar(height=50)
-
-ft = doc.add_table(rows=1, cols=1)
+ft = footer.add_table(rows=1, cols=1, width=Cm(21))
 no_borders(ft)
-set_table_width(ft, PAGE_W)
+set_table_width_pct(ft, 100)
+
 fc = ft.rows[0].cells[0]
 set_cell_bg(fc, DARK)
-set_cell_margins(fc, top=280, left=720, bottom=280, right=720)
+set_cell_margins(fc, top=200, left=500, bottom=200, right=500)
 set_row_height(ft.rows[0], 900, exact=False)
 
-p_f1 = fc.paragraphs[0]
+for p in footer.paragraphs:
+    p._element.getparent().remove(p._element)
+
+# Nome no rodapé
+p_fn = fc.paragraphs[0]
+p_fn.alignment = WD_ALIGN_PARAGRAPH.CENTER
+no_space(p_fn)
+
+# Linha dourada no topo do rodapé
+para_border_bottom(p_fn, color=GOLD, sz='6')
+add_run(p_fn, '', font='Garamond', size=1)
+
+p_f1 = fc.add_paragraph()
 p_f1.alignment = WD_ALIGN_PARAGRAPH.CENTER
 no_space(p_f1)
-p_f1.paragraph_format.space_after = Pt(3)
-r = p_f1.add_run('JCPV  ADVOCACIA')
-r.font.size = Pt(11)
-r.font.bold = True
-r.font.name = 'Garamond'
-r.font.color.rgb = GOLD_RGB
+p_f1.paragraph_format.space_before = Pt(4)
+add_run(p_f1, 'JCPV  ADVOCACIA', font='Garamond', size=10,
+        bold=True, color=GOLD_RGB)
 
 p_f2 = fc.add_paragraph()
 p_f2.alignment = WD_ALIGN_PARAGRAPH.CENTER
 no_space(p_f2)
-p_f2.paragraph_format.space_after = Pt(3)
-r = p_f2.add_run('www.jcpvadvocacia.com.br')
-r.font.size = Pt(8)
-r.font.name = 'Garamond'
-r.font.color.rgb = RGBColor(0xC8, 0xB8, 0x99)
+add_run(p_f2, 'www.jcpvadvocacia.com.br',
+        font='Garamond', size=8, color=RGBColor(0xCC, 0xBB, 0x99))
 
-p_f3 = fc.add_paragraph()
-p_f3.alignment = WD_ALIGN_PARAGRAPH.CENTER
-no_space(p_f3)
-r = p_f3.add_run('Alta Performance Jurídica  ·  Sigilo Absoluto  ·  Segurança Jurídica  ·  Atuação Nacional')
-r.font.size = Pt(7.5)
-r.font.name = 'Garamond'
-r.font.color.rgb = GOLD_RGB
+# Rodapé com 3 colunas: esq / centro / dir
+ft2 = footer.add_table(rows=1, cols=3, width=Cm(21))
+no_borders(ft2)
+set_table_width_pct(ft2, 100)
 
-# ── Salvar ────────────────────────────────────────────────────────────────────
+cols_data = [
+    ('OAB/PR 118.596', WD_ALIGN_PARAGRAPH.LEFT),
+    ('Sigilo Absoluto  ·  Segurança Jurídica', WD_ALIGN_PARAGRAPH.CENTER),
+    ('Pág. ', WD_ALIGN_PARAGRAPH.RIGHT),
+]
 
-out = '/home/user/Apppainel-prestes/JCPV_Advocacia_Folha_Layout.docx'
-doc.save(out)
-print(f'Documento criado: {out}')
+for i, (txt, align) in enumerate(cols_data):
+    c = ft2.rows[0].cells[i]
+    set_cell_bg(c, DARK)
+    set_cell_margins(c, top=80, left=400, bottom=120, right=400)
+    p = c.paragraphs[0]
+    p.alignment = align
+    no_space(p)
+    add_run(p, txt, font='Garamond', size=7.5, color=GOLD_RGB)
+    if i == 2:
+        # Número de página automático
+        fldChar1 = OxmlElement('w:fldChar')
+        fldChar1.set(qn('w:fldCharType'), 'begin')
+        instrText = OxmlElement('w:instrText')
+        instrText.text = 'PAGE'
+        fldChar2 = OxmlElement('w:fldChar')
+        fldChar2.set(qn('w:fldCharType'), 'end')
+        run_pg = p.add_run()
+        run_pg.font.size = Pt(7.5)
+        run_pg.font.color.rgb = GOLD_RGB
+        run_pg.font.name = 'Garamond'
+        run_pg._r.append(fldChar1)
+        run_pg._r.append(instrText)
+        run_pg._r.append(fldChar2)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CORPO DO DOCUMENTO — padrão petição ABNT
+# ─────────────────────────────────────────────────────────────────────────────
+
+def add_body_para(text='', align=WD_ALIGN_PARAGRAPH.JUSTIFY,
+                  indent=True, bold=False, italic=False,
+                  size=12, color=None, space_before=0, space_after=6,
+                  underline=False):
+    from docx.enum.text import WD_LINE_SPACING
+    p = doc.add_paragraph()
+    p.alignment = align
+    p.paragraph_format.space_before = Pt(space_before)
+    p.paragraph_format.space_after  = Pt(space_after)
+    if indent:
+        p.paragraph_format.first_line_indent = Cm(1.25)
+    p.paragraph_format.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
+    p.paragraph_format.line_spacing      = Pt(18)   # 12pt × 1,5
+    if text:
+        r = add_run(p, text, size=size, bold=bold, italic=italic,
+                    color=color or DARK_RGB, underline=underline)
+    return p
+
+# ── Destinatário ──────────────────────────────────────────────────────────────
+p = add_body_para(
+    'EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DE DIREITO DA '
+    '___ª VARA CÍVEL DA COMARCA DE ________________________________',
+    align=WD_ALIGN_PARAGRAPH.CENTER,
+    indent=False, bold=True, size=12, space_after=24
+)
+
+# ── Qualificação ──────────────────────────────────────────────────────────────
+p = add_body_para(
+    '____________________________________ (nome completo do requerente), '
+    'nacionalidade, estado civil, profissão, portador(a) do RG nº _____________ '
+    'e CPF nº __________________, residente e domiciliado(a) na '
+    '____________________________________________, nº ______, '
+    'Bairro __________________, Cidade/UF, CEP ______________, '
+    'por seu(sua) advogado(a) infra-assinado(a), vem respeitosamente à presença '
+    'de Vossa Excelência propor a presente:',
+    indent=True, space_after=12
+)
+
+# ── Título da ação ────────────────────────────────────────────────────────────
+p_title = doc.add_paragraph()
+p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p_title.paragraph_format.space_before = Pt(6)
+p_title.paragraph_format.space_after  = Pt(6)
+p_title.paragraph_format.line_spacing = Pt(18)
+add_run(p_title, 'AÇÃO DE __________________________________________',
+        bold=True, size=12, color=DARK_RGB, underline=True)
+
+# ── Em face de ────────────────────────────────────────────────────────────────
+p_contra = doc.add_paragraph()
+p_contra.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p_contra.paragraph_format.space_before = Pt(0)
+p_contra.paragraph_format.space_after  = Pt(18)
+p_contra.paragraph_format.line_spacing = Pt(18)
+add_run(p_contra, 'em face de ___________________________________________',
+        size=12, color=DARK_RGB)
+
+# ── Seção I ───────────────────────────────────────────────────────────────────
+def section_title(text):
+    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(12)
+    p.paragraph_format.space_after  = Pt(6)
+    p.paragraph_format.line_spacing = Pt(18)
+    add_run(p, text, bold=True, size=12, color=DARK_RGB)
+    para_border_bottom(p, color=GOLD, sz='4')
+    return p
+
+section_title('I – DOS FATOS')
+
+add_body_para(
+    'Narra o(a) requerente que __________________________________________'
+    '___________________________________________________________________'
+    '____________________________________________________________, '
+    'situação que gerou os prejuízos ora descritos e que fundamentam o '
+    'presente pedido.',
+    space_after=6
+)
+add_body_para(
+    'Acrescenta ainda que _______________________________________________'
+    '___________________________________________________________________'
+    '______________________________________________, razão pela qual '
+    'busca a tutela jurisdicional para proteção de seus direitos.',
+    space_after=12
+)
+
+section_title('II – DO DIREITO')
+
+add_body_para(
+    'A pretensão deduzida encontra amparo na Lei nº _____________________, '
+    'bem como nos princípios constitucionais da dignidade da pessoa humana '
+    '(art. 1º, III, CF/88), da proteção ao mínimo existencial e nos '
+    'demais dispositivos legais aplicáveis à espécie.',
+    space_after=6
+)
+add_body_para(
+    'Ademais, a jurisprudência pátria tem se posicionado no sentido de '
+    '__________________________________________________________________'
+    '________________________________, conforme reiteradas decisões do '
+    'Colendo Superior Tribunal de Justiça.',
+    space_after=12
+)
+
+section_title('III – DOS PEDIDOS')
+
+add_body_para(
+    'Diante do exposto, requer a Vossa Excelência que se digne a:',
+    indent=True, space_after=6
+)
+
+pedidos = [
+    'a) Receber e processar a presente ação, determinando a citação da parte requerida;',
+    'b) Conceder os benefícios da justiça gratuita, nos termos do art. 98 do CPC/2015;',
+    'c) Ao final, julgar TOTALMENTE PROCEDENTE o pedido, para que ________________________;',
+    'd) Condenar a parte requerida ao pagamento das custas processuais e honorários advocatícios, '
+       'nos termos do art. 85 do CPC/2015.',
+]
+for pedido in pedidos:
+    add_body_para(pedido, indent=False,
+                  space_before=2, space_after=4)
+
+# ── Valor da causa ────────────────────────────────────────────────────────────
+add_body_para('')
+add_body_para(
+    'Dá-se à causa o valor de R$ _________________ '
+    '(___________________________________________).',
+    indent=True, space_before=6, space_after=12
+)
+
+# ── Termos ────────────────────────────────────────────────────────────────────
+add_body_para(
+    'Nestes termos, pede e espera deferimento.',
+    align=WD_ALIGN_PARAGRAPH.JUSTIFY,
+    indent=True, space_before=6, space_after=6
+)
+
+# Local e data
+p_loc = doc.add_paragraph()
+p_loc.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+p_loc.paragraph_format.space_before = Pt(6)
+p_loc.paragraph_format.space_after  = Pt(36)
+p_loc.paragraph_format.line_spacing = Pt(18)
+add_run(p_loc, 'Curitiba/PR, _____ de ________________________ de 20___.',
+        size=12, color=DARK_RGB)
+
+# ── Assinatura ────────────────────────────────────────────────────────────────
+p_sig_line = doc.add_paragraph()
+p_sig_line.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p_sig_line.paragraph_format.space_after = Pt(2)
+add_run(p_sig_line, '________________________________________',
+        size=12, color=GOLD_RGB)
+
+p_sig_name = doc.add_paragraph()
+p_sig_name.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p_sig_name.paragraph_format.space_after = Pt(2)
+add_run(p_sig_name, 'Advogado(a) Responsável',
+        bold=True, size=12, color=DARK_RGB)
+
+p_sig_oab = doc.add_paragraph()
+p_sig_oab.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p_sig_oab.paragraph_format.space_after = Pt(2)
+add_run(p_sig_oab, 'OAB/PR 118.596',
+        size=11, color=GOLD_RGB)
+
+p_sig_firm = doc.add_paragraph()
+p_sig_firm.alignment = WD_ALIGN_PARAGRAPH.CENTER
+add_run(p_sig_firm, 'JCPV ADVOCACIA  ·  www.jcpvadvocacia.com.br',
+        size=10, color=GRAY_RGB)
+
+# ─────────────────────────────────────────────────────────────────────────────
+doc.save('/home/user/Apppainel-prestes/JCPV_Advocacia_Folha_Layout.docx')
+print('Documento ABNT criado com sucesso!')
